@@ -3,9 +3,12 @@
 #include "Arduino.h"
 #include "settings.h"
 
+#define PRINT_INTERVAL 2000
+#define BRAKE_THRESHOLD 5
 #define DEBOUNCE_TIME 250
-#define BRAKE_MODULE_PIN 2
+#define BRAKE_CONTROL_PIN 6
 #define BUTTON_PIN PIN_A0
+#define POT_PIN PIN_A7
 
 /* Helper Classes */
 class Button {
@@ -36,35 +39,51 @@ class Button {
 /* Forward declarations */
 void toggleBrakeModule();
 
+/* Global variables */
+bool g_runBrakeModule = false;
+int64_t g_lastBrakeWrite = 0;
+uint64_t g_lastPrintTime = 0;
+
 /* Arduino Code */
 Button button(BUTTON_PIN, INPUT_PULLUP, toggleBrakeModule);
 
 void setup() {
 	// pinMode(LED_BUILTIN, OUTPUT);
 	Serial.begin(9600);
-	pinMode(BRAKE_MODULE_PIN, OUTPUT);
+	pinMode(BRAKE_CONTROL_PIN, OUTPUT);
 	pinMode(LED_BUILTIN, OUTPUT);
+	pinMode(POT_PIN, INPUT);
 	button.init();
 }
 
 void loop() {
 	button.run();
+
+	if (g_runBrakeModule) {
+		int64_t brakeVal = map(analogRead(POT_PIN), 0, 1023, 0, 255);
+
+		if (brakeVal != g_lastBrakeWrite) {
+			if (brakeVal < BRAKE_THRESHOLD)
+				digitalWrite(BRAKE_CONTROL_PIN, HIGH);
+			else
+				analogWrite(BRAKE_CONTROL_PIN, 255 - brakeVal);
+
+			g_lastBrakeWrite = brakeVal;
+		}
+	}
 }
 
 /* Helper Functions */
-bool g_moduleOn = false;
-
 void toggleBrakeModule() {
-	g_moduleOn = !g_moduleOn;
+	g_runBrakeModule = !g_runBrakeModule;
 
-	if (g_moduleOn) {
-		digitalWrite(BRAKE_MODULE_PIN, HIGH);
+	if (g_runBrakeModule) {
 		digitalWrite(LED_BUILTIN, HIGH);
 	}
 	else {
-		digitalWrite(BRAKE_MODULE_PIN, LOW);
+		digitalWrite(BRAKE_CONTROL_PIN, HIGH);
 		digitalWrite(LED_BUILTIN, LOW);
 	}
 
-	Serial.println(String("Turning brake module ") + String((g_moduleOn ? "On" : "Off")));
+	Serial.println(String("Turning brake module ") + String((g_runBrakeModule ? "On" : "Off")));
 }
