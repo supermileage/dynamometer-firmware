@@ -30,7 +30,6 @@ class Button {
 		PinMode _pinMode;
 		void (*_action)(void) = NULL;
 		uint64_t _lastReadHigh = 0;
-
 };
 
 /* Forward declarations */
@@ -44,20 +43,36 @@ void setup() {
 	Serial.begin(9600);
 	pinMode(BRAKE_MODULE_PIN, OUTPUT);
 	pinMode(LED_BUILTIN, OUTPUT);
+
+	pinMode(6, OUTPUT);
+	pinMode(A7, INPUT);
 	button.init();
 }
 
+/* Globals */
+uint64_t g_lastPrintMillis = 0;
+uint64_t g_printInterval = 2000;
+bool g_runModule = false;
+
 void loop() {
 	button.run();
+
+	int pot_val = (int)((float)(analogRead(A7)) * 255/1023);
+	if (g_runModule) {
+		analogWrite(6, 255 - pot_val);
+	}
+
+	if (millis() > g_lastPrintMillis + g_printInterval) {
+		Serial.println("Potentiometer value : " + String(pot_val));
+		g_lastPrintMillis = millis();
+	}
 }
 
 /* Helper Functions */
-bool g_moduleOn = false;
-
 void toggleBrakeModule() {
-	g_moduleOn = !g_moduleOn;
+	g_runModule = !g_runModule;
 
-	if (g_moduleOn) {
+	if (g_runModule) {
 		digitalWrite(BRAKE_MODULE_PIN, HIGH);
 		digitalWrite(LED_BUILTIN, HIGH);
 	}
@@ -66,5 +81,5 @@ void toggleBrakeModule() {
 		digitalWrite(LED_BUILTIN, LOW);
 	}
 
-	Serial.println(String("Turning brake module ") + String((g_moduleOn ? "On" : "Off")));
+	Serial.println(String("Turning brake module ") + String((g_runModule ? "On" : "Off")));
 }
