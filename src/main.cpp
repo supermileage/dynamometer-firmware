@@ -10,7 +10,6 @@ bool g_runBrakeModule = false;
 int64_t g_lastBrakeWrite = 0;
 uint64_t g_lastPrintTime = 0;
 
-/* Arduino Code */
 Button button(BUTTON_PIN, INPUT_PULLUP, toggleBrakeModule);
 
 void setup() {
