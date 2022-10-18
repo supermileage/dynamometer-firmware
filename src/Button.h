@@ -1,3 +1,6 @@
+#ifndef BUTTON_H_
+#define BUTTON_H_
+
 #include <Arduino.h>
 #include <stdint.h>
 
@@ -14,3 +17,5 @@ class Button {
 		void (*_action)(void) = NULL;
 		uint64_t _lastReadHigh = 0;
 };
+
+#endif
