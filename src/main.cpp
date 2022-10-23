@@ -1,6 +1,6 @@
 #include <stdint.h>
-#include <Button.h>
 #include "settings.h"
+#include "System/Button.h"
 
 /* Forward declarations */
 void toggleBrakeModule();
