@@ -3,7 +3,7 @@
 
 #include "Sensor.h"
 
-class SensorForce {
+class SensorForce : public Sensor {
     public:
         /*
          * Constructor
@@ -15,15 +15,17 @@ class SensorForce {
         */
         ~SensorForce();
 
+        String getHumanName() override;
+
         /*
          * initialization method (called at startup)
         */
-        void begin();
+        void begin() override;
 
         /*
          * handle method (called in loop)
         */
-        void handle();
+        void handle() override;
 
         /*
          * returns value representing current force on force sensor
@@ -32,6 +34,6 @@ class SensorForce {
 
     private:
         float _force;
-}
+};
 
 #endif

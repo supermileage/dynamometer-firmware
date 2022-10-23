@@ -7,6 +7,10 @@
         SensorForce::~SensorForce() {
             // stub
         }
+        
+        String SensorForce::getHumanName() {
+            // stub
+        }
 
         void SensorForce::begin() {
             // stub

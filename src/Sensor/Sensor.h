@@ -1,6 +1,7 @@
 #ifndef _SENSOR_H_
 #define _SENSOR_H_
 
+#include "Arduino.h"
 #include "../System/Handleable.h"
 
 class Sensor : public Handleable {
