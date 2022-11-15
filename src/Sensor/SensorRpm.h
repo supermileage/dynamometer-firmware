@@ -10,6 +10,7 @@ class SensorRpm: public Sensor {
     public:
         SensorRpm();
         ~SensorRpm();
+        String getHumanName() override;
         void begin() override;
         void handle() override;
         uint32_t getRpm();

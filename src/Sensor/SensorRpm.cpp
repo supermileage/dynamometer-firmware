@@ -4,6 +4,10 @@ SensorRpm::SensorRpm() { }
 
 SensorRpm::~SensorRpm() { }
 
+String SensorRpm::getHumanName() {
+    return "";
+}
+
 void SensorRpm::begin() {
 
 }
