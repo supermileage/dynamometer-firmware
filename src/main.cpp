@@ -8,9 +8,8 @@ void toggleBrakeModule();
 
 /* Global variables */
 bool g_runBrakeModule = false;
-int64_t g_lastBrakeWrite = 0;
-uint64_t g_lastForceReadTime = 0;
 
+/* Objects */
 Button button(BUTTON_PIN, INPUT_PULLUP, toggleBrakeModule);
 SensorForce sensorforce(FORCE_SENSOR, OUTPUT);
 
@@ -24,7 +23,6 @@ void setup() {
 
 void loop() {
 	button.run();
-
 	sensorforce.handle();
 }
 
@@ -39,6 +37,5 @@ void toggleBrakeModule() {
 		digitalWrite(BRAKE_CONTROL_PIN, HIGH);
 		digitalWrite(LED_BUILTIN, LOW);
 	}
-
 	Serial.println(String("Turning brake module ") + String((g_runBrakeModule ? "On" : "Off")));
 }
