@@ -12,9 +12,6 @@ class Sensor : public Handleable {
          * @return Human name for this sensor type
          * */
         virtual String getHumanName() = 0;
-
-    protected:
-        static bool dummy;
 };
 
 #endif
