@@ -14,7 +14,7 @@ SensorForce::SensorForce(pin_size_t pinNumber, PinMode mode) {
 SensorForce::~SensorForce() { }
 
 String SensorForce::getHumanName() {
-    Serial.println(String("Force Sensor"));
+    return "Force Sensor";
 }
 
 void SensorForce::begin() {
