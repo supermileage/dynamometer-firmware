@@ -1,6 +1,7 @@
 #ifndef _SENSOR_FORCE_H_
 #define _SENSOR_FORCE_H_
 
+#include "settings.h"
 #include "Sensor.h"
 
 class SensorForce : public Sensor {

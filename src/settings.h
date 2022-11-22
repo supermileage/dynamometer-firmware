@@ -1,5 +1,7 @@
-#ifndef SETTINGS_H_
-#define SETTINGS_H_
+#ifndef _SETTINGS_H_
+#define _SETTINGS_H_
+
+#include <Arduino.h>
 
 /* IO */
 #define BRAKE_CONTROL_PIN 6
@@ -14,6 +16,13 @@
 #define DEBUG_SERIAL_LN(x) Serial.println(x)
 #else
 #define DEBUG_SERIAL_LN(x) { }
+#endif
+
+/* Arduino */
+#ifdef ARDUINO_PLATFORM
+typedef int PinMode;
+typedef int pin_size_t;
+typedef int PinStatus;
 #endif
 
 #endif
