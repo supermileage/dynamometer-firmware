@@ -2,7 +2,6 @@
 
 #include "System/Handleable.h"
 #include "Sensor/SensorForce.h"
-#include "Sensor/SensorRpm.h"
 
 /* Forward declarations */
 // void toggleBrakeModule();
@@ -17,7 +16,6 @@ bool g_reset = false;
 
 /* Objects */
 SensorForce sensorforce(FORCE_SENSOR, OUTPUT);
-SensorRpm sensorRpm();
 
 void setup() {
 	Serial.begin(9600);
