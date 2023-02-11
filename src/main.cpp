@@ -74,17 +74,20 @@
 #include "Adafruit_ILI9341.h"
 
 // For the Adafruit shield, these are the default.
-#define TFT_DC 20 //5
+#define TFT_DC 15 //5
 #define TFT_CS 17 //3
 #define TFT_MOSI 19 //6
 #define TFT_MISO 16 //9
 #define TFT_CLK 18 //7
-#define TFT_RST 21 //4
+#define TFT_RST 14 //4
 
 // Use hardware SPI (on Uno, #13, #12, #11) and the above for CS/DC
 // Adafruit_ILI9341 tft = Adafruit_ILI9341(TFT_CS, TFT_DC);
 // If using the breakout, change pins as desired
-Adafruit_ILI9341 tft = Adafruit_ILI9341(TFT_CS, TFT_DC, TFT_MOSI, TFT_CLK, TFT_RST, TFT_MISO);
+//Adafruit_ILI9341 tft = Adafruit_ILI9341(TFT_CS, TFT_DC, TFT_MOSI, TFT_CLK, TFT_RST, TFT_MISO);
+Adafruit_ILI9341 tft = Adafruit_ILI9341(&SPI, TFT_DC, TFT_CS, TFT_RST);
+
+#pragma region Functions
 
 unsigned long testFillScreen()
 {
@@ -377,6 +380,8 @@ unsigned long testFilledRoundRects()
 
   return micros() - start;
 }
+
+#pragma endregion
 
 void setup()
 {
