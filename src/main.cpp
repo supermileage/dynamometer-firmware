@@ -1,77 +1,11 @@
-// #include <stdint.h>
-// #include "settings.h"
-// #include "System/Button.h"
-// #include "Sensor/SensorForce.h"
-// #include "Sensor/SensorRpm.h"
-
-// /* Forward declarations */
-// void toggleBrakeModule();
-
-// /* Global variables */
-// bool g_runBrakeModule = false;
-
-// /* Objects */
-// Button button(BUTTON_PIN, INPUT_PULLUP, toggleBrakeModule);
-// SensorForce sensorforce(FORCE_SENSOR, OUTPUT);
-// SensorRpm sensorRpm(OPTICAL_SENSOR, INPUT);
-
-// void setup() {
-// 	Serial.begin(9600);
-// }
-
-// void loop() {
-// 	// button.run();
-// 	// sensorforce.handle();
-// 	// sensorRpm.handle();
-// 	// if(millis() > _lastReadTime + 1000) {
-//     //     _lastReadTime = millis();
-//     //     DEBUG_SERIAL_LN(String(sensorRpm.getRpm()));
-// 	// }
-
-// 	// if (millis() > g_lastPwmOutputMillis + PWM_OUTPUT_INTERVAL) {
-// 	// 	g_lastPwmOutputMillis = millis();
-// 	// 	int currentPwmVal = g_lastPwmOutput++ % 256;
-// 	// 	analogWrite(10, currentPwmVal);
-// 	// }
-
-// 	int potVal = analogRead(A0);
-// 	potVal = map(potVal, 0, 1023, 0, 255);
-// 	analogWrite(10, potVal);
-// }
-
-// /* Button Callback */
-// void toggleBrakeModule() {
-// 	g_runBrakeModule = !g_runBrakeModule;
-
-// 	if (g_runBrakeModule) {
-// 		digitalWrite(LED_BUILTIN, HIGH);
-// 	}
-// 	else {
-// 		digitalWrite(BRAKE_CONTROL_PIN, HIGH);
-// 		digitalWrite(LED_BUILTIN, LOW);
-// 	}
-// 	Serial.println(String("Turning brake module ") + String((g_runBrakeModule ? "On" : "Off")));
-// }
-
-/***************************************************
-  This is our GFX example for the Adafruit ILI9341 Breakout and Shield
-  ----> http://www.adafruit.com/products/1651
-
-  Check out the links above for our tutorials and wiring diagrams
-  These displays use SPI to communicate, 4 or 5 pins are required to
-  interface (RST is optional)
-  Adafruit invests time and resources providing this open source code,
-  please support Adafruit and open-source hardware by purchasing
-  products from Adafruit!
-
-  Written by Limor Fried/Ladyada for Adafruit Industries.
-  MIT license, all text above must be included in any redistribution
- ****************************************************/
-
 #include "Arduino.h"
 #include "SPI.h"
+#include "Wire.h"
 #include "Adafruit_GFX.h"
 #include "Adafruit_ILI9341.h"
+
+#include "settings.h"
+#include "I2C_Shared.h"
 
 // For the Adafruit shield, these are the default.
 #define TFT_DC 15 //5
@@ -81,13 +15,14 @@
 #define TFT_CLK 18 //7
 #define TFT_RST 14 //4
 
-// Use hardware SPI (on Uno, #13, #12, #11) and the above for CS/DC
-// Adafruit_ILI9341 tft = Adafruit_ILI9341(TFT_CS, TFT_DC);
-// If using the breakout, change pins as desired
-//Adafruit_ILI9341 tft = Adafruit_ILI9341(TFT_CS, TFT_DC, TFT_MOSI, TFT_CLK, TFT_RST, TFT_MISO);
+#define SENSOR_POLLING_INTERVAL 1000
+
+/* Globals */
+uint64_t g_lastUpdateTime = 0;
+
 Adafruit_ILI9341 tft = Adafruit_ILI9341(&SPI, TFT_DC, TFT_CS, TFT_RST);
 
-#pragma region Functions
+#pragma region GraphicsTest
 
 unsigned long testFillScreen()
 {
@@ -381,90 +316,112 @@ unsigned long testFilledRoundRects()
   return micros() - start;
 }
 
+
+
+// void setup()
+// {
+//   Serial.begin(9600);
+//   tft.begin();
+
+//   // read diagnostics (optional but can help debug problems)
+//   uint8_t x = tft.readcommand8(ILI9341_RDMODE);
+//   Serial.print("Display Power Mode: 0x");
+//   Serial.println(x, HEX);
+//   x = tft.readcommand8(ILI9341_RDMADCTL);
+//   Serial.print("MADCTL Mode: 0x");
+//   Serial.println(x, HEX);
+//   x = tft.readcommand8(ILI9341_RDPIXFMT);
+//   Serial.print("Pixel Format: 0x");
+//   Serial.println(x, HEX);
+//   x = tft.readcommand8(ILI9341_RDIMGFMT);
+//   Serial.print("Image Format: 0x");
+//   Serial.println(x, HEX);
+//   x = tft.readcommand8(ILI9341_RDSELFDIAG);
+//   Serial.print("Self Diagnostic: 0x");
+//   Serial.println(x, HEX);
+
+//   Serial.println(F("Benchmark                Time (microseconds)"));
+//   delay(10);
+//   Serial.print(F("Screen fill              "));
+//   Serial.println(testFillScreen());
+//   delay(500);
+
+//   Serial.print(F("Text                     "));
+//   Serial.println(testText());
+//   delay(3000);
+
+//   Serial.print(F("Lines                    "));
+//   Serial.println(testLines(ILI9341_CYAN));
+//   delay(500);
+
+//   Serial.print(F("Horiz/Vert Lines         "));
+//   Serial.println(testFastLines(ILI9341_RED, ILI9341_BLUE));
+//   delay(500);
+
+//   Serial.print(F("Rectangles (outline)     "));
+//   Serial.println(testRects(ILI9341_GREEN));
+//   delay(500);
+
+//   Serial.print(F("Rectangles (filled)      "));
+//   Serial.println(testFilledRects(ILI9341_YELLOW, ILI9341_MAGENTA));
+//   delay(500);
+
+//   Serial.print(F("Circles (filled)         "));
+//   Serial.println(testFilledCircles(10, ILI9341_MAGENTA));
+
+//   Serial.print(F("Circles (outline)        "));
+//   Serial.println(testCircles(10, ILI9341_WHITE));
+//   delay(500);
+
+//   Serial.print(F("Triangles (outline)      "));
+//   Serial.println(testTriangles());
+//   delay(500);
+
+//   Serial.print(F("Triangles (filled)       "));
+//   Serial.println(testFilledTriangles());
+//   delay(500);
+
+//   Serial.print(F("Rounded rects (outline)  "));
+//   Serial.println(testRoundRects());
+//   delay(500);
+
+//   Serial.print(F("Rounded rects (filled)   "));
+//   Serial.println(testFilledRoundRects());
+//   delay(500);
+
+//   Serial.println(F("Done!"));
+
+//   pinMode(LED_BUILTIN, OUTPUT);
+// }
+
+// void loop(void)
+// {
+//   for (uint8_t rotation = 0; rotation < 4; rotation++)
+//   {
+//     tft.setRotation(rotation);
+//     testText();
+//     delay(1000);
+//   }
+// }
+
 #pragma endregion
 
-void setup()
-{
-  Serial.begin(9600);
-  tft.begin();
-
-  // read diagnostics (optional but can help debug problems)
-  uint8_t x = tft.readcommand8(ILI9341_RDMODE);
-  Serial.print("Display Power Mode: 0x");
-  Serial.println(x, HEX);
-  x = tft.readcommand8(ILI9341_RDMADCTL);
-  Serial.print("MADCTL Mode: 0x");
-  Serial.println(x, HEX);
-  x = tft.readcommand8(ILI9341_RDPIXFMT);
-  Serial.print("Pixel Format: 0x");
-  Serial.println(x, HEX);
-  x = tft.readcommand8(ILI9341_RDIMGFMT);
-  Serial.print("Image Format: 0x");
-  Serial.println(x, HEX);
-  x = tft.readcommand8(ILI9341_RDSELFDIAG);
-  Serial.print("Self Diagnostic: 0x");
-  Serial.println(x, HEX);
-
-  Serial.println(F("Benchmark                Time (microseconds)"));
-  delay(10);
-  Serial.print(F("Screen fill              "));
-  Serial.println(testFillScreen());
-  delay(500);
-
-  Serial.print(F("Text                     "));
-  Serial.println(testText());
-  delay(3000);
-
-  Serial.print(F("Lines                    "));
-  Serial.println(testLines(ILI9341_CYAN));
-  delay(500);
-
-  Serial.print(F("Horiz/Vert Lines         "));
-  Serial.println(testFastLines(ILI9341_RED, ILI9341_BLUE));
-  delay(500);
-
-  Serial.print(F("Rectangles (outline)     "));
-  Serial.println(testRects(ILI9341_GREEN));
-  delay(500);
-
-  Serial.print(F("Rectangles (filled)      "));
-  Serial.println(testFilledRects(ILI9341_YELLOW, ILI9341_MAGENTA));
-  delay(500);
-
-  Serial.print(F("Circles (filled)         "));
-  Serial.println(testFilledCircles(10, ILI9341_MAGENTA));
-
-  Serial.print(F("Circles (outline)        "));
-  Serial.println(testCircles(10, ILI9341_WHITE));
-  delay(500);
-
-  Serial.print(F("Triangles (outline)      "));
-  Serial.println(testTriangles());
-  delay(500);
-
-  Serial.print(F("Triangles (filled)       "));
-  Serial.println(testFilledTriangles());
-  delay(500);
-
-  Serial.print(F("Rounded rects (outline)  "));
-  Serial.println(testRoundRects());
-  delay(500);
-
-  Serial.print(F("Rounded rects (filled)   "));
-  Serial.println(testFilledRoundRects());
-  delay(500);
-
-  Serial.println(F("Done!"));
-
-  pinMode(LED_BUILTIN, OUTPUT);
+void setup() {
+    Serial.begin(9600);
+    tft.begin();
+    Wire.begin();
+    Wire.setTimeout(80);
 }
 
-void loop(void)
-{
-  for (uint8_t rotation = 0; rotation < 4; rotation++)
-  {
-    tft.setRotation(rotation);
-    testText();
-    delay(1000);
-  }
+void loop(void) {
+    if (millis() > g_lastUpdateTime + SENSOR_POLLING_INTERVAL) {
+        g_lastUpdateTime = millis();
+        Wire.requestFrom(ADDRESS, DATA_BUFFER_LENGTH);
+
+        uint8_t buf[DATA_BUFFER_LENGTH];
+        int n = Wire.readBytes(buf, DATA_BUFFER_LENGTH);
+
+        DEBUG_SERIAL_LN("Read " + String(n) + " bytes from I2C buffer");
+        DEBUG_SERIAL_LN("Force: " + String(*(int32_t*)(buf + 3)) + " -- rpm: " + String(*(int32_t*)(buf + 7)));
+    }
 }
