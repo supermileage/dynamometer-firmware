@@ -2,6 +2,7 @@
 
 #include "System/Handleable.h"
 #include "Sensor/SensorForce.h"
+#include "Sensor/SensorRpm.h"
 
 /* Forward declarations */
 // void toggleBrakeModule();
@@ -16,40 +17,21 @@ bool g_reset = false;
 
 /* Objects */
 SensorForce sensorforce(FORCE_SENSOR, OUTPUT);
+SensorRpm sensorRpm(OPTICAL_SENSOR, INPUT);
 
 void setup() {
 	Serial.begin(9600);
 }
 
+unsigned long _lastReadTime = 0;
+
 void loop() {
-	if (g_reset) {
-		g_loopIndex = 0;
-		g_lastLoopTime = micros();
-		g_reset = false;
-	} else {
-		g_loopArr[g_loopIndex++] = micros();
-		Handleable::handleAll();
-	}
-	
-	#if DEBUG_SERIAL_EN
-	if (g_loopIndex == ARR_SIZE) {
-		uint64_t sum = 0;
-		uint64_t maxTime = 0;
-
-		for (uint8_t i = 0; i < ARR_SIZE; i++) {
-			sum += (g_loopArr[i] - g_lastLoopTime);
-			maxTime = max(g_loopArr[i] - g_lastLoopTime, maxTime);
-			g_lastLoopTime = g_loopArr[i];
-		}
-
-		g_reset = true;
-		if (millis() > g_lastPrintTime + 2000) {
-			g_lastPrintTime = millis();
-			DEBUG_SERIAL_LN("Average loop time: " + String((unsigned long)(sum / ARR_SIZE)));
-			DEBUG_SERIAL_LN("Max loop time: " + String((unsigned long)(maxTime)));
-		}
-	}
-	#endif
+	sensorforce.handle();
+	sensorRpm.handle();
+	if(millis() > _lastReadTime + 1000) {
+        _lastReadTime = millis();
+        DEBUG_SERIAL_LN(String(sensorRpm.getRpm()));
+	}	
 }
 
 /* Button Callback */
