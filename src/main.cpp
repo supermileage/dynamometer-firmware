@@ -1,8 +1,9 @@
-#include "settings.h"
+#include <Wire.h>
 
-#include "System/Handleable.h"
+#include "settings.h"
 #include "Sensor/SensorForce.h"
 #include "Sensor/SensorRpm.h"
+#include "Sensor/PollResponder.h"
 
 /* Forward declarations */
 // void toggleBrakeModule();
@@ -16,20 +17,26 @@ uint64_t g_lastLoopTime = 0;
 bool g_reset = false;
 
 /* Objects */
-SensorForce sensorforce(FORCE_SENSOR, OUTPUT);
+SensorForce sensorForce(FORCE_SENSOR, OUTPUT);
 SensorRpm sensorRpm(OPTICAL_SENSOR, INPUT);
 
+
+/* Global Variables */
+unsigned long g_lastReadTime = 0;
+
 void setup() {
-	Serial.begin(9600);
+	Serial.begin(115200);
+    sensorForce.begin();
+    sensorRpm.begin();
+    PollResponder::instance().begin(&Wire, &sensorForce, &sensorRpm);
 }
 
-unsigned long _lastReadTime = 0;
-
 void loop() {
-	sensorforce.handle();
+	sensorForce.handle();
 	sensorRpm.handle();
-	if(millis() > _lastReadTime + 1000) {
-        _lastReadTime = millis();
+
+	if(millis() > g_lastReadTime + 1000) {
+        g_lastReadTime = millis();
         DEBUG_SERIAL_LN(String(sensorRpm.getRpm()));
 	}	
 }

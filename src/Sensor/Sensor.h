@@ -2,9 +2,8 @@
 #define _SENSOR_H_
 
 #include "Arduino.h"
-#include "../System/Handleable.h"
 
-class Sensor : public Handleable {
+class Sensor {
     public:
 	
         /**

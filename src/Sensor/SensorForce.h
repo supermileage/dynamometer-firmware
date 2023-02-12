@@ -21,12 +21,12 @@ class SensorForce : public Sensor {
         /*
          * initialization method (called at startup)
         */
-        void begin() override;
+        void begin();
 
         /*
          * handle method (called in loop)
         */
-        void handle() override;
+        void handle();
 
         /*
          * returns value representing current force on force sensor

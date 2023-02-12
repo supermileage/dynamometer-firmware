@@ -1,23 +1,26 @@
 #ifndef _POLL_RESPONDER_H_
 #define _POLL_RESPONDER_H_
 
-#include "../System/Handleable.h"
 #include "Wire.h"
 
 #include "SensorForce.h"
+#include "SensorRpm.h"
 
-class PollResponder: public Handleable {
+/* Singleton poll responder class */
+class PollResponder {
     public:
-        PollResponder(TwoWire* wire, SensorForce* force);
         ~PollResponder();
-        void begin() override;
-        void handle() override;
+        static PollResponder& instance();
+        void begin(TwoWire* wire, SensorForce* force, SensorRpm* rpm);
+        void sendResponse();
 
     private:
-        TwoWire* _wire;
-        SensorForce* _force;
+        static PollResponder* _instance;
+        static TwoWire* _wire;
+        static SensorForce* _force;
+        static SensorRpm* _rpm;
 
-        static void _sendResponse();
+        PollResponder();
         static void _flush();
 };
 
