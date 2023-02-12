@@ -25,7 +25,7 @@ SensorRpm sensorRpm(OPTICAL_SENSOR, INPUT);
 unsigned long g_lastReadTime = 0;
 
 void setup() {
-	Serial.begin(115200);
+	Serial.begin(9600);
     sensorForce.begin();
     sensorRpm.begin();
     PollResponder::instance().begin(&Wire, &sensorForce, &sensorRpm);

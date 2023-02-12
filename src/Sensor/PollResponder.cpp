@@ -52,4 +52,5 @@ void PollResponder::_flush() {
 /* I2C Callbacks */
 void requestEvent() {
     PollResponder::instance().sendResponse();
+    DEBUG_SERIAL_LN("Request received.  Sending response");
 }

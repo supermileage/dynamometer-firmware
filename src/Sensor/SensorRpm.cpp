@@ -1,6 +1,8 @@
 #include "SensorRpm.h"
 #include "settings.h"
 
+#define DEBUG_OPTICAL_SENSOR
+
 #define APERATURES_PER_ROTATION 64
 
 SensorRpm::SensorRpm(pin_size_t pinNumber, PinMode mode) {
@@ -41,7 +43,9 @@ void SensorRpm::handle() {
             }
         }
         _lastReadValue = currentReadValue;
+        #ifdef DEBUG_OPTICAL_SENSOR
         DEBUG_SERIAL_LN("Optical sensor went from low to high");
+        #endif
     }
 }
 
