@@ -410,7 +410,7 @@ void setup() {
     Serial.begin(9600);
     tft.begin();
     Wire.begin();
-    Wire.setTimeout(80);
+    Wire.setTimeout(1000);
 }
 
 void loop(void) {
@@ -418,11 +418,9 @@ void loop(void) {
         g_lastUpdateTime = millis();
         Wire.requestFrom(ADDRESS, DATA_BUFFER_LENGTH);
 
-        if (Wire.available()) {
-            uint8_t buf[DATA_BUFFER_LENGTH];
-            int n = Wire.readBytes(buf, DATA_BUFFER_LENGTH);
-            DEBUG_SERIAL_LN("Read " + String(n) + " bytes from I2C buffer");
-            DEBUG_SERIAL_LN("Force: " + String(*(int32_t*)(buf + 3)) + " -- rpm: " + String(*(int32_t*)(buf + 7)));
-        }
+        uint8_t buf[DATA_BUFFER_LENGTH];
+        int n = Wire.readBytes(buf, DATA_BUFFER_LENGTH);
+        DEBUG_SERIAL_LN("Read " + String(n) + " bytes from I2C buffer");
+        DEBUG_SERIAL_LN("Force: " + String(*(int32_t*)(buf + 3)) + " -- rpm: " + String(*(int32_t*)(buf + 7)));
     }
 }
