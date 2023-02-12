@@ -1,8 +1,8 @@
+#include "Wire.h"
 #include "PollResponder.h"
 #include "I2C_Shared.h"
 
 /* Callbacks */
-// void receive(int bytes);
 void requestEvent();
 
 /* References for callbacks */
@@ -23,11 +23,12 @@ PollResponder& PollResponder::instance() {
 }
 
 void PollResponder::begin(TwoWire* wire, SensorForce* force, SensorRpm* rpm) {
-    _wire->begin(ADDRESS);
-    _wire->onRequest(requestEvent);
-
+    _wire = wire;
     _force = force;
     _rpm = rpm;
+
+    _wire->begin(ADDRESS);
+    _wire->onRequest(requestEvent);
 }
 
 void PollResponder::sendResponse() {

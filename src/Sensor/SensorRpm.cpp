@@ -1,7 +1,7 @@
 #include "SensorRpm.h"
 #include "settings.h"
 
-#define DEBUG_OPTICAL_SENSOR
+// #define DEBUG_OPTICAL_SENSOR
 
 #define APERATURES_PER_ROTATION 64
 
