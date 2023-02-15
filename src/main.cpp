@@ -1,50 +1,56 @@
-#include <stdint.h>
+#include <Wire.h>
+
 #include "settings.h"
-#include "System/Button.h"
 #include "Sensor/SensorForce.h"
 #include "Sensor/SensorRpm.h"
+#include "Sensor/PollResponder.h"
 
 /* Forward declarations */
-void toggleBrakeModule();
+// void toggleBrakeModule();
 
-/* Global variables */
-bool g_runBrakeModule = false;
+/* Timing */
+#define ARR_SIZE 150
+uint64_t g_loopArr[ARR_SIZE] = { };
+uint8_t g_loopIndex = 0;
+uint64_t g_lastPrintTime = 0;
+uint64_t g_lastLoopTime = 0;
+bool g_reset = false;
 
 /* Objects */
-Button button(BUTTON_PIN, INPUT_PULLUP, toggleBrakeModule);
-SensorForce sensorforce(FORCE_SENSOR, OUTPUT);
+SensorForce sensorForce(FORCE_SENSOR, OUTPUT);
 SensorRpm sensorRpm(OPTICAL_SENSOR, INPUT);
+
+/* Global Variables */
+unsigned long g_lastReadTime = 0;
 
 void setup() {
 	Serial.begin(9600);
-	pinMode(BRAKE_CONTROL_PIN, OUTPUT);
-	pinMode(LED_BUILTIN, OUTPUT);
-
-	button.init();
+    sensorForce.begin();
+    sensorRpm.begin();
+    PollResponder::instance().begin(&Wire, &sensorForce, &sensorRpm);
 }
 
-unsigned long _lastReadTime = 0;
-
 void loop() {
-	button.run();
-	sensorforce.handle();
+	sensorForce.handle();
 	sensorRpm.handle();
-	if(millis() > _lastReadTime + 1000) {
-        _lastReadTime = millis();
-        DEBUG_SERIAL_LN(String(sensorRpm.getRpm()));
+
+	if(millis() > g_lastReadTime + 1000) {
+        g_lastReadTime = millis();
+        DEBUG_SERIAL_LN("Force: " + String(sensorForce.getForce()));
+        DEBUG_SERIAL_LN("RPM: " + String(sensorRpm.getRpm()));
 	}	
 }
 
 /* Button Callback */
-void toggleBrakeModule() {
-	g_runBrakeModule = !g_runBrakeModule;
+// void toggleBrakeModule() {
+// 	g_runBrakeModule = !g_runBrakeModule;
 
-	if (g_runBrakeModule) {
-		digitalWrite(LED_BUILTIN, HIGH);
-	}
-	else {
-		digitalWrite(BRAKE_CONTROL_PIN, HIGH);
-		digitalWrite(LED_BUILTIN, LOW);
-	}
-	Serial.println(String("Turning brake module ") + String((g_runBrakeModule ? "On" : "Off")));
-}
+// 	if (g_runBrakeModule) {
+// 		digitalWrite(LED_BUILTIN, HIGH);
+// 	}
+// 	else {
+// 		digitalWrite(BRAKE_CONTROL_PIN, HIGH);
+// 		digitalWrite(LED_BUILTIN, LOW);
+// 	}
+// 	Serial.println(String("Turning brake module ") + String((g_runBrakeModule ? "On" : "Off")));
+// }

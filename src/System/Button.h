@@ -1,8 +1,7 @@
 #ifndef BUTTON_H_
 #define BUTTON_H_
 
-#include <Arduino.h>
-#include <stdint.h>
+#include "settings.h"
 
 class Button {
 	public:

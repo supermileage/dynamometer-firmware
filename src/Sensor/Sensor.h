@@ -2,9 +2,8 @@
 #define _SENSOR_H_
 
 #include "Arduino.h"
-#include "../System/Handleable.h"
 
-class Sensor : public Handleable {
+class Sensor {
     public:
 	
         /**
@@ -12,9 +11,6 @@ class Sensor : public Handleable {
          * @return Human name for this sensor type
          * */
         virtual String getHumanName() = 0;
-
-    protected:
-        static bool dummy;
 };
 
 #endif
