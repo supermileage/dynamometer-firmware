@@ -13,9 +13,9 @@ DEPFLAGS = -MT $@ -MMD -MP -MF $(DEP_DIR)$*.d
 CFLAGS = $(VERSION) $(DEPFLAGS) -Wall -Wno-psabi -g
 LFLAGS = $(VERSION) $(LIBS)
 INCLUDE_PREFIX = -I
-PARTICLE_LIB_DIR = test/lib/UnitTestLib/
-PARTICLE_LIB = $(PARTICLE_LIB_DIR)libwiringgcc.a
-INCLUDE_DIRS = test/lib/UnitTestLib test/lib/Catch2/single_include/catch2 lib/can-common/src lib/fcp-common/src $(TEST_DIRS)
+ARDUINO_LIB_DIR = test/external/UnitTestLib/
+ARDUINO_LIB = $(ARDUINO_LIB_DIR)libwiringgcc.a
+INCLUDE_DIRS = test/external/UnitTestLib test/external/Catch2/single_include/catch2 $(TEST_DIRS)
 
 # Get all directories in src and add to includes
 SRC_DIRS = $(sort $(dir $(wildcard $(SRC_DIR)*/)))
@@ -57,5 +57,5 @@ define compile
 endef
 
 define clean-test-submodules
-	@rm $(PARTICLE_LIB_DIR)*.o $(PARTICLE_LIB_DIR)*.a
+	@rm $(ARDUINO_LIB_DIR)*.o $(ARDUINO_LIB_DIR)*.a
 endef

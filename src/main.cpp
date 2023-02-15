@@ -17,7 +17,7 @@ uint64_t g_lastLoopTime = 0;
 bool g_reset = false;
 
 /* Objects */
-SensorForce sensorForce(FORCE_SENSOR, OUTPUT);
+SensorForce sensorForce(FORCE_SENSOR, INPUT);
 SensorOptical sensorRpm(OPTICAL_SENSOR, INPUT);
 
 /* Global Variables */

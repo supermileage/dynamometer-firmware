@@ -1,6 +1,7 @@
-[submodule "test/test/lib/UnitTestLib"]
-	path = test/test/lib/UnitTestLib
+[submodule "test/external/UnitTestLib"]
+	path = test/external/UnitTestLib
 	url = git@github.com:supermileage/Particle-UnitTestLib.git
-[submodule "test/test/lib/Catch2"]
-	path = test/test/lib/Catch2
+[submodule "test/external/Catch2"]
+	path = test/external/Catch2
 	url = git@github.com:catchorg/Catch2.git
+    branch = v2.x

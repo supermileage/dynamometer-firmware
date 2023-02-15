@@ -2,9 +2,7 @@
 #define _SENSOR_OPTICAL_H_
 
 #include <stdint.h>
-
 #include "Sensor.h"
-#include "Wire.h"
 
 class SensorOptical: public Sensor {
     public:

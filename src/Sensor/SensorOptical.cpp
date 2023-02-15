@@ -1,7 +1,7 @@
 #include "SensorOptical.h"
 #include "settings.h"
 
-#define NUM_APERATURES 64
+#define NUM_APERATURES 16
 #define MEGA 1000000
 #define PI 3.14
 
