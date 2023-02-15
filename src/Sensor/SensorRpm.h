@@ -16,7 +16,7 @@ class SensorRpm: public Sensor {
         float getRpm();
 
     private:
-        float _rpm = 0;
+        float _rpm = 300.99;
         uint8_t _pinNumber;
         PinMode _pinMode;
         unsigned long _lastReadTime = 0;

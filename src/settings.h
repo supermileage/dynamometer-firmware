@@ -4,10 +4,10 @@
 #include <Arduino.h>
 
 /* IO */
-#define BRAKE_CONTROL_PIN 6
+#define BRAKE_CONTROL_PIN 10
 #define BUTTON_PIN PIN_A0
-#define POT_PIN PIN_A7
-#define FORCE_SENSOR PIN_A5
+#define POT_PIN PIN_A0
+#define FORCE_SENSOR PIN_A1
 #define OPTICAL_SENSOR 3
 
 /* Debugging */

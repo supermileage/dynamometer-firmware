@@ -20,10 +20,6 @@ bool g_reset = false;
 SensorForce sensorForce(FORCE_SENSOR, OUTPUT);
 SensorRpm sensorRpm(OPTICAL_SENSOR, INPUT);
 
-void handleRequest() {
-    DEBUG_SERIAL_LN("WHAT THE HELL SON!!!");
-}
-
 /* Global Variables */
 unsigned long g_lastReadTime = 0;
 
@@ -40,7 +36,8 @@ void loop() {
 
 	if(millis() > g_lastReadTime + 1000) {
         g_lastReadTime = millis();
-        DEBUG_SERIAL_LN("looping hard");
+        DEBUG_SERIAL_LN("Force: " + String(sensorForce.getForce()));
+        DEBUG_SERIAL_LN("RPM: " + String(sensorRpm.getRpm()));
 	}	
 }
 

@@ -2,9 +2,6 @@
 #include "PollResponder.h"
 #include "I2C_Shared.h"
 
-/* Callbacks */
-void requestEvent();
-
 /* References for callbacks */
 PollResponder* PollResponder::_instance = nullptr;
 TwoWire* PollResponder::_wire;
@@ -28,10 +25,10 @@ void PollResponder::begin(TwoWire* wire, SensorForce* force, SensorRpm* rpm) {
     _rpm = rpm;
 
     _wire->begin(ADDRESS);
-    _wire->onRequest(requestEvent);
+    _wire->onRequest([]() { PollResponder::instance()._sendResponse(); });
 }
 
-void PollResponder::sendResponse() {
+void PollResponder::_sendResponse() {
     uint8_t buf[DATA_BUFFER_LENGTH];
 
     // pack buffer
@@ -48,10 +45,4 @@ void PollResponder::_flush() {
     while(_wire->available()) {
         _wire->read();
     }
-}
-
-/* I2C Callbacks */
-void requestEvent() {
-    PollResponder::instance().sendResponse();
-    DEBUG_SERIAL_LN("Request received.  Sending response");
 }

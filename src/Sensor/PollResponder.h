@@ -12,7 +12,6 @@ class PollResponder {
         ~PollResponder();
         static PollResponder& instance();
         void begin(TwoWire* wire, SensorForce* force, SensorRpm* rpm);
-        void sendResponse();
 
     private:
         static PollResponder* _instance;
@@ -21,7 +20,8 @@ class PollResponder {
         static SensorRpm* _rpm;
 
         PollResponder();
-        static void _flush();
+        void _flush();
+        void _sendResponse();
 };
 
 #endif

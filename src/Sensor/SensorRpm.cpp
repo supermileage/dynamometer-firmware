@@ -1,8 +1,6 @@
 #include "SensorRpm.h"
 #include "settings.h"
 
-// #define DEBUG_OPTICAL_SENSOR
-
 #define APERATURES_PER_ROTATION 64
 
 SensorRpm::SensorRpm(pin_size_t pinNumber, PinMode mode) {
@@ -30,22 +28,18 @@ void SensorRpm::handle() {
     // to calculate rpm: x us for APERATURES_PER_ROTATION open and APERATURES_PER_ROTATION close
     // means x us for 1 revolution
     // means 60*10^6/x revolutions in a minute
+    unsigned long currentReadTime = micros();
     bool currentReadValue = digitalRead(_pinNumber);
-
     if (_lastReadValue != currentReadValue) {
         if (currentReadValue == 1) {
             if(++_n % APERATURES_PER_ROTATION == 0) {
-                uint64_t currentReadTime = micros();
-
-                _rpm = (float)(60 * 1000000) / (float)(currentReadTime - _lastReadTime);
+                _rpm = (60 * 1000000) / (currentReadTime - _lastReadTime);
                 _lastReadTime = currentReadTime;
                 _n = 0; 
             }
         }
         _lastReadValue = currentReadValue;
-        #ifdef DEBUG_OPTICAL_SENSOR
         DEBUG_SERIAL_LN("Optical sensor went from low to high");
-        #endif
     }
 }
 
