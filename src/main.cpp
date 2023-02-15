@@ -2,7 +2,7 @@
 
 #include "settings.h"
 #include "Sensor/SensorForce.h"
-#include "Sensor/SensorOptical.h"
+#include "Sensor/SensorRpm.h"
 #include "Sensor/PollResponder.h"
 
 /* Forward declarations */
@@ -17,8 +17,8 @@ uint64_t g_lastLoopTime = 0;
 bool g_reset = false;
 
 /* Objects */
-SensorForce sensorForce(FORCE_SENSOR, INPUT);
-SensorOptical sensorRpm(OPTICAL_SENSOR, INPUT);
+SensorForce sensorForce(FORCE_SENSOR, OUTPUT);
+SensorRpm sensorRpm(OPTICAL_SENSOR, INPUT);
 
 /* Global Variables */
 unsigned long g_lastReadTime = 0;
@@ -34,10 +34,10 @@ void loop() {
 	sensorForce.handle();
 	sensorRpm.handle();
 
-	if(millis() > g_lastReadTime + 1250) {
+	if(millis() > g_lastReadTime + 1000) {
         g_lastReadTime = millis();
-        // DEBUG_SERIAL_LN("Force: " + String(sensorForce.getForce()));
-        DEBUG_SERIAL_LN("Angular Velocity: " + String(sensorRpm.getAngularVelocity()));
+        DEBUG_SERIAL_LN("Force: " + String(sensorForce.getForce()));
+        DEBUG_SERIAL_LN("RPM: " + String(sensorRpm.getRpm()));
 	}	
 }
 

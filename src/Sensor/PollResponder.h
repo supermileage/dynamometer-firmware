@@ -4,20 +4,20 @@
 #include "Wire.h"
 
 #include "SensorForce.h"
-#include "SensorOptical.h"
+#include "SensorRpm.h"
 
 /* Singleton poll responder class */
 class PollResponder {
     public:
         ~PollResponder();
         static PollResponder& instance();
-        void begin(TwoWire* wire, SensorForce* force, SensorOptical* rpm);
+        void begin(TwoWire* wire, SensorForce* force, SensorRpm* rpm);
 
     private:
         static PollResponder* _instance;
         static TwoWire* _wire;
         static SensorForce* _force;
-        static SensorOptical* _rpm;
+        static SensorRpm* _rpm;
 
         PollResponder();
         void _flush();

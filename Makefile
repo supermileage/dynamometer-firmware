@@ -8,9 +8,6 @@ run-tests: test
 	@chmod +x ./test/bin/test
 	./test/bin/test
 
-pull-image:
-	docker pull $(IMAGE)
-
 libwiringgcc:
 	@echo ' *** building $@ *** '
 	@cd test/external/UnitTestLib && make libwiringgcc.a

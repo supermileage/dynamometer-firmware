@@ -14,7 +14,4 @@
 #define HEADER1 0x11
 #define HEADER2 0x1D
 
-#define ANGULAR_VELOCITY_SCALING 1000
-#define FORCE_SCALING 1000
-
 #endif
