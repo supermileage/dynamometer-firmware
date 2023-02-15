@@ -407,10 +407,11 @@ unsigned long testFilledRoundRects()
 #pragma endregion
 
 void setup() {
-    Serial.begin(9600);
+    Serial.begin(115200);
     tft.begin();
     Wire.begin();
     Wire.setTimeout(1000);
+    pinMode(2, INPUT);
 }
 
 void loop(void) {
@@ -424,5 +425,7 @@ void loop(void) {
             DEBUG_SERIAL_LN("Read " + String(n) + " bytes from I2C buffer");
             DEBUG_SERIAL_LN("Force: " + String(*(int32_t*)(buf + 3)) + " -- rpm: " + String(*(int32_t*)(buf + 7)));
         }
+
+        // DEBUG_SERIAL_LN("Optical Sensor Pin: " + String((digitalRead(2) ? "HIGH" : "LOW")));
     }
 }
