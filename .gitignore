@@ -1,5 +1,5 @@
 .pio
-!.vscode/*.json
+!.vscode/*
 .vscode/launch.json
 **c_cpp_properties.json
 *.code-workspace
