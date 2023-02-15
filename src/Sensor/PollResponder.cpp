@@ -6,7 +6,7 @@
 PollResponder* PollResponder::_instance = nullptr;
 TwoWire* PollResponder::_wire;
 SensorForce* PollResponder::_force;
-SensorOptical* PollResponder::_rpm;
+SensorOptical* PollResponder::_optical;
 
 PollResponder::PollResponder() { }
 
@@ -19,10 +19,10 @@ PollResponder& PollResponder::instance() {
     return *_instance;
 }
 
-void PollResponder::begin(TwoWire* wire, SensorForce* force, SensorOptical* rpm) {
+void PollResponder::begin(TwoWire* wire, SensorForce* force, SensorOptical* optical) {
     _wire = wire;
     _force = force;
-    _rpm = rpm;
+    _optical = optical;
 
     _wire->begin(ADDRESS);
     _wire->onRequest([]() { PollResponder::instance()._sendResponse(); });
@@ -36,7 +36,7 @@ void PollResponder::_sendResponse() {
     buf[1] = HEADER1;
     buf[2] = HEADER2;
     *(uint32_t*)(buf + 3) = (uint32_t)(_force->getForce() * FORCE_SCALING);
-    *(uint32_t*)(buf + 7) = (uint32_t)(_rpm->getAngularVelocity() * ANGULAR_VELOCITY_SCALING);
+    *(uint32_t*)(buf + 7) = (uint32_t)(_optical->getAngularVelocity() * ANGULAR_VELOCITY_SCALING);
 
     _wire->write((char*)buf, DATA_BUFFER_LENGTH);
 }

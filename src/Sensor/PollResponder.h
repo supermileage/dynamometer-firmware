@@ -11,13 +11,13 @@ class PollResponder {
     public:
         ~PollResponder();
         static PollResponder& instance();
-        void begin(TwoWire* wire, SensorForce* force, SensorOptical* rpm);
+        void begin(TwoWire* wire, SensorForce* force, SensorOptical* optical);
 
     private:
         static PollResponder* _instance;
         static TwoWire* _wire;
         static SensorForce* _force;
-        static SensorOptical* _rpm;
+        static SensorOptical* _optical;
 
         PollResponder();
         void _flush();
