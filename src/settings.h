@@ -5,7 +5,7 @@
 
 /* IO */
 #define BRAKE_CONTROL_PIN 10
-#define BUTTON_PIN PIN_A0
+#define BUTTON_PIN 4
 #define POT_PIN PIN_A0
 #define FORCE_SENSOR PIN_A1
 #define OPTICAL_SENSOR 3
