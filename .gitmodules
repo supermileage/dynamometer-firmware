@@ -1,0 +1,6 @@
+[submodule "test/test/lib/UnitTestLib"]
+	path = test/test/lib/UnitTestLib
+	url = git@github.com:supermileage/Particle-UnitTestLib.git
+[submodule "test/test/lib/Catch2"]
+	path = test/test/lib/Catch2
+	url = git@github.com:catchorg/Catch2.git
