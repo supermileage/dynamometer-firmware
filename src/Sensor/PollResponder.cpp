@@ -35,8 +35,8 @@ void PollResponder::_sendResponse() {
     buf[0] = HEADER0;
     buf[1] = HEADER1;
     buf[2] = HEADER2;
-    *(uint32_t*)(buf + 3) = (uint32_t)(_force->getForce() * 1000);
-    *(uint32_t*)(buf + 7) = (uint32_t)(_rpm->getAngularVelocity() * 100);
+    *(uint32_t*)(buf + 3) = (uint32_t)(_force->getForce() * FORCE_SCALING);
+    *(uint32_t*)(buf + 7) = (uint32_t)(_rpm->getAngularVelocity() * ANGULAR_VELOCITY_SCALING);
 
     _wire->write((char*)buf, DATA_BUFFER_LENGTH);
 }

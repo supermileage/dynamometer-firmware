@@ -13,7 +13,7 @@ SensorOptical::SensorOptical(pin_size_t pinNumber, PinMode mode) {
 SensorOptical::~SensorOptical() { }
 
 String SensorOptical::getHumanName() {
-    return "Optical Sensor RPM";
+    return "OpticalSensor";
 }
 
 void SensorOptical::begin() {
@@ -35,8 +35,7 @@ void SensorOptical::handle() {
 
 /* Only computed as often as we ask for it */
 float SensorOptical::getAngularVelocity() {
-    // everything scaled * 1000
-    // _n is scaled count of aperatures we've passed over since last read (count * 1000)
+    // _n is scaled count apertures we've passed over since last call to getter
     uint32_t deltaT = micros() - _lastComputeTime;
     _lastComputeTime = micros();
     float ret = ((float)_n / NUM_APERATURES) * PI * (MEGA / (float)deltaT);
