@@ -1,0 +1,12 @@
+{
+	"testMate.cpp.test.advancedExecutables": [
+		{
+		  "pattern": "${workspaceFolder}/test/bin/*",
+		  "runTask": {
+			"before":[
+				"build tests"
+			]
+		  }
+		}
+	]
+}

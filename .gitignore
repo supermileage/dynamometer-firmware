@@ -1,3 +1,13 @@
 .pio
-.vscode
-.DS_Store
+!.vscode/*.json
+**c_cpp_properties.json
+*.code-workspace
+target/
+*.bin
+access-link.txt
+*.pdf
+.DS_STORE
+output/
+test/obj
+test/dep
+test/bin
