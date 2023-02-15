@@ -11,8 +11,8 @@ class SensorRpm: public Sensor {
         SensorRpm(pin_size_t pinNumber, PinMode mode);
         ~SensorRpm();
         String getHumanName() override;
-        void begin() override;
-        void handle() override;
+        void begin();
+        void handle();
         float getRpm();
 
     private:
