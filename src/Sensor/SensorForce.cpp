@@ -34,3 +34,4 @@ void SensorForce::handle() {
 float SensorForce::getForce() {
     return _force;
 }
+

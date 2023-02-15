@@ -1,7 +1,6 @@
 #ifndef _SENSOR_FORCE_H_
 #define _SENSOR_FORCE_H_
 
-#include "settings.h"
 #include "Sensor.h"
 
 class SensorForce : public Sensor {
@@ -21,12 +20,12 @@ class SensorForce : public Sensor {
         /*
          * initialization method (called at startup)
         */
-        void begin();
+        void begin() override;
 
         /*
          * handle method (called in loop)
         */
-        void handle();
+        void handle() override;
 
         /*
          * returns value representing current force on force sensor
@@ -34,7 +33,7 @@ class SensorForce : public Sensor {
         float getForce();
 
     private:
-        float _force = 13.99;
+        float _force;
         uint8_t _pinNumber;
         PinMode _pinMode;
         uint64_t _lastReadTime = 0;
