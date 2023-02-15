@@ -6,7 +6,7 @@ DEP_DIR = $(TEST_DIR)dep/
 BIN_DIR = $(TEST_DIR)bin/
 
 # SRC TEST FILES -- Only these files will be compiled for tests
-SENSOR := Sensor/SensorOptical.cpp 
+SENSOR := Sensor/SensorRpm.cpp 
 
 # All files to compile for tests
 TEST_DIRS := $(dir $(wildcard $(TEST_DIR)tests/*/))

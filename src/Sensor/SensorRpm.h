@@ -4,7 +4,6 @@
 #include <stdint.h>
 
 #include "Sensor.h"
-#include "Wire.h"
 
 class SensorRpm: public Sensor {
     public:
