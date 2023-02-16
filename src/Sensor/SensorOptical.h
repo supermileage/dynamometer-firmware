@@ -6,6 +6,7 @@
 
 class SensorOptical: public Sensor {
     public:
+        static const uint16_t NumApertures;
         SensorOptical(pin_size_t pinNumber, PinMode mode);
         ~SensorOptical();
         String getHumanName() override;

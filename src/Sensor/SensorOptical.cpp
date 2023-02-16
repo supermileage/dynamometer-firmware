@@ -1,9 +1,11 @@
 #include "SensorOptical.h"
 #include "settings.h"
 
-#define NUM_APERATURES 16
+#define NUM_APERTURES 32
 #define MEGA 1000000
-#define PI 3.14
+#define PI 3.1415
+
+const uint16_t SensorOptical::NumApertures = NUM_APERTURES;
 
 SensorOptical::SensorOptical(pin_size_t pinNumber, PinMode mode) {
     _pinNumber = pinNumber;
@@ -38,7 +40,7 @@ float SensorOptical::getAngularVelocity() {
     // _n is scaled count apertures we've passed over since last call to getter
     uint32_t deltaT = micros() - _lastComputeTime;
     _lastComputeTime = micros();
-    float ret = ((float)_n / NUM_APERATURES) * PI * (MEGA / (float)deltaT);
+    float ret = ((float)_n / NUM_APERTURES) * PI * (MEGA / (float)deltaT);
     _n = 0;
     return ret;
 }
