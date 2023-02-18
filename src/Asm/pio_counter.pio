@@ -1,0 +1,43 @@
+.program simple_counter
+; Transmit one bit every 16 cycles. In each bit period:
+; - A '0' is encoded as a transition at the start of the bit period
+; - A '1' is encoded as a transition at the start *and* in the middle
+;
+; Side-set bit 0 must be mapped to the data output pin.
+; Autopull must be enabled
+
+public start:
+    set x, 0            ; x is counter
+    set y, 1            ; last_read_val = 1
+.wrap_target
+    set isr, 0          ; clear isr
+    in pins, 1          ; get value of input pin
+    jmp isr, do_nothing ; if pin is low
+    jmp y, do_nothing   ; if pin is high but previous read was also high
+    mov x, ~x           ;
+    jmp x--, next       ;
+next:
+    mov x, ~x           ; increment x
+    mov y, isr          ; last_read_val = cur_read_val
+    mov isr, x          ; 
+    push block          ; push count to RX FIFO (handled by DMA)
+do_nothing:
+    mov y, isr          ; last_read_val = cur_read_val
+.wrap
+% c-sdk {
+static inline void pio_counter_init(PIO pio, uint sm, uint offset, uint pin, float div) {
+    pio_sm_config c = pio_counter_program_get_default_config(offset);
+    sm_config_set_in(&c, pin, 1);
+    pio_pull_down(pin);
+    sm_config_set_in_shift(&c, false, true, 32);
+
+    pio_sm_init(pio, sm, offset, &c);
+	pio_sm_set_enabled(pio, sm, true);
+
+    sm_config_set_fifo_join(&c, PIO_FIFO_JOIN_NONE);
+	sm_config_set_clkdiv(&c, 1.0);
+
+    pio_sm_init(pio, sm, offset, &c);
+	pio_sm_set_enabled(pio, sm, true);
+}
+%}
