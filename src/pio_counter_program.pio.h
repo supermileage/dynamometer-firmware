@@ -8,69 +8,77 @@
 #include "hardware/pio.h"
 #endif
 
-// -------------- //
-// simple_counter //
-// -------------- //
+// ----------- //
+// pio_counter //
+// ----------- //
 
-#define simple_counter_wrap_target 2
-#define simple_counter_wrap 11
+#define pio_counter_wrap_target 2
+#define pio_counter_wrap 17
 
-#define simple_counter_offset_start 0u
+#define pio_counter_offset_start 0u
 
-static const uint16_t simple_counter_program_instructions[] = {
-    0xe020, //  0: set    x, 0                       
-    0xe041, //  1: set    y, 1                       
+static const uint16_t pio_counter_program_instructions[] = {
+    0xe040, //  0: set    y, 0                       
+    0xe021, //  1: set    x, 1                       
             //     .wrap_target
-    0x4060, //  2: in     null, 32                   
+    0xa0c3, //  2: mov    isr, null                  
     0x4001, //  3: in     pins, 1                    
-    0x00cb, //  4: jmp    pin, 11                    
-    0x008b, //  5: jmp    y--, 11                    
-    0xa029, //  6: mov    x, !x                      
-    0x0048, //  7: jmp    x--, 8                     
-    0xa029, //  8: mov    x, !x                      
-    0xa0c1, //  9: mov    isr, x                     
-    0x8020, // 10: push   block                      
-    0xa046, // 11: mov    y, isr                     
+    0x00c6, //  4: jmp    pin, 6                     
+    0x000a, //  5: jmp    10                         
+    0x004a, //  6: jmp    x--, 10                    
+    0xa04a, //  7: mov    y, !y                      
+    0x0089, //  8: jmp    y--, 9                     
+    0xa04a, //  9: mov    y, !y                      
+    0xe020, // 10: set    x, 0                       
+    0x8080, // 11: pull   noblock                    
+    0xa027, // 12: mov    x, osr                     
+    0xa0e6, // 13: mov    osr, isr                   
+    0x0031, // 14: jmp    !x, 17                     
+    0xa0c2, // 15: mov    isr, y                     
+    0x8020, // 16: push   block                      
+    0xa027, // 17: mov    x, osr                     
             //     .wrap
 };
 
 #if !PICO_NO_HARDWARE
-static const struct pio_program simple_counter_program = {
-    .instructions = simple_counter_program_instructions,
-    .length = 12,
+static const struct pio_program pio_counter_program = {
+    .instructions = pio_counter_program_instructions,
+    .length = 18,
     .origin = -1,
 };
 
-static inline pio_sm_config simple_counter_program_get_default_config(uint offset) {
+static inline pio_sm_config pio_counter_program_get_default_config(uint offset) {
     pio_sm_config c = pio_get_default_sm_config();
-    sm_config_set_wrap(&c, offset + simple_counter_wrap_target, offset + simple_counter_wrap);
+    sm_config_set_wrap(&c, offset + pio_counter_wrap_target, offset + pio_counter_wrap);
     return c;
 }
 
 static inline void pio_counter_init(PIO pio, uint sm, uint offset, uint pin, float div) {
+    gpio_pull_up(pin);
     pio_sm_config c = pio_counter_program_get_default_config(offset);
-    sm_config_set_in(&c, pin, 1);
-    pio_pull_down(pin);
-    sm_config_set_in_shift(&c, false, false, 32);
-    pio_sm_init(pio, sm, offset, &c);
-	pio_sm_set_enabled(pio, sm, true);
+    sm_config_set_in_pins(&c, pin);
+    sm_config_set_jmp_pin(&c, pin);
+    sm_config_set_in_shift(&c, false, true, 32);
     sm_config_set_fifo_join(&c, PIO_FIFO_JOIN_NONE);
-	sm_config_set_clkdiv(&c, 1.0);
+
+	//sm_config_set_clkdiv(&c, 1.0);
+    div = (float)clock_get_hz(clk_sys) / (14 * 1);
+    sm_config_set_clkdiv(&c, div);
+
     pio_sm_init(pio, sm, offset, &c);
 	pio_sm_set_enabled(pio, sm, true);
 }
-
-static inline void encoder_request_count(PIO pio, uint sm) {
-	pio->rxf[sm];
+static inline void pio_counter_request_count(PIO pio, uint sm) {
+	pio->txf[sm] = 1;
 }
-static inline int32_t encoder_fetch_count(PIO pio, uint sm) {
+static inline int32_t pio_counter_fetch_count(PIO pio, uint sm) {
 	while (pio_sm_is_rx_fifo_empty(pio, sm))
 		tight_loop_contents();
 	return pio->rxf[sm];
 }
-static inline int32_t encoder_get_count(PIO pio, uint sm) {
-	encoder_request_count(pio, sm);
-	return encoder_fetch_count(pio, sm);
+static inline int32_t pio_counter_get_count(PIO pio, uint sm) {
+	pio_counter_request_count(pio, sm);
+	return pio_counter_fetch_count(pio, sm);
 }
 
 #endif

@@ -6,6 +6,7 @@
 
 #include "settings.h"
 #include "I2C_Shared.h"
+#include "pio_counter_program.pio.h"
 
 // For the Adafruit shield, these are the default.
 #define TFT_DC 15 //5
@@ -16,6 +17,8 @@
 #define TFT_RST 14 //4
 
 #define SENSOR_POLLING_INTERVAL 1000
+
+PIO pio = pio0;
 
 /* Globals */
 uint64_t g_lastUpdateTime = 0;
@@ -411,10 +414,27 @@ void setup() {
     tft.begin();
     Wire.begin();
     Wire.setTimeout(1000);
-    pinMode(2, INPUT);
+
+    // setup for counter
+    pinMode(OPTICAL_SENSOR_PIN, INPUT);
+
+    Serial.begin(115200);                  
+
+    // Use pio 0
+    uint offset = pio_add_program(pio, &pio_counter_program);
+    pio_counter_init(pio, 0, offset, OPTICAL_SENSOR_PIN, 0);
 }
 
+int g_lastCount = 0;
+
 void loop(void) {
+    int count = pio_counter_get_count(pio, 0);
+
+    if (count != g_lastCount) {
+        DEBUG_SERIAL_LN("pio_counter: " + String(count));
+        g_lastCount = count;
+    }
+
     if (millis() > g_lastUpdateTime + SENSOR_POLLING_INTERVAL) {
         g_lastUpdateTime = millis();
         Wire.requestFrom(ADDRESS, DATA_BUFFER_LENGTH);
@@ -426,6 +446,7 @@ void loop(void) {
             DEBUG_SERIAL_LN("Force: " + String(*(int32_t*)(buf + 3)) + " -- rpm: " + String(*(int32_t*)(buf + 7)));
         }
 
-        // DEBUG_SERIAL_LN("Optical Sensor Pin: " + String((digitalRead(2) ? "HIGH" : "LOW")));
+        DEBUG_SERIAL_LN("Optical Sensor Pin: " + String((digitalRead(2) ? "HIGH" : "LOW")));
+        DEBUG_SERIAL_LN("pio_counter: " + String(pio_counter_get_count(pio, 0)));
     }
 }

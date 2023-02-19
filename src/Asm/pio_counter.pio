@@ -1,4 +1,4 @@
-.program simple_counter
+.program pio_counter
 ; Transmit one bit every 16 cycles. In each bit period:
 ; - A '0' is encoded as a transition at the start of the bit period
 ; - A '1' is encoded as a transition at the start *and* in the middle
@@ -7,37 +7,60 @@
 ; Autopull must be enabled
 
 public start:
-    set x, 0            ; x is counter
-    set y, 1            ; last_read_val = 1
+    set y, 0                ; y is counter
+    set x, 1                ; last_read_val = 1
 .wrap_target
-    set isr, 0          ; clear isr
-    in pins, 1          ; get value of input pin
-    jmp isr, do_nothing ; if pin is low
-    jmp y, do_nothing   ; if pin is high but previous read was also high
-    mov x, ~x           ;
-    jmp x--, next       ;
+    mov isr, null           ; clear isr
+    in pins, 1              ; get value of input pin
+    jmp pin, increment      ; pin is high--try increment
+    jmp check_poll          ; pin is low--don't increment
+increment:
+    jmp x--, check_poll     ; increment only if prev was 0
+    mov y, !y               ; hack some bits
+    jmp y--, next           ;
 next:
-    mov x, ~x           ; increment x
-    mov y, isr          ; last_read_val = cur_read_val
-    mov isr, x          ; 
-    push block          ; push count to RX FIFO (handled by DMA)
-do_nothing:
-    mov y, isr          ; last_read_val = cur_read_val
+    mov y, !y               ;
+check_poll:
+    set x, 0                ; set x to zero for pull noblock
+    pull noblock            ; check tx fifo
+    mov x, osr              ; x = tx_val
+    mov osr, isr            ; osr = prev_read_val
+    jmp !x, final           ; if tx_val is 1, load current_count into rx
+    mov isr, y              ; move current count to isr
+    push noblock            ; push isr to rx fifo
+final:
+    mov x, osr              ; x = last_read
 .wrap
+
+
 % c-sdk {
 static inline void pio_counter_init(PIO pio, uint sm, uint offset, uint pin, float div) {
-    pio_sm_config c = pio_counter_program_get_default_config(offset);
-    sm_config_set_in(&c, pin, 1);
-    pio_pull_down(pin);
-    sm_config_set_in_shift(&c, false, true, 32);
+    gpio_pull_up(pin);
 
-    pio_sm_init(pio, sm, offset, &c);
-	pio_sm_set_enabled(pio, sm, true);
+    pio_sm_config c = pio_counter_program_get_default_config(offset);
+    sm_config_set_in_pins(&c, pin);
+    sm_config_set_jmp_pin(&c, pin);
+    sm_config_set_in_shift(&c, false, true, 32);
 
     sm_config_set_fifo_join(&c, PIO_FIFO_JOIN_NONE);
 	sm_config_set_clkdiv(&c, 1.0);
-
+    
     pio_sm_init(pio, sm, offset, &c);
 	pio_sm_set_enabled(pio, sm, true);
+}
+
+static inline void pio_counter_request_count(PIO pio, uint sm) {
+	pio->txf[sm] = 1;
+}
+
+static inline int32_t pio_counter_fetch_count(PIO pio, uint sm) {
+	while (pio_sm_is_rx_fifo_empty(pio, sm))
+		tight_loop_contents();
+	return pio->rxf[sm];
+}
+
+static inline int32_t pio_counter_get_count(PIO pio, uint sm) {
+	pio_counter_request_count(pio, sm);
+	return pio_counter_fetch_count(pio, sm);
 }
 %}
