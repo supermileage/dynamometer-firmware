@@ -14,7 +14,7 @@ public start:
     jmp pin, increment      ; pin is high--try increment
     jmp check_poll          ; pin is low--don't increment
 increment:
-    jmp x--, update_prev    ; increment iff prev_read_val == 1
+    jmp x--, update_prev    ; increment iff prev_read_val == 0
     mov y, !y               ; hack some bits
     jmp y--, next           ;
 next:
