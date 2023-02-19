@@ -13,7 +13,7 @@
 // ----------- //
 
 #define pio_counter_wrap_target 2
-#define pio_counter_wrap 17
+#define pio_counter_wrap 18
 
 #define pio_counter_offset_start 0u
 
@@ -22,28 +22,29 @@ static const uint16_t pio_counter_program_instructions[] = {
     0xe021, //  1: set    x, 1                       
             //     .wrap_target
     0xa0c3, //  2: mov    isr, null                  
-    0x4001, //  3: in     pins, 1                    
-    0x00c6, //  4: jmp    pin, 6                     
-    0x000a, //  5: jmp    10                         
-    0x004a, //  6: jmp    x--, 10                    
-    0xa04a, //  7: mov    y, !y                      
-    0x0089, //  8: jmp    y--, 9                     
-    0xa04a, //  9: mov    y, !y                      
-    0xe020, // 10: set    x, 0                       
-    0x8080, // 11: pull   noblock                    
-    0xa027, // 12: mov    x, osr                     
-    0xa0e6, // 13: mov    osr, isr                   
-    0x0031, // 14: jmp    !x, 17                     
-    0xa0c2, // 15: mov    isr, y                     
-    0x8020, // 16: push   block                      
-    0xa027, // 17: mov    x, osr                     
+    0x00c5, //  3: jmp    pin, 5                     
+    0x000b, //  4: jmp    11                         
+    0x0049, //  5: jmp    x--, 9                     
+    0xa04a, //  6: mov    y, !y                      
+    0x0088, //  7: jmp    y--, 8                     
+    0xa04a, //  8: mov    y, !y                      
+    0xe021, //  9: set    x, 1                       
+    0xa0c1, // 10: mov    isr, x                     
+    0xe020, // 11: set    x, 0                       
+    0x8080, // 12: pull   noblock                    
+    0xa027, // 13: mov    x, osr                     
+    0xa0e6, // 14: mov    osr, isr                   
+    0x0032, // 15: jmp    !x, 18                     
+    0xa0c2, // 16: mov    isr, y                     
+    0x8000, // 17: push   noblock                    
+    0xa027, // 18: mov    x, osr                     
             //     .wrap
 };
 
 #if !PICO_NO_HARDWARE
 static const struct pio_program pio_counter_program = {
     .instructions = pio_counter_program_instructions,
-    .length = 18,
+    .length = 19,
     .origin = -1,
 };
 
@@ -61,9 +62,8 @@ static inline void pio_counter_init(PIO pio, uint sm, uint offset, uint pin, flo
     sm_config_set_in_shift(&c, false, true, 32);
     sm_config_set_fifo_join(&c, PIO_FIFO_JOIN_NONE);
 
-	//sm_config_set_clkdiv(&c, 1.0);
-    div = (float)clock_get_hz(clk_sys) / (14 * 1);
-    sm_config_set_clkdiv(&c, div);
+    // 1/8th 125MHz works fine, but will count 2x when clock is any faster
+    sm_config_set_clkdiv(&c, 8.0);
 
     pio_sm_init(pio, sm, offset, &c);
 	pio_sm_set_enabled(pio, sm, true);

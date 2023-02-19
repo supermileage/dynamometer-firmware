@@ -11,20 +11,22 @@ public start:
     set x, 1                ; last_read_val = 1
 .wrap_target
     mov isr, null           ; clear isr
-    in pins, 1              ; get value of input pin
     jmp pin, increment      ; pin is high--try increment
     jmp check_poll          ; pin is low--don't increment
 increment:
-    jmp x--, check_poll     ; increment only if prev was 0
+    jmp x--, update_prev    ; increment iff prev_read_val == 1
     mov y, !y               ; hack some bits
     jmp y--, next           ;
 next:
     mov y, !y               ;
+update_prev:
+    set x, 1                ; cur_read_val = 1
+    mov isr, x              ; isr = cur_read_val
 check_poll:
     set x, 0                ; set x to zero for pull noblock
     pull noblock            ; check tx fifo
     mov x, osr              ; x = tx_val
-    mov osr, isr            ; osr = prev_read_val
+    mov osr, isr            ; osr = cur_read_val
     jmp !x, final           ; if tx_val is 1, load current_count into rx
     mov isr, y              ; move current count to isr
     push noblock            ; push isr to rx fifo
@@ -43,7 +45,7 @@ static inline void pio_counter_init(PIO pio, uint sm, uint offset, uint pin, flo
     sm_config_set_in_shift(&c, false, true, 32);
 
     sm_config_set_fifo_join(&c, PIO_FIFO_JOIN_NONE);
-	sm_config_set_clkdiv(&c, 1.0);
+    sm_config_set_clkdiv(&c, 8.0);
     
     pio_sm_init(pio, sm, offset, &c);
 	pio_sm_set_enabled(pio, sm, true);
