@@ -59,15 +59,16 @@ static inline void pio_counter_init(PIO pio, uint sm, uint offset, uint pin, flo
     pio_sm_config c = pio_counter_program_get_default_config(offset);
     sm_config_set_in_pins(&c, pin);
     sm_config_set_jmp_pin(&c, pin);
-    sm_config_set_in_shift(&c, false, true, 32);
+    sm_config_set_in_shift(&c, false, false, 32);
     sm_config_set_fifo_join(&c, PIO_FIFO_JOIN_NONE);
 
     // 1/8th 125MHz works fine, but will count 2x when clock is any faster
-    sm_config_set_clkdiv(&c, 8.0);
+    sm_config_set_clkdiv(&c, 1.0);
 
     pio_sm_init(pio, sm, offset, &c);
 	pio_sm_set_enabled(pio, sm, true);
 }
+
 static inline void pio_counter_request_count(PIO pio, uint sm) {
 	pio->txf[sm] = 1;
 }

@@ -435,18 +435,18 @@ void loop(void) {
         g_lastCount = count;
     }
 
-    // if (millis() > g_lastUpdateTime + SENSOR_POLLING_INTERVAL) {
-    //     g_lastUpdateTime = millis();
-    //     Wire.requestFrom(ADDRESS, DATA_BUFFER_LENGTH);
+    if (millis() > g_lastUpdateTime + SENSOR_POLLING_INTERVAL) {
+        g_lastUpdateTime = millis();
+        Wire.requestFrom(ADDRESS, DATA_BUFFER_LENGTH);
 
-    //     if (Wire.available()) {
-    //         uint8_t buf[DATA_BUFFER_LENGTH];
-    //         int n = Wire.readBytes(buf, DATA_BUFFER_LENGTH);
-    //         DEBUG_SERIAL_LN("Read " + String(n) + " bytes from I2C buffer");
-    //         DEBUG_SERIAL_LN("Force: " + String(*(int32_t*)(buf + 3)) + " -- rpm: " + String(*(int32_t*)(buf + 7)));
-    //     }
+        if (Wire.available()) {
+            uint8_t buf[DATA_BUFFER_LENGTH];
+            int n = Wire.readBytes(buf, DATA_BUFFER_LENGTH);
+            DEBUG_SERIAL_LN("Read " + String(n) + " bytes from I2C buffer");
+            DEBUG_SERIAL_LN("Force: " + String(*(int32_t*)(buf + 3)) + " -- rpm: " + String(*(int32_t*)(buf + 7)));
+        }
 
-    //     DEBUG_SERIAL_LN("Optical Sensor Pin: " + String((digitalRead(2) ? "HIGH" : "LOW")));
-    //     DEBUG_SERIAL_LN("pio_counter: " + String(pio_counter_get_count(pio, 0)));
-    // }
+        DEBUG_SERIAL_LN("Optical Sensor Pin: " + String((digitalRead(2) ? "HIGH" : "LOW")));
+        DEBUG_SERIAL_LN("pio_counter: " + String(pio_counter_get_count(pio, 0)));
+    }
 }
