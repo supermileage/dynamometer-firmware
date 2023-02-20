@@ -1,14 +1,9 @@
 .program pio_counter
-; Transmit one bit every 16 cycles. In each bit period:
-; - A '0' is encoded as a transition at the start of the bit period
-; - A '1' is encoded as a transition at the start *and* in the middle
-;
-; Side-set bit 0 must be mapped to the data output pin.
-; Autopull must be enabled
+; count number of low->high edges from single pin -- overflows after 2^32
 
 public start:
     set y, 0                ; y is counter
-    set x, 1                ; last_read_val = 1
+    set x, 1                ; prev_read_val = 1
 .wrap_target
     mov isr, null           ; clear isr
     jmp pin, increment      ; pin is high--try increment
