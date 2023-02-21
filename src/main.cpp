@@ -6,7 +6,7 @@
 
 #include "settings.h"
 #include "I2C_Shared.h"
-#include "pio_counter_program.pio.h"
+#include "PIO/pio_counter_program.pio.h"
 
 // For the Adafruit shield, these are the default.
 #define TFT_DC 15 //5
