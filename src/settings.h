@@ -7,10 +7,10 @@
 
 /* IO */
 #define BRAKE_CONTROL_PIN 6
-#define BUTTON_PIN 2
+#define BUTTON_PIN 1
 #define POT_PIN GPIO_ADC0
 #define FORCE_SENSOR GPIO_ADC1
-#define OPTICAL_SENSOR 3
+#define OPTICAL_SENSOR_PIN 2
 
 /* Debugging */
 #define DEBUG_SERIAL_EN 1

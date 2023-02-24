@@ -6,6 +6,7 @@
 
 #include "settings.h"
 #include "I2C_Shared.h"
+#include "PIO/pio_counter_program.pio.h"
 
 // For the Adafruit shield, these are the default.
 #define TFT_DC 15 //5
@@ -19,6 +20,9 @@
 
 /* Globals */
 uint64_t g_lastUpdateTime = 0;
+int g_lastCount = 0;
+
+PIO pio = pio0;
 
 Adafruit_ILI9341 tft = Adafruit_ILI9341(&SPI, TFT_DC, TFT_CS, TFT_RST);
 
@@ -411,10 +415,21 @@ void setup() {
     tft.begin();
     Wire.begin();
     Wire.setTimeout(1000);
-    pinMode(2, INPUT);
+
+    // set up pio
+    pinMode(OPTICAL_SENSOR_PIN, INPUT);
+    uint offset = pio_add_program(pio, &pio_counter_program);
+    pio_counter_init(pio, 0, offset, OPTICAL_SENSOR_PIN, 0);
 }
 
 void loop(void) {
+    int count = pio_counter_get_count(pio, 0);
+
+    if (count != g_lastCount) {
+        DEBUG_SERIAL_LN("pio_counter: " + String(count));
+        g_lastCount = count;
+    }
+
     if (millis() > g_lastUpdateTime + SENSOR_POLLING_INTERVAL) {
         g_lastUpdateTime = millis();
         Wire.requestFrom(ADDRESS, DATA_BUFFER_LENGTH);
