@@ -3,18 +3,24 @@
 #include "Wire.h"
 #include "Adafruit_GFX.h"
 #include "Adafruit_ILI9341.h"
+#include <SD.h>
 
 #include "settings.h"
 #include "I2C_Shared.h"
 #include "PIO/pio_counter_program.pio.h"
 
 // For the Adafruit shield, these are the default.
-#define TFT_DC 01	// 5
+#define TFT_DC 1	// 5
 #define TFT_CS 17	// 3
 #define TFT_MOSI 19 // 6
 #define TFT_MISO 16 // 9
 #define TFT_CLK 18	// 7
-#define TFT_RST 00	// 4
+#define TFT_RST 0	// 4
+
+#define SD_MOSI 15
+#define SD_MISO 12
+#define SD_SCK 14
+#define SD_CS 13
 
 #define SENSOR_POLLING_INTERVAL 150
 
@@ -411,6 +417,35 @@ unsigned long testFilledRoundRects()
 void setup()
 {
 	Serial.begin(115200);
+
+	delay(10000);
+
+	Serial.print("Initializing SD card program...");
+
+	// see if the card is present and can be initialized:
+	if (!SD.begin(SD_CS, SPI1))
+	{
+		Serial.println("Card failed, or not present");
+		return;
+	}
+	Serial.println("SD Card initialized. Displaying contents of 'datalog.txt'");
+
+	File dataFile = SD.open("datalog.txt");
+
+	// if the file is available, write it to: serial monitor:
+	if (dataFile)
+	{
+		while (dataFile.available())
+		{
+			Serial.write(dataFile.read());
+		}
+		dataFile.close();
+	}
+	else
+	{
+		Serial.println("Error opening datalog.txt");
+	}
+
 	tft.begin();
 	tft.setRotation(3);
 	Wire.begin();
