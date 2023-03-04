@@ -32,6 +32,10 @@ PIO pio = pio0;
 
 Adafruit_ILI9341 tft = Adafruit_ILI9341(&SPI, TFT_DC, TFT_CS, TFT_RST);
 
+String dataRow = ""; // https://rydepier.wordpress.com/2015/08/07/using-an-sd-card-reader-to-store-and-retrieve-data-with-arduino/
+File sensorData;
+//
+
 #pragma region GraphicsTest
 
 unsigned long testFillScreen()
@@ -418,7 +422,9 @@ void setup()
 {
 	Serial.begin(115200);
 
-	delay(10000);
+#pragma region SDCardReadTest
+
+	delay(10000); // wait for serial montior to catch up
 
 	Serial.print("Initializing SD card program...");
 
@@ -445,6 +451,8 @@ void setup()
 	{
 		Serial.println("Error opening datalog.txt");
 	}
+
+#pragma endregion
 
 	tft.begin();
 	tft.setRotation(3);
@@ -482,26 +490,48 @@ void loop(void)
 
 		if (Wire.available())
 		{
-			tft.setTextColor(ILI9341_GREEN);
-			tft.println("inside wire.available loop");
-			delay(1000);
+			// tft.setTextColor(ILI9341_GREEN);
+			// tft.println("inside Wire.available() loop");
+			// delay(1000);
 
 			uint8_t buf[DATA_BUFFER_LENGTH];
 			int n = Wire.readBytes(buf, DATA_BUFFER_LENGTH);
 			float force = ((float)*(int32_t *)(buf + 3)) / FORCE_SCALING;
 			float av = ((float)*(int32_t *)(buf + 7)) / ANGULAR_VELOCITY_SCALING;
 
-			tft.setTextColor(ILI9341_CYAN);
+			dataRow = String(millis()) + "," + String(force) + "," + String(av);
+
 			DEBUG_SERIAL_LN("Read " + String(n) + " bytes from I2C buffer");
 			DEBUG_SERIAL_LN("Force: " + String(*(int32_t *)(buf + 3)) + " -- rpm: " + String(*(int32_t *)(buf + 7)));
+
+			tft.setTextColor(ILI9341_CYAN);
 			tft.fillRect(100, 30, 200, 144, ILI9341_BLACK);
 			tft.setTextSize(3);
+
 			tft.setCursor(100, 30);
 			tft.write(String(force, 3).c_str());
+
 			tft.setCursor(100, 120);
 			tft.write(String(av, 3).c_str());
 		}
 
 		// DEBUG_SERIAL_LN("Optical Sensor Pin: " + String((digitalRead(2) ? "HIGH" : "LOW")));
+	}
+}
+
+void saveData()
+{
+	if (SD.exists("data.csv")) // check the card is still there
+	{ // now append new data file
+		sensorData = SD.open("data.csv", FILE_WRITE);
+		if (sensorData)
+		{
+			sensorData.println(dataRow);
+			sensorData.close(); // close the file
+		}
+	}
+	else
+	{
+		Serial.println("Error writing to file !");
 	}
 }
