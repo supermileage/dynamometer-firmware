@@ -9,14 +9,14 @@
 #include "PIO/pio_counter_program.pio.h"
 
 // For the Adafruit shield, these are the default.
-#define TFT_DC 15 //5
-#define TFT_CS 17 //3
-#define TFT_MOSI 19 //6
-#define TFT_MISO 16 //9
-#define TFT_CLK 18 //7
-#define TFT_RST 14 //4
+#define TFT_DC 15   // 5
+#define TFT_CS 17   // 3
+#define TFT_MOSI 19 // 6
+#define TFT_MISO 16 // 9
+#define TFT_CLK 18  // 7
+#define TFT_RST 14  // 4
 
-#define SENSOR_POLLING_INTERVAL 1000
+#define SENSOR_POLLING_INTERVAL 150
 
 /* Globals */
 uint64_t g_lastUpdateTime = 0;
@@ -320,8 +320,6 @@ unsigned long testFilledRoundRects()
   return micros() - start;
 }
 
-
-
 // void setup()
 // {
 //   Serial.begin(9600);
@@ -434,13 +432,29 @@ void loop(void) {
         g_lastUpdateTime = millis();
         Wire.requestFrom(ADDRESS, DATA_BUFFER_LENGTH);
 
-        if (Wire.available()) {
-            uint8_t buf[DATA_BUFFER_LENGTH];
-            int n = Wire.readBytes(buf, DATA_BUFFER_LENGTH);
-            DEBUG_SERIAL_LN("Read " + String(n) + " bytes from I2C buffer");
-            DEBUG_SERIAL_LN("Force: " + String(*(int32_t*)(buf + 3)) + " -- rpm: " + String(*(int32_t*)(buf + 7)));
-        }
+    if (Wire.available())
+    {
+      // tft.setTextColor(ILI9341_GREEN);
+      // tft.println("inside wire.available loop");
+      // delay(1000);
 
-        // DEBUG_SERIAL_LN("Optical Sensor Pin: " + String((digitalRead(2) ? "HIGH" : "LOW")));
+      uint8_t buf[DATA_BUFFER_LENGTH];
+      int n = Wire.readBytes(buf, DATA_BUFFER_LENGTH);
+      float force = ((float)*(int32_t*)(buf + 3)) / FORCE_SCALING ;
+      float av = ((float)*(int32_t*)(buf + 7)) / ANGULAR_VELOCITY_SCALING;
+
+
+      tft.setTextColor(ILI9341_CYAN);
+      DEBUG_SERIAL_LN("Read " + String(n) + " bytes from I2C buffer");
+      DEBUG_SERIAL_LN("Force: " + String(*(int32_t *)(buf + 3)) + " -- rpm: " + String(*(int32_t *)(buf + 7)));
+      tft.fillRect(100, 30, 200, 144, ILI9341_BLACK);
+      tft.setTextSize(3);
+      tft.setCursor(100, 30);
+      tft.write(String(force, 3).c_str());
+      tft.setCursor(100, 120);
+      tft.write(String(av, 3).c_str());
     }
+
+    // DEBUG_SERIAL_LN("Optical Sensor Pin: " + String((digitalRead(2) ? "HIGH" : "LOW")));
+  }
 }
