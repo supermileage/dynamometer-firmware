@@ -424,7 +424,7 @@ void setup()
 
 #pragma region SDCardReadTest
 
-	delay(10000); // wait for serial montior to catch up
+	delay(5000); // wait for serial montior to catch up
 
 	Serial.print("Initializing SD card program...");
 
@@ -436,7 +436,7 @@ void setup()
 	}
 	Serial.println("SD Card initialized. Displaying contents of 'datalog.txt'");
 
-	File dataFile = SD.open("datalog.txt");
+	File dataFile = SD.open("datalog.txt"); // create a non-blank file called datalog.txt and place it in the root directory of the sd card.
 
 	// if the file is available, write it to: serial monitor:
 	if (dataFile)
@@ -499,7 +499,7 @@ void loop(void)
 			float force = ((float)*(int32_t *)(buf + 3)) / FORCE_SCALING;
 			float av = ((float)*(int32_t *)(buf + 7)) / ANGULAR_VELOCITY_SCALING;
 
-			dataRow = String(millis()) + "," + String(force) + "," + String(av);
+			dataRow = String(millis()) + "," + String(force) + "," + String(av); //call saveData on dataRow
 
 			DEBUG_SERIAL_LN("Read " + String(n) + " bytes from I2C buffer");
 			DEBUG_SERIAL_LN("Force: " + String(*(int32_t *)(buf + 3)) + " -- rpm: " + String(*(int32_t *)(buf + 7)));
