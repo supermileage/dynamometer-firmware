@@ -65,10 +65,6 @@ void loop(void)
 
 		if (Wire.available())
 		{
-			// tft.setTextColor(ILI9341_GREEN);
-			// tft.println("inside Wire.available() loop");
-			// delay(1000);
-
 			uint8_t buf[DATA_BUFFER_LENGTH];
 			int n = Wire.readBytes(buf, DATA_BUFFER_LENGTH);
 			float force = ((float)*(int32_t *)(buf + 3)) / FORCE_SCALING;
@@ -87,7 +83,5 @@ void loop(void)
 			tft.setCursor(100, 120);
 			tft.write(String(av, 3).c_str());
 		}
-
-		// DEBUG_SERIAL_LN("Optical Sensor Pin: " + String((digitalRead(2) ? "HIGH" : "LOW")));
 	}
 }
