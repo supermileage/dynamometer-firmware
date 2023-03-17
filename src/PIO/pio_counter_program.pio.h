@@ -62,8 +62,7 @@ static inline void pio_counter_init(PIO pio, uint sm, uint offset, uint pin, flo
     sm_config_set_in_shift(&c, false, false, 32);
     sm_config_set_fifo_join(&c, PIO_FIFO_JOIN_NONE);
 
-    // 1/8th 125MHz works fine, but will count 2x when clock is any faster
-    sm_config_set_clkdiv(&c, 8.0);
+    sm_config_set_clkdiv(&c, div);
 
     pio_sm_init(pio, sm, offset, &c);
 	pio_sm_set_enabled(pio, sm, true);
