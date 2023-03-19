@@ -32,22 +32,27 @@ void SensorOptical::begin() {
 }
 
 void SensorOptical::handle() {
-    #ifdef DEBUG_OPTICAL_ENABLED
-    if (pio_counter_get_count(_pio, 0) != _lastDisplayCount) {
-		DEBUG_SERIAL_LN("pio_counter: " + String(pio_counter_get_count(_pio, _stateMachine)));
-        _lastDisplayCount = pio_counter_get_count(_pio, _stateMachine);
-	}
-    #endif
+    
+    // check if an aperture has passed since the last handle() call
+    if (pio_counter_get_count(_pio, _stateMachine) != _currentCount) {
+        // aperture has passed, so update current count and current aperture time
+        _currentCount = pio_counter_get_count(_pio, _stateMachine);
+        _currentTime = micros();
+
+        
+        #ifdef DEBUG_OPTICAL_ENABLED
+        DEBUG_SERIAL_LN("pio_counter: " + String(pio_counter_get_count(_pio, _stateMachine)));
+        #endif
+    }
 }
 
 float SensorOptical::getAngularVelocity() {
     // n is scaled count apertures we've passed over since last call to getter
-    int32_t count = pio_counter_get_count(_pio, _stateMachine);
-    int32_t n = count - _lastCount;
-    _lastCount = count;
+    int32_t n = _currentCount - _startCount;
+    _startCount = _currentCount;
 
-    uint32_t deltaT = micros() - _lastComputeTime;
-    _lastComputeTime = micros();
+    uint32_t deltaT = _currentTime - _startTime;
+    _startTime = _currentTime;
 
     float ret = ((float)n / NUM_APERTURES) * 2 * PI * (MEGA / (float)deltaT);
     return ret;
