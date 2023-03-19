@@ -42,12 +42,18 @@ void setup() {
 
 	tft.setCursor(30, 30);
 	tft.write("Force: ");
+	tft.setCursor(200, 30);
+	tft.write("N");
 
 	tft.setCursor(30, 120);
 	tft.write("Vel. : ");
+	tft.setCursor(200, 120);
+	tft.write("m/s");
 
 	tft.setCursor(30, 210);
 	tft.write("Vel. : ");
+	tft.setCursor(200, 210);
+	tft.write("km/hr");
 }
 
 void loop(void)
