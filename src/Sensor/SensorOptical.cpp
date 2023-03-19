@@ -6,9 +6,14 @@
 #define MEGA 1000000
 #define PI 3.1415
 
+// constants to calculate velocity
+#define GEAR_RATIO 0.2 
+#define ROLLER_RADIUS 0.08276057 // metres
+
 // #define DEBUG_OPTICAL_ENABLED
 
 const uint16_t SensorOptical::NumApertures = NUM_APERTURES;
+const float SensorOptical::VelocityFactor = GEAR_RATIO * ROLLER_RADIUS; // speed of vehicle [m/s] = velocity factor * angular velocity [rad/s]
 
 SensorOptical::SensorOptical(PIO pio, uint stateMachine, pin_size_t pinNumber) {
     _pio = pio;
@@ -50,5 +55,10 @@ float SensorOptical::getAngularVelocity() {
     _lastComputeTime = micros();
 
     float ret = ((float)n / NUM_APERTURES) * 2 * PI * (MEGA / (float)deltaT);
+    return ret;
+}
+
+float SensorOptical::getLinearVelocity() {
+    float ret = VelocityFactor * getAngularVelocity();
     return ret;
 }

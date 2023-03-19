@@ -8,12 +8,14 @@
 class SensorOptical: public Sensor {
     public:
         static const uint16_t NumApertures;
+        static const float VelocityFactor;
         SensorOptical(PIO pio, uint stateMachine, pin_size_t pinNumber);
         ~SensorOptical();
         String getHumanName() override;
         void begin();
         void handle();
         float getAngularVelocity();
+        float getLinearVelocity();
 
     private:
         uint8_t _pinNumber;
