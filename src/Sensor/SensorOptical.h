@@ -19,9 +19,9 @@ class SensorOptical: public Sensor {
         uint8_t _pinNumber;
         PIO _pio;
         uint _stateMachine; 
-        uint32_t _startTime = 0;
+        uint32_t _lastUpdateTime = 0;
         uint32_t _currentTime = 0;
-        int32_t _startCount = 0;
+        int32_t _lastUpdateCount = 0;
         int32_t _currentCount = 0;
 };
 

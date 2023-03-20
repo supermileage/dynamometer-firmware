@@ -48,11 +48,11 @@ void SensorOptical::handle() {
 
 float SensorOptical::getAngularVelocity() {
     // n is scaled count apertures we've passed over since last call to getter
-    int32_t n = _currentCount - _startCount;
-    _startCount = _currentCount;
+    int32_t n = _currentCount - _lastUpdateCount;
+    _lastUpdateCount = _currentCount;
 
-    uint32_t deltaT = _currentTime - _startTime;
-    _startTime = _currentTime;
+    uint32_t deltaT = _currentTime - _lastUpdateTime;
+    _lastUpdateTime = _currentTime;
 
     float ret = ((float)n / NUM_APERTURES) * 2 * PI * (MEGA / (float)deltaT);
     return ret;
