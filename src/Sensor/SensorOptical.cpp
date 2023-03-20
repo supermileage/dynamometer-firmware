@@ -4,7 +4,7 @@
 #define CLOCK_DIV 8.0f
 #define NUM_APERTURES 64
 #define MEGA 1000000
-#define PI 3.1415
+#define _PI 3.1415
 
 // constants to calculate velocity
 #define GEAR_RATIO 0.2 
@@ -52,14 +52,14 @@ void SensorOptical::handle() {
 }
 
 float SensorOptical::getAngularVelocity() {
-    // n is scaled count apertures we've passed over since last call to getter
+    // n is num apertures we've passed over since last call to getter
     int32_t n = _currentCount - _lastUpdateCount;
     _lastUpdateCount = _currentCount;
 
     uint32_t deltaT = _currentTime - _lastUpdateTime;
     _lastUpdateTime = _currentTime;
 
-    float ret = ((float)n / NUM_APERTURES) * 2 * PI * (MEGA / (float)deltaT);
+    float ret = ((float)n / NUM_APERTURES) * 2 * _PI * (MEGA / (float)deltaT);
     return ret;
 }
 
