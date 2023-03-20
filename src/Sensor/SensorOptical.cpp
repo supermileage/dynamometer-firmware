@@ -4,7 +4,7 @@
 #define CLOCK_DIV 8.0f
 #define NUM_APERTURES 64
 #define MEGA 1000000
-#define PI 3.1415
+#define _PI 3.1415
 
 // #define DEBUG_OPTICAL_ENABLED
 
@@ -41,7 +41,7 @@ void SensorOptical::handle() {
 }
 
 float SensorOptical::getAngularVelocity() {
-    // n is scaled count apertures we've passed over since last call to getter
+    // n is num apertures we've passed over since last call to getter
     int32_t count = pio_counter_get_count(_pio, _stateMachine);
     int32_t n = count - _lastCount;
     _lastCount = count;
@@ -49,6 +49,6 @@ float SensorOptical::getAngularVelocity() {
     uint32_t deltaT = micros() - _lastComputeTime;
     _lastComputeTime = micros();
 
-    float ret = ((float)n / NUM_APERTURES) * 2 * PI * (MEGA / (float)deltaT);
+    float ret = ((float)n / NUM_APERTURES) * 2 * _PI * (MEGA / (float)deltaT);
     return ret;
 }
