@@ -39,10 +39,21 @@ void setup() {
     // add labels for force and angular velocity
 	tft.fillScreen(ILI9341_BLACK);
 	tft.setTextSize(2);
+
 	tft.setCursor(30, 30);
 	tft.write("Force: ");
+	tft.setCursor(200, 30);
+	tft.write("N");
+
 	tft.setCursor(30, 120);
-	tft.write("Ang.V: ");
+	tft.write("Vel. : ");
+	tft.setCursor(200, 120);
+	tft.write("m/s");
+
+	tft.setCursor(30, 210);
+	tft.write("Vel. : ");
+	tft.setCursor(200, 210);
+	tft.write("km/hr");
 }
 
 void loop(void)
@@ -66,12 +77,17 @@ void loop(void)
 		// 	DEBUG_SERIAL_LN("Read " + String(n) + " bytes from I2C buffer");
 		// 	DEBUG_SERIAL_LN("Force: " + String(*(int32_t *)(buf + 3)) + " -- rpm: " + String(*(int32_t *)(buf + 7)));
 		// }
+		
+		float metresPerSecond = optical.getAngularVelocity();
+		float kilometresPerHour = metresPerSecond * 3600 / 1000;
 
         tft.setTextColor(ILI9341_CYAN);
 		tft.fillRect(100, 30, 200, 144, ILI9341_BLACK);
 		tft.setTextSize(3);
 		tft.setCursor(100, 120);
-		tft.write(String(optical.getAngularVelocity(), 3).c_str());
+		tft.write(String(metresPerSecond, 3).c_str());
+		tft.setCursor(100, 210);
+		tft.write(String(kilometresPerHour, 3).c_str());
         
         // tft.setCursor(100, 30);
 		// tft.write(String(force, 3).c_str());
