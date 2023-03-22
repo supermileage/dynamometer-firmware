@@ -22,9 +22,11 @@ class SensorOptical: public Sensor {
         PIO _pio;
         uint _stateMachine; 
         uint32_t _lastUpdateTime = 0;
-        uint32_t _currentTime = 0;
         int32_t _lastUpdateCount = 0;
-        int32_t _currentCount = 0;
+        double _angularVelocity = 0;
+
+        // for debugging purposes
+        int32_t _lastDisplayCount = 0;
 };
 
 #endif

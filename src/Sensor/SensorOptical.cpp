@@ -6,6 +6,8 @@
 #define MEGA 1000000
 #define _PI 3.1415
 
+#define READ_INTERVAL 1000 // microseconds
+
 // constants to calculate velocity
 #define GEAR_RATIO 0.2 
 #define ROLLER_RADIUS 0.08276057 // metres
@@ -37,33 +39,35 @@ void SensorOptical::begin() {
 }
 
 void SensorOptical::handle() {
-    
-    // check if an aperture has passed since the last handle() call
-    if (pio_counter_get_count(_pio, _stateMachine) != _currentCount) {
-        // aperture has passed, so update current count and current aperture time
-        _currentCount = pio_counter_get_count(_pio, _stateMachine);
-        _currentTime = micros();
 
-        
-        #ifdef DEBUG_OPTICAL_ENABLED
-        DEBUG_SERIAL_LN("pio_counter: " + String(pio_counter_get_count(_pio, _stateMachine)));
-        #endif
+    uint32_t currentTime = micros();
+    if (currentTime > _lastUpdateTime + READ_INTERVAL) {
+
+        // n is num apertures we've passed over since last velocity update
+        int32_t currentCount = pio_counter_get_count(_pio, _stateMachine);
+        int32_t n = currentCount - _lastUpdateCount;
+
+        uint32_t deltaT = currentTime - _lastUpdateTime;
+
+        _angularVelocity = ((float)n / NUM_APERTURES) * 2 * _PI * (MEGA / (float)deltaT);
+
+        _lastUpdateCount = currentCount;
+        _lastUpdateTime = currentTime;
     }
+
+
+    #ifdef DEBUG_OPTICAL_ENABLED
+    if (pio_counter_get_count(_pio, _stateMachine) != _lastDisplayCount) {
+        DEBUG_SERIAL_LN("pio_counter: " + String(pio_counter_get_count(_pio, _stateMachine)));
+        _lastDisplayCount = pio_counter_get_count(_pio, _stateMachine);
+    }
+    #endif
 }
 
 float SensorOptical::getAngularVelocity() {
-    // n is num apertures we've passed over since last call to getter
-    int32_t n = _currentCount - _lastUpdateCount;
-    _lastUpdateCount = _currentCount;
-
-    uint32_t deltaT = _currentTime - _lastUpdateTime;
-    _lastUpdateTime = _currentTime;
-
-    float ret = ((float)n / NUM_APERTURES) * 2 * _PI * (MEGA / (float)deltaT);
-    return ret;
+    return _angularVelocity;
 }
 
 float SensorOptical::getLinearVelocity() {
-    float ret = VelocityFactor * getAngularVelocity();
-    return ret;
+    return VelocityFactor * getAngularVelocity();
 }
