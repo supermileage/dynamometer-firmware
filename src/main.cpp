@@ -4,6 +4,7 @@
 #include "Adafruit_GFX.h"
 #include "Adafruit_ILI9341.h"
 #include <SD.h>
+#include "DataLogger/DataLogger.h"
 
 #include "settings.h"
 #include "I2C_Shared.h"
@@ -31,10 +32,6 @@ int g_lastCount = 0;
 PIO pio = pio0;
 
 Adafruit_ILI9341 tft = Adafruit_ILI9341(&SPI, TFT_DC, TFT_CS, TFT_RST);
-
-String dataRow = ""; // https://rydepier.wordpress.com/2015/08/07/using-an-sd-card-reader-to-store-and-retrieve-data-with-arduino/
-File sensorData;
-//
 
 #pragma region GraphicsTest
 
@@ -422,38 +419,6 @@ void setup()
 {
 	Serial.begin(115200);
 
-#pragma region SDCardReadTest
-
-	delay(5000); // wait for serial montior to catch up
-
-	Serial.print("Initializing SD card program...");
-
-	// see if the card is present and can be initialized:
-	if (!SD.begin(SD_CS, SPI1))
-	{
-		Serial.println("Card failed, or not present");
-		return;
-	}
-	Serial.println("SD Card initialized. Displaying contents of 'datalog.txt'");
-
-	File dataFile = SD.open("datalog.txt"); // create a non-blank file called datalog.txt and place it in the root directory of the sd card.
-
-	// if the file is available, write it to: serial monitor:
-	if (dataFile)
-	{
-		while (dataFile.available())
-		{
-			Serial.write(dataFile.read());
-		}
-		dataFile.close();
-	}
-	else
-	{
-		Serial.println("Error opening datalog.txt");
-	}
-
-#pragma endregion
-
 	tft.begin();
 	tft.setRotation(3);
 	Wire.begin();
@@ -462,11 +427,12 @@ void setup()
 
 	tft.fillScreen(ILI9341_BLACK);
 	tft.setTextSize(2);
+	tft.setTextColor(ILI9341_GREEN);
 	tft.setCursor(30, 30);
 	tft.write("Force: ");
 	tft.setCursor(30, 120);
 	tft.write("Ang.V: ");
-
+	
 	// set up pio
 	pinMode(OPTICAL_SENSOR_PIN, INPUT);
 	uint offset = pio_add_program(pio, &pio_counter_program);
@@ -490,16 +456,10 @@ void loop(void)
 
 		if (Wire.available())
 		{
-			// tft.setTextColor(ILI9341_GREEN);
-			// tft.println("inside Wire.available() loop");
-			// delay(1000);
-
 			uint8_t buf[DATA_BUFFER_LENGTH];
 			int n = Wire.readBytes(buf, DATA_BUFFER_LENGTH);
 			float force = ((float)*(int32_t *)(buf + 3)) / FORCE_SCALING;
 			float av = ((float)*(int32_t *)(buf + 7)) / ANGULAR_VELOCITY_SCALING;
-
-			dataRow = String(millis()) + "," + String(force) + "," + String(av); //call saveData on dataRow
 
 			DEBUG_SERIAL_LN("Read " + String(n) + " bytes from I2C buffer");
 			DEBUG_SERIAL_LN("Force: " + String(*(int32_t *)(buf + 3)) + " -- rpm: " + String(*(int32_t *)(buf + 7)));
@@ -515,23 +475,6 @@ void loop(void)
 			tft.write(String(av, 3).c_str());
 		}
 
-		// DEBUG_SERIAL_LN("Optical Sensor Pin: " + String((digitalRead(2) ? "HIGH" : "LOW")));
-	}
-}
-
-void saveData()
-{
-	if (SD.exists("data.csv")) // check the card is still there
-	{ // now append new data file
-		sensorData = SD.open("data.csv", FILE_WRITE);
-		if (sensorData)
-		{
-			sensorData.println(dataRow);
-			sensorData.close(); // close the file
-		}
-	}
-	else
-	{
-		Serial.println("Error writing to file !");
+		DEBUG_SERIAL_LN("Optical Sensor Pin: " + String((digitalRead(2) ? "HIGH" : "LOW")));
 	}
 }

@@ -1,6 +1,9 @@
 #ifndef _DATA_LOGGER_H_
 #define _DATA_LOGGER_H_
 
+#include "Arduino.h"
+#include "SPI.h"
+#include <SD.h>
 #include <vector>
 using namespace std;
 

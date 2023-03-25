@@ -5,6 +5,8 @@
 #include <vector>
 using namespace std;
 
+//public methods:
+
 DataLogger::DataLogger(int pinNumber)
 {
     if (SD.begin(pinNumber, SPI1))
@@ -64,6 +66,7 @@ bool DataLogger::loadCSV(String path)
 
         if (readChar == '\n')
         {
+            i++;
             _curFile = tempFile;
             _numColumns = i;
             DEBUG_SERIAL_LN("Counted " + (String) i + " columns and reached end of row.");
@@ -111,6 +114,8 @@ int DataLogger::getNumColumns()
 {
     return _numColumns;
 }
+
+//private methods:
 
 void DataLogger::setHeader(vector<String> header)
 {
