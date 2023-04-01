@@ -124,13 +124,13 @@ void DataLogger::setHeader(vector<String> header)
 
     for (String colName : header)
     {
-        if (n = 0)
+        if (n == 0)
         {
-            formattedHeader + colName;
+            formattedHeader += colName;
         }
         else
         {
-            formattedHeader + "," + colName;
+            formattedHeader += "," + colName;
         }
         n++;
     }
@@ -147,13 +147,13 @@ void DataLogger::writeRow(vector<float> values)
 
     for (float value : values)
     {
-        if (n = 0)
+        if (n == 0)
         {
-            formattedRow + value;
+            formattedRow =+ value;
         }
         else
         {
-            formattedRow + "," + value;
+            formattedRow =+ "," + value;
         }
         n++;
     }
