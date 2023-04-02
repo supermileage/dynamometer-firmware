@@ -34,18 +34,18 @@ class DataLogger {
         //Returns true on success, false otherwise.
         bool close();
 
+        //Writes header provided by String header to a blank CSV file.
+        void setHeader(String header);
+
+        //Writes row provided by String data the loaded CSV file.
+        void addRow(String data);
+
         //Returns number of columns in the currently loaded CSV file.
         int getNumColumns();
 
         private:
         int _numColumns;
         File _curFile;
-
-        //Writes header provided by String header to a blank CSV file.
-        void setHeader(String header);
-
-        //Writes row provided by String data the loaded CSV file.
-        void addRow(String data);
 };
 
 #endif

@@ -109,13 +109,6 @@ bool DataLogger::close()
     }
 }
 
-int DataLogger::getNumColumns()
-{
-    return _numColumns;
-}
-
-//private methods:
-
 void DataLogger::setHeader(String header)
 {
     DEBUG_SERIAL_LN("Header is: " + header);
@@ -128,3 +121,10 @@ void DataLogger::addRow(String data)
     _curFile.println(data);
     DEBUG_SERIAL_LN("Wrote " + data + " to log.");
 }
+
+int DataLogger::getNumColumns()
+{
+    return _numColumns;
+}
+
+
