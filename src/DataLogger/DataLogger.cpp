@@ -44,7 +44,6 @@ bool DataLogger::create(String name, int numColumns)
 
 bool DataLogger::open(String name)
 {
-    int i = 0;
     File tempFile;
     _curColumn = 0;
     _buffer = "";
@@ -58,28 +57,46 @@ bool DataLogger::open(String name)
     DEBUG_SERIAL_LN("Loading " + name);
     tempFile = SD.open(name);
 
+    // some variables to help identify how many columns in the first line
+    int commaNum = 0;
+    bool charactersPresent = false;
+
     while (tempFile.available())
     {
         char readChar = tempFile.read(); // char to hold a character that has been read
 
         if (readChar == ',')
         {
-            i++;
+            commaNum++;
             DEBUG_SERIAL_LN("Counted " + (String) i + " columns.");
-        }
-
-        if (readChar == '\n')
+        } 
+        else if (readChar == '\n')
         {
-            i++;
+            escaped = true;
             _curFile = tempFile;
             _numColumns = i;
             DEBUG_SERIAL_LN("Counted " + (String) i + " columns and reached end of row.");
             return true; // reached the end of a row, so stop counting columns and return true
         }
+        else if (readChar != '\r')
+        {
+            charactersPresent = true;
+        }
     }
 
     _curFile = tempFile;
-    _numColumns = i;
+    
+    // determine the number of columns
+    if (commaNum > 0) {
+        _numOfColumns = commaNum + 1;
+    }
+    else if (charactersPresent) {
+        _numOfColumns = 1;
+    }
+    else {
+        _numOfColumns = 0;
+    }
+
     DEBUG_SERIAL_LN("Counted no " + (String) i + " columns. Blank file.");
     return true; // if while loop is never entered, there are no bytes in the file. Loading succeeds but file is blank
 }
