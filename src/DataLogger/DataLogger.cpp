@@ -7,7 +7,7 @@ using namespace std;
 
 //public methods:
 
-DataLogger::DataLogger(int pinNumber)
+DataLogger::DataLogger(int pinNumber, bool O_SYNC = false)
 {
     if (SD.begin(pinNumber, SPI1))
     {
@@ -18,6 +18,8 @@ DataLogger::DataLogger(int pinNumber)
         DEBUG_SERIAL_LN("SD card missing or failed");
         while (1); // wait here forever
     }
+
+    _O_SYNC = O_SYNC;
 }
 
 DataLogger::~DataLogger(){};
@@ -118,6 +120,9 @@ void DataLogger::setHeader(String header)
 {
     _buffer += header + "\r\n";
     DEBUG_SERIAL_LN("Added header " + header + " to buffer.");
+
+    if (_O_SYNC)
+        saveToDisk();
 }
 
 void DataLogger::addEntry(String data)
@@ -137,6 +142,9 @@ void DataLogger::addEntry(String data)
 
     DEBUG_SERIAL_LN("Added " + data + " to buffer.");
     _curColumn = 0;
+
+    if (_O_SYNC)
+        saveToDisk();
 }
 
 void DataLogger::addRow(String data)
@@ -144,6 +152,9 @@ void DataLogger::addRow(String data)
     _buffer += data + "\r\n";
     _curColumn = 0;
     DEBUG_SERIAL_LN("Added " + data + " to buffer.");
+
+    if (_O_SYNC)
+        saveToDisk();
 }
 
 int DataLogger::getNumColumns()

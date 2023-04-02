@@ -12,7 +12,7 @@ class DataLogger {
     public:
 
         //Constructs a DataLogger object and begins access to the SDcard.
-        DataLogger(int pinNumber);
+        DataLogger(int pinNumber, bool O_SYNC = false);
 
         ~DataLogger();
 
@@ -52,6 +52,8 @@ class DataLogger {
         int _curColumn;
         File _curFile;
         String _buffer;
+
+        bool _O_SYNC;
 };
 
 #endif
