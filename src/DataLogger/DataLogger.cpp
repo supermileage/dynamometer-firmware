@@ -22,15 +22,14 @@ DataLogger::DataLogger(int pinNumber)
 
 DataLogger::~DataLogger(){};
 
-bool DataLogger::createCSV(String path, vector<String> header)
+bool DataLogger::create(String name, int numColumns)
 {
-    _curFile = SD.open(path, FILE_WRITE);
-    _numColumns = sizeof(header);
+    _curFile = SD.open(name, FILE_WRITE);
+    _numColumns = numColumns;
     
     if (_curFile)
     {
-        DEBUG_SERIAL_LN("Writing header to file.");
-        setHeader(header);
+        DEBUG_SERIAL_LN("Creating file successful");
         return true;
     }
     else
@@ -40,19 +39,19 @@ bool DataLogger::createCSV(String path, vector<String> header)
     }
 }
 
-bool DataLogger::loadCSV(String path)
+bool DataLogger::open(String name)
 {
     int i = 0;
     File tempFile;
 
-    if (!SD.exists(path))
+    if (!SD.exists(name))
     {
-        DEBUG_SERIAL_LN(path + " doesn't exist.");
+        DEBUG_SERIAL_LN(name + " doesn't exist.");
         return false;
     }
 
-    DEBUG_SERIAL_LN("Loading " + path);
-    tempFile = SD.open(path);
+    DEBUG_SERIAL_LN("Loading " + name);
+    tempFile = SD.open(name);
 
     while (tempFile.available())
     {
@@ -117,47 +116,15 @@ int DataLogger::getNumColumns()
 
 //private methods:
 
-void DataLogger::setHeader(vector<String> header)
+void DataLogger::setHeader(String header)
 {
-    String formattedHeader = "";
-    int n = 0;
-
-    for (String colName : header)
-    {
-        if (n == 0)
-        {
-            formattedHeader += colName;
-        }
-        else
-        {
-            formattedHeader += "," + colName;
-        }
-        n++;
-    }
-
-    DEBUG_SERIAL_LN("Header is: " + formattedHeader);
-    _curFile.println(formattedHeader);
+    DEBUG_SERIAL_LN("Header is: " + header);
+    _curFile.println(header);
     DEBUG_SERIAL_LN("Wrote header to file.");
 }
 
-void DataLogger::writeRow(vector<float> values)
+void DataLogger::addRow(String data)
 {
-    String formattedRow = "";
-    int n = 0;
-
-    for (float value : values)
-    {
-        if (n == 0)
-        {
-            formattedRow =+ value;
-        }
-        else
-        {
-            formattedRow =+ "," + value;
-        }
-        n++;
-    }
-
-    _curFile.println(formattedRow);
-    DEBUG_SERIAL_LN("Wrote " + formattedRow + " to log.");
+    _curFile.println(data);
+    DEBUG_SERIAL_LN("Wrote " + data + " to log.");
 }

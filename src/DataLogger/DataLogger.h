@@ -16,14 +16,13 @@ class DataLogger {
 
         ~DataLogger();
 
-        //Creates a new CSV file at the with a given header at the specified path and loads it.
-        //Each element of the vector will be a distinct column header in the CSV file.
+        //Creates a new CSV file with a given number of columns with the specified name and loads it.
         //Returns true on success, false otherwise.
-        bool createCSV(String path, vector<String> header);
+        bool create(String name, int numColumns);
 
-        //Allows a user to load a CSV file located at the specified path.
+        //Allows a user to load a CSV file located with the specified name.
         //Returns true on success, false otherwise.
-        bool loadCSV(String path);
+        bool open(String name);
 
         //Writes the provided vector of float values to the loaded CSV file as a new row.
         //The provided vector must be the same length as getNumColumns().
@@ -42,11 +41,11 @@ class DataLogger {
         int _numColumns;
         File _curFile;
 
-        //Writes header provided by String vector to a blank CSV file.
-        void setHeader(vector<String> header);
+        //Writes header provided by String header to a blank CSV file.
+        void setHeader(String header);
 
-        //Writes header provided by float vector the loaded CSV file.
-        void writeRow(vector<float> values);
+        //Writes row provided by String data the loaded CSV file.
+        void addRow(String data);
 };
 
 #endif
