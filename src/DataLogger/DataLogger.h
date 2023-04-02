@@ -24,12 +24,6 @@ class DataLogger {
         //Returns true on success, false otherwise.
         bool open(String name);
 
-        //Writes the provided vector of float values to the loaded CSV file as a new row.
-        //The provided vector must be the same length as getNumColumns().
-        //Each element of the vector will be a distinct column value in the CSV file.
-        //Returns true on success, false otherwise.
-        bool writeToLog(vector<float> values);
-
         //Close currently loaded file.
         //Returns true on success, false otherwise.
         bool close();
