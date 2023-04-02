@@ -4,7 +4,6 @@
 #include "Arduino.h"
 #include "SPI.h"
 #include <SD.h>
-#include <vector>
 using namespace std;
 
 //Class to log data to a file on an SD Card in the CSV format.
@@ -45,7 +44,7 @@ class DataLogger {
         int getNumColumns();
 
         //Returns number of bytes in buffer.
-        int getBufferLength()
+        int getBufferLength();
 
         private:
         int _numColumns;

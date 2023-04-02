@@ -2,7 +2,6 @@
 #include "DataLogger.h"
 #include <SD.h>
 #include <iostream>
-#include <vector>
 using namespace std;
 
 //public methods:
