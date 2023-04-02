@@ -24,6 +24,9 @@ class DataLogger {
         //Returns true on success, false otherwise.
         bool open(String name);
 
+        //Saves any csv data for current file to disk.
+        bool saveToDisk();
+
         //Close currently loaded file.
         //Returns true on success, false otherwise.
         bool close();
@@ -31,15 +34,24 @@ class DataLogger {
         //Writes header provided by String header to a blank CSV file.
         void setHeader(String header);
 
-        //Writes row provided by String data the loaded CSV file.
+        //Writes entry provided by String data to the loaded CSV file.
+        //If its the last entry of the row, start a new line.
+        void addEntry(String data);
+
+        //Writes row provided by String data to the loaded CSV file.
         void addRow(String data);
 
         //Returns number of columns in the currently loaded CSV file.
         int getNumColumns();
 
+        //Returns number of bytes in buffer.
+        int getBufferLength()
+
         private:
         int _numColumns;
+        int _curColumn;
         File _curFile;
+        String _buffer;
 };
 
 #endif

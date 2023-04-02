@@ -26,6 +26,8 @@ bool DataLogger::create(String name, int numColumns)
 {
     _curFile = SD.open(name, FILE_WRITE);
     _numColumns = numColumns;
+    _curColumn = 0;
+    _buffer = "";
     
     if (_curFile)
     {
@@ -43,6 +45,8 @@ bool DataLogger::open(String name)
 {
     int i = 0;
     File tempFile;
+    _curColumn = 0;
+    _buffer = "";
 
     if (!SD.exists(name))
     {
@@ -79,11 +83,27 @@ bool DataLogger::open(String name)
     return true; // if while loop is never entered, there are no bytes in the file. Loading succeeds but file is blank
 }
 
+bool DataLogger::saveToDisk() {
+    if (_curFile)
+    {
+        _curFile.print(_buffer);
+        _buffer = "";
+        DEBUG_SERIAL_LN("Write to file successful.");
+        return true;
+    }
+    else
+    {
+        DEBUG_SERIAL_LN("Write to file failed.");
+        return false;
+    }
+}
+
 bool DataLogger::close()
 {
     if (_curFile)
     {
         _curFile.close();
+        _curFile = null; // sets _curFile to null so saveToDisk() doesnt try writing to a closed file
         DEBUG_SERIAL_LN("Closed loaded file.");
         return true;
     }
@@ -96,15 +116,34 @@ bool DataLogger::close()
 
 void DataLogger::setHeader(String header)
 {
-    DEBUG_SERIAL_LN("Header is: " + header);
-    _curFile.println(header);
-    DEBUG_SERIAL_LN("Wrote header to file.");
+    _buffer += header + "\r\n";
+    DEBUG_SERIAL_LN("Added header " + header + " to buffer.");
+}
+
+void DataLogger::addEntry(String data)
+{
+    if (_curColumn == 0)
+        _buffer += data;
+    else
+        _buffer += "," + data;
+
+    _curColumn++;
+
+    // check if we reached end of row
+    if (_curColumn == _numColumns) {
+        _buffer += "\r\n";
+        _curColumn = 0;
+    }
+
+    DEBUG_SERIAL_LN("Added " + data + " to buffer.");
+    _curColumn = 0;
 }
 
 void DataLogger::addRow(String data)
 {
-    _curFile.println(data);
-    DEBUG_SERIAL_LN("Wrote " + data + " to log.");
+    _buffer += data + "\r\n";
+    _curColumn = 0;
+    DEBUG_SERIAL_LN("Added " + data + " to buffer.");
 }
 
 int DataLogger::getNumColumns()
@@ -112,4 +151,7 @@ int DataLogger::getNumColumns()
     return _numColumns;
 }
 
-
+int DataLogger::getBufferLength() 
+{
+    return _buffer.length();
+}
