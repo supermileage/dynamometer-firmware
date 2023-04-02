@@ -79,21 +79,6 @@ bool DataLogger::open(String name)
     return true; // if while loop is never entered, there are no bytes in the file. Loading succeeds but file is blank
 }
 
-bool DataLogger::writeToLog(vector<float> values)
-{
-    if (_curFile && _numColumns == sizeof(values))
-    {
-        DEBUG_SERIAL_LN("Writing " + (String) sizeof(values) + " to log.");
-        writeRow(values);
-        return true;
-    }
-    else
-    {
-        DEBUG_SERIAL_LN("Failed to write to log.");
-        return false;
-    }
-}
-
 bool DataLogger::close()
 {
     if (_curFile)
