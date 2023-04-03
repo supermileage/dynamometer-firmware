@@ -41,63 +41,91 @@ bool DataLogger::create(String name, int numColumns)
     }
 }
 
-bool DataLogger::open(String name)
+bool DataLogger::open(String name, int numColumns)
 {
-    File tempFile;
     _curColumn = 0;
     _buffer = "";
 
-    if (!SD.exists(name))
+    // check if file exists
+    if (SD.exists(name))
     {
-        DEBUG_SERIAL_LN(name + " doesn't exist.");
-        return false;
-    }
+        // file already exists
+        // open the file and see how many columns are in the csv file
 
-    DEBUG_SERIAL_LN("Loading " + name);
-    tempFile = SD.open(name);
+        DEBUG_SERIAL_LN("Loading " + name);
 
-    // some variables to help identify how many columns in the first line
-    int commaNum = 0;
-    bool charactersPresent = false;
+        File tempFile;
+        tempFile = SD.open(name);
 
-    while (tempFile.available())
-    {
-        char readChar = tempFile.read(); // char to hold a character that has been read
+        // some variables to help identify how many columns in the first line
+        int commaNum = 0;
+        bool charactersPresent = false;
+        bool escaped = false;
 
-        if (readChar == ',')
+        int columnsInFile = 0;
+
+        while (tempFile.available())
         {
-            commaNum++;
-            DEBUG_SERIAL_LN("Counted " + (String) i + " columns.");
-        } 
-        else if (readChar == '\n')
-        {
-            escaped = true;
+            char readChar = tempFile.read(); // char to hold a character that has been read
+
+            if (readChar == ',')
+            {
+                commaNum++;
+            }
+            else if (readChar == '\n' || readChar == '\r')
+            {
+                escaped = true;
+                break;
+            }
+            else
+            {
+                charactersPresent = true;
+            }
+        }
+
+        // determine the number of columns
+        if (commaNum > 0) {
+            columnsInFile = commaNum + 1;
+        }
+        else if (charactersPresent) {
+            columnsInFile = 1;
+        }
+        else {
+            columnsInFile = 0;
+        }
+
+        DEBUG_SERIAL_LN("Counted " + (String)columnsInFile + " columns and reached end of row.");
+
+        // check if the number of columns in the file match the number of columns specified
+        if (columnsInFile == numColumns) {
+            // file is good
+            _numColumns = numColumns;
             _curFile = tempFile;
-            _numColumns = i;
-            DEBUG_SERIAL_LN("Counted " + (String) i + " columns and reached end of row.");
-            return true; // reached the end of a row, so stop counting columns and return true
+            return true;
         }
-        else if (readChar != '\r')
+        // check if it is an empty file
+        else if (_numColumns == 0 && escaped == false)
         {
-            charactersPresent = true;
+            // file is empty
+            _numColumns = numColumns;
+            _curFile = tempFile;
+            return true;
+        }
+        else 
+        {
+            // file is not empty, and does not have the correct number of columns
+            DEBUG_SERIAL_LN("Incorrect column number. Creating in file copyof_" + name);
+            tempFile.close();
+            return open("copyof_" + name, numColumns);
         }
     }
+    else
+    {
+        // file doesnt exist. create new file
 
-    _curFile = tempFile;
-    
-    // determine the number of columns
-    if (commaNum > 0) {
-        _numOfColumns = commaNum + 1;
+        DEBUG_SERIAL_LN(name + " doesn't exist. Creating new file");
+        return create(name, numColumns);
     }
-    else if (charactersPresent) {
-        _numOfColumns = 1;
-    }
-    else {
-        _numOfColumns = 0;
-    }
-
-    DEBUG_SERIAL_LN("Counted no " + (String) i + " columns. Blank file.");
-    return true; // if while loop is never entered, there are no bytes in the file. Loading succeeds but file is blank
 }
 
 bool DataLogger::saveToDisk() {
