@@ -15,7 +15,6 @@ DataLogger::DataLogger(int pinNumber, bool O_SYNC = false)
     else
     {
         DEBUG_SERIAL_LN("SD card missing or failed");
-        while (1); // wait here forever
     }
 
     _O_SYNC = O_SYNC;
