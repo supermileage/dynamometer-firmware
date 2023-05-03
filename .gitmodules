@@ -10,3 +10,11 @@
 [submodule "lib/Adafruit_BusIO"]
 	path = lib/Adafruit_BusIO
 	url = git@github.com:adafruit/Adafruit_BusIO.git
+[submodule "test/lib/Catch2"]
+	path = test/lib/Catch2
+	url = git@github.com:catchorg/Catch2.git
+    branch = v2.x
+[submodule "test/lib/UnitTestLib"]
+	path = test/lib/UnitTestLib
+	url = git@github.com:supermileage/Particle-UnitTestLib.git
+    branch = arduino
