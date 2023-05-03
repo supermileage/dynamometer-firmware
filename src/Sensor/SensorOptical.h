@@ -3,7 +3,9 @@
 
 #include <stdint.h>
 #include "Sensor.h"
-#include "PIO/pio_counter_program.pio.h"
+#include "pio_counter_program.pio.h"
+
+// #define DEBUG_OPTICAL_ENABLED
 
 class SensorOptical: public Sensor {
     public:
@@ -11,8 +13,8 @@ class SensorOptical: public Sensor {
         SensorOptical(PIO pio, uint stateMachine, pin_size_t pinNumber);
         ~SensorOptical();
         String getHumanName() override;
-        void begin();
-        void handle();
+        void begin() override;
+        void handle() override;
         float getAngularVelocity();
 
     private:
@@ -21,7 +23,10 @@ class SensorOptical: public Sensor {
         uint _stateMachine; 
         uint32_t _lastComputeTime = 0;
         int32_t _lastCount = 0;
+        
+        #ifdef DEBUG_OPTICAL_ENABLED
         int32_t _lastDisplayCount = 0;
+        #endif
 };
 
 #endif

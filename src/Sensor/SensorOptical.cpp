@@ -6,8 +6,6 @@
 #define MEGA 1000000
 #define PI 3.1415
 
-// #define DEBUG_OPTICAL_ENABLED
-
 const uint16_t SensorOptical::NumApertures = NUM_APERTURES;
 
 SensorOptical::SensorOptical(PIO pio, uint stateMachine, pin_size_t pinNumber) {

@@ -6,7 +6,6 @@
 #include "Sensor/SensorOptical.h"
 
 #include "settings.h"
-#include "I2C_Shared.h"
 
 // For the Adafruit shield, these are the default.
 #define TFT_DC 15 //5

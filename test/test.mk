@@ -13,17 +13,20 @@ DEPFLAGS = -MT $@ -MMD -MP -MF $(DEP_DIR)$*.d
 CFLAGS = $(VERSION) $(DEPFLAGS) -Wall -Wno-psabi -g
 LFLAGS = $(VERSION) $(LIBS)
 INCLUDE_PREFIX = -I
-ARDUINO_LIB_DIR = test/lib/UnitTestLib/
+ARDUINO_LIB_DIR := test/lib/UnitTestLib/
 ARDUINO_LIB = $(ARDUINO_LIB_DIR)libwiringgcc.a
 INCLUDE_DIRS = test/lib/UnitTestLib test/lib/Catch2/single_include/catch2 $(TEST_DIRS)
 
 # Get all directories in src and add to includes
-SRC_DIRS = $(sort $(dir $(wildcard $(SRC_DIR)*/)))
+SRC_DIRS := $(sort $(dir $(wildcard $(SRC_DIR)*/)))
 ifeq ($(filter $(SRC_DIR),$(SRC_DIRS)),)
 	INCLUDE_DIRS += $(SRC_DIRS) $(SRC_DIR)
 else
 	INCLUDE_DIRS += $(SRC_DIRS)
 endif
+
+# Remove PIO directory
+SRC_DIRS := $(filter-out src/PIO/,$(SRC_DIRS))
 
 # Create flags to include all directories (so we don't have to use paths in #include)
 INCLUDE_FLAGS := $(foreach %,$(INCLUDE_DIRS),$(INCLUDE_PREFIX)$(wildcard $(%)))
