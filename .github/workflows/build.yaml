@@ -1,0 +1,17 @@
+name: Verify Firmware
+on: [push, pull_request]
+
+jobs:
+  run-unit-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+          fetch-depth: 5
+
+      - name: Build Tests
+        run: make test
+
+      - name: Run Tests
+        run: test/bin/test
