@@ -1,0 +1,17 @@
+{
+    "files.associations": {
+        "bitset": "cpp",
+        "chrono": "cpp",
+        "algorithm": "cpp"
+    },
+    "testMate.cpp.test.advancedExecutables": [
+		{
+		  "pattern": "${workspaceFolder}/test/bin/*",
+		  "runTask": {
+			"before":[
+				"build tests"
+			]
+		  }
+		}
+	]
+}
