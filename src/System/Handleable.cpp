@@ -1,4 +1,5 @@
 #include "Handleable.h"
+#include <algorithm>
 
 Handleable::Handleable() {
 	Handleable::Handler::instance().add(this);
@@ -26,11 +27,7 @@ void Handleable::Handler::add(Handleable* handleable) {
 }
 
 void Handleable::Handler::remove(Handleable* handleable) {
-    for (int i = 0; i < _handleables.size(); i++) {
-        if (_handleables[i] == handleable) {
-            _handleables.remove(i);
-        }
-    }
+    _handleables.erase(std::remove(_handleables.begin(), _handleables.end(), handleable), _handleables.end());
 }
 
 bool Handleable::Handler::contains(Handleable* handleable) {

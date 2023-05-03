@@ -1,7 +1,7 @@
 #ifndef _HANDLEABLE_H
 #define _HANDLEABLE_H
 
-#include <Vector.h>
+#include <vector>
 
 // Abstract class for any object that can be "handleable"
 // (ie. would need a function to run regularly in the loop)
@@ -81,7 +81,7 @@ class Handleable {
             
             private:
                 static Handler* _instance;
-                Vector<Handleable*> _handleables;
+                std::vector<Handleable*> _handleables;
         };
         
 };

@@ -11,8 +11,6 @@
 #define ROLLER_RADIUS 0.08276057 // metres
 #define VELOCITY_FACTOR (GEAR_RATIO * ROLLER_RADIUS) // speed of vehicle [m/s] = velocity factor * angular velocity [rad/s]
 
-// #define DEBUG_OPTICAL_ENABLED
-
 const uint16_t SensorOptical::NumApertures = NUM_APERTURES;
 const float SensorOptical::VelocityFactor = VELOCITY_FACTOR; 
 
@@ -34,7 +32,7 @@ void SensorOptical::begin() {
 
 void SensorOptical::handle() {
     uint32_t currentTime = micros();
-    if (currentTime > _lastUpdateTime + _readInterval) {
+    if (currentTime >= _lastUpdateTime + _readInterval) {
         // n is num apertures we've passed over since last velocity update
         int32_t currentCount = pio_counter_get_count(_pio, _stateMachine);
         int32_t n = currentCount - _lastUpdateCount;

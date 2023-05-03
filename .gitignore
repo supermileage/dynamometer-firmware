@@ -1,4 +1,6 @@
 .pio
-.vscode
+.vscode/c_cpp_properties.json
 .DS_Store
-src/.vs
+test/bin/
+test/dep/
+test/obj/
