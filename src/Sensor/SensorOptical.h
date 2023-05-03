@@ -3,7 +3,9 @@
 
 #include <stdint.h>
 #include "Sensor.h"
-#include "PIO/pio_counter_program.pio.h"
+#include "pio_counter_program.pio.h"
+
+// #define DEBUG_OPTICAL_ENABLED
 
 #define SENSOR_OPTICAL_DEFAULT_READ_INTERVAL 1000
 
@@ -15,8 +17,8 @@ class SensorOptical: public Sensor {
         SensorOptical(PIO pio, uint stateMachine, uint32_t readInterval = SENSOR_OPTICAL_DEFAULT_READ_INTERVAL);
         ~SensorOptical();
         String getHumanName() override;
-        void begin();
-        void handle();
+        void begin() override;
+        void handle() override;
         double getAngularVelocity();
         double getLinearVelocity();
         void setReadInterval(uint32_t interval);
@@ -30,8 +32,9 @@ class SensorOptical: public Sensor {
         uint32_t _readInterval = 0;
         double _angularVelocity = 0;
 
-        // for debugging purposes
+        #ifdef DEBUG_OPTICAL_ENABLED
         int32_t _lastDisplayCount = 0;
+        #endif
 };
 
 #endif
