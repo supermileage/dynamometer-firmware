@@ -2,9 +2,8 @@ name: Verify Firmware
 on: [push, pull_request]
 
 jobs:
-    build:
+  build-firmware:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v3
         with:
@@ -22,7 +21,6 @@ jobs:
 
       - name: Install PlatformIO Core
         run: pip install --upgrade platformio
-
       - name: Build Dynamometer Firmware
         run: pio run
 
@@ -36,6 +34,5 @@ jobs:
 
       - name: Build Tests
         run: make test
-
       - name: Run Tests
         run: test/bin/test
