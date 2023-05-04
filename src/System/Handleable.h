@@ -47,7 +47,7 @@ class Handleable {
                  * @return reference to handler instance
                  */
                 static Handler &instance();
-
+                
                 /**
                  * Add a handleable object to list of handleables
                  * 

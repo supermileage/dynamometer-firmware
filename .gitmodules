@@ -15,3 +15,6 @@
 	path = test/lib/UnitTestLib
 	url = git@github.com:supermileage/Particle-UnitTestLib.git
     branch = arduino
+[submodule "lib/XPT2046_Touch"]
+	path = lib/XPT2046_Touch
+	url = git@github.com:PaulStoffregen/XPT2046_Touchscreen.git
