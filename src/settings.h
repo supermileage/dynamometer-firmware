@@ -1,11 +1,17 @@
 #ifndef SETTINGS_H_
 #define SETTINGS_H_
 
+/* Display */
+#define TFT_DC 15
+#define TFT_CS 17
+#define TFT_RST 14
+#define TOUCH_CS 13
+
+/* IO */
 #define GPIO_ADC0 26
 #define GPIO_ADC1 27
 #define GPIO_ADC2 28
 
-/* IO */
 #define BRAKE_CONTROL_PIN 6
 #define BUTTON_PIN 1
 #define POT_PIN GPIO_ADC0
