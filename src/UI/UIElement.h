@@ -10,7 +10,6 @@
 */
 class UIElement : public VisualElement {
     public:
-        UIElement(Adafruit_ILI9341* display, Point pos) : VisualElement(display, pos) { };
         virtual ~UIElement() { }
         
         /**
