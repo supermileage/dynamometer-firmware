@@ -8,11 +8,11 @@ TextElement::~TextElement() { }
 
 void TextElement::draw() {
     if (_parent->getBackgroundColour() != _backgroundColour) {
-        // draw background
+        // TODO: draw background
     }
 
     if (_hasBorder) {
-        // draw border
+        // TODO: draw border
     }
 
     _textComponent.draw(_display);
@@ -20,11 +20,11 @@ void TextElement::draw() {
 
 void TextElement::clear() {
     if (_parent->getBackgroundColour() != _backgroundColour) {
-        // draw background
+        // TODO: draw background
     }
 
     if (_hasBorder) {
-        // draw border
+        // TODO: draw border
     }
 
     _textComponent.draw(_display);
@@ -35,5 +35,5 @@ TextComponent& TextElement::getTextComponent() {
 }
 
 void TextElement::_onResize() {
-    // resize text element
+    // TODO: resize text element
 }

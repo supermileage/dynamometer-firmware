@@ -8,11 +8,11 @@ UIButton::~UIButton() { }
 
 void UIButton::draw() {
     if (_parent->getBackgroundColour() != _backgroundColour) {
-        // draw background
+        // TODO: draw background
     }
 
     if (_hasBorder) {
-        // draw border
+        // TODO: draw border
     }
 
     _textComponent.draw(_display);
@@ -20,11 +20,11 @@ void UIButton::draw() {
 
 void UIButton::clear() {
     if (_parent->getBackgroundColour() != _backgroundColour) {
-        // draw background
+        // TODO: draw background
     }
 
     if (_hasBorder) {
-        // draw border
+        // TODO: draw border
     }
 
     _textComponent.draw(_display);
@@ -35,18 +35,18 @@ TextComponent& UIButton::getTextComponent() {
 }
 
 void UIButton::focus() {
-    // focus effect
+    // TODO: focus effect
 }
 
 void UIButton::unfocus() {
-    // unfocus effect
+    // TODO: unfocus effect
 }
 
 void UIButton::select() {
-    // select effect
+    // TODO: select effect
 }
 
 
 void UIButton::_onResize() {
-    // resize text element
+    // TODO: resize text element
 }

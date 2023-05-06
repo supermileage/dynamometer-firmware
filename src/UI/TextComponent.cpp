@@ -27,9 +27,9 @@ void TextComponent::setFontColour(const uint16_t colour) {
 }
 
 void TextComponent::draw(const Adafruit_ILI9341& display) {
-    // write text to screen
+    // TODO: write text to screen
 }
 
 void TextComponent::clear(const Adafruit_ILI9341& display) {
-    // clear text from screen (get background colour from owner)
+    // TODO: clear text from screen (get background colour from owner)
 }
