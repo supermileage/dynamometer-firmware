@@ -1,6 +1,8 @@
 #ifndef _UI_ELEMENT_H_
 #define _UI_ELEMENT_H_
 
+#include <functional>
+
 #include "VisualElement.h"
 
 /**
@@ -8,10 +10,22 @@
 */
 class UIElement : public VisualElement {
     public:
-        UIElement(Point pos, int16_t width, int16_t height) : VisualElement(pos, width, height) { };
+        UIElement(Adafruit_ILI9341* display, Point pos) : VisualElement(display, pos) { };
         virtual ~UIElement() { }
+        
+        /**
+         * @brief pure virtual function so derived classes can define custom focus graphics
+        */
         virtual void focus() = 0;
+
+        /**
+         * @brief pure virtual function so derived classes can define custom unfocus graphics
+        */
         virtual void unfocus() = 0;
+
+        /**
+         * @brief pure virtual function so derived classes can define custom select animation
+        */
         virtual void select() = 0;
 };
 
