@@ -9,7 +9,7 @@
 
 class MenuExample {
     public:
-        MenuExample(Adafruit_ILI9341& display) :_display(display) {
+        MenuExample(Adafruit_GFX& display) :_display(display) {
             _window = new Container(_display);
             _header = new TextElement(_display);
             _buttonContainer = new Container(_display);
@@ -71,7 +71,7 @@ class MenuExample {
 
 
     private:
-        Adafruit_ILI9341& _display;
+        Adafruit_GFX& _display;
         Container* _window;
         TextElement* _header;
         Container* _buttonContainer;

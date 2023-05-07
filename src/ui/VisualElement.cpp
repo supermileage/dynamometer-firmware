@@ -1,6 +1,6 @@
 #include "VisualElement.h"
 
-VisualElement::VisualElement(Adafruit_ILI9341& display) : _display(display) { }
+VisualElement::VisualElement(Adafruit_GFX& display) : _display(display) { }
 
 VisualElement::~VisualElement() { }
 

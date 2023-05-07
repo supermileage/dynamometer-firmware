@@ -1,6 +1,6 @@
 #include "Container.h"
 
-Container::Container(Adafruit_ILI9341& display) : VisualElement(display) { }
+Container::Container(Adafruit_GFX& display) : VisualElement(display) { }
 
 Container::~Container() { }
 

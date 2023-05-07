@@ -2,7 +2,7 @@
 #define _CONTAINER_H_
 
 #include <vector>
-#include "Adafruit_ILI9341.h"
+#include "Adafruit_GFX.h"
 
 #include "VisualElement.h"
 
@@ -17,7 +17,7 @@ class Container : public VisualElement {
         /**
          * @brief initialize container class with background colour
         */
-        Container(Adafruit_ILI9341& display);
+        Container(Adafruit_GFX& display);
 
         ~Container();
 

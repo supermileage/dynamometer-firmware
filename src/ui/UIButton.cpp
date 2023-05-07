@@ -1,6 +1,6 @@
 #include "UIButton.h"
 
-UIButton::UIButton(Adafruit_ILI9341& display) : UIElement(display) {
+UIButton::UIButton(Adafruit_GFX& display) : UIElement(display) {
     _textComponent.setOwner(this);
 }
 

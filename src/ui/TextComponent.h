@@ -2,7 +2,7 @@
 #define _TEXT_COMPONENT_H
 
 #include "Arduino.h"
-#include "Adafruit_ILI9341.h"
+#include "Adafruit_GFX.h"
 
 #include "VisualElement.h"
 
@@ -43,12 +43,12 @@ class TextComponent {
         /**
          * @brief draw -- only intended to be called from within VisualElement owner of this class
         */
-        void draw(Adafruit_ILI9341& display);
+        void draw(Adafruit_GFX& display);
 
         /**
          * @brief clear text -- only intended to be called from within VisualElement owner of this class
         */
-        void clear(Adafruit_ILI9341& display);
+        void clear(Adafruit_GFX& display);
 
     private:
         VisualElement* _owner;
@@ -61,7 +61,7 @@ class TextComponent {
         uint8_t _textSizeY = 1;
         bool _textChanged = false;
 
-        void _drawInternal(Adafruit_ILI9341& display, uint16_t colour);
+        void _drawInternal(Adafruit_GFX& display, uint16_t colour);
 
 };
 

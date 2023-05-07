@@ -1,13 +1,13 @@
 #ifndef _UI_BUTTON_H_
 #define _UI_BUTTON_H_
 
-#include "Adafruit_ILI9341.h"
+#include "Adafruit_GFX.h"
 #include "UIElement.h"
 #include "TextComponent.h"
 
 class UIButton : public UIElement {
     public:
-        UIButton(Adafruit_ILI9341& display);
+        UIButton(Adafruit_GFX& display);
         ~UIButton();
         
         /**

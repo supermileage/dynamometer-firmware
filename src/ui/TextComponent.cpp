@@ -34,7 +34,7 @@ TextComponent& TextComponent::setFontSize(uint8_t w, uint8_t h) {
     return *this;
 }
 
-void TextComponent::draw(Adafruit_ILI9341& display) {
+void TextComponent::draw(Adafruit_GFX& display) {
     if (_textChanged) {
         Point dimensions = ui_util::computeStringDimensions(_font, _displayString, _textSizeX, _textSizeY);
         _textWidth = dimensions.x;
@@ -45,11 +45,11 @@ void TextComponent::draw(Adafruit_ILI9341& display) {
     _drawInternal(display, _fontColour);
 }
 
-void TextComponent::clear(Adafruit_ILI9341& display) {
+void TextComponent::clear(Adafruit_GFX& display) {
     _drawInternal(display, _owner->getBackgroundColour());
 }
 
-void TextComponent::_drawInternal(Adafruit_ILI9341& display, uint16_t colour) {
+void TextComponent::_drawInternal(Adafruit_GFX& display, uint16_t colour) {
     display.setFont(_font);
     display.setTextColor(colour);
     display.setTextSize(_textSizeX, _textSizeY);

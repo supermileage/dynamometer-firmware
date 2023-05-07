@@ -10,7 +10,7 @@
 */
 class UIElement : public VisualElement {
     public:
-        UIElement(Adafruit_ILI9341& display) : VisualElement(display) { }
+        UIElement(Adafruit_GFX& display) : VisualElement(display) { }
 
         virtual ~UIElement() { }
         

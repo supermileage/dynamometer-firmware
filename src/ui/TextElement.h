@@ -6,7 +6,7 @@
 
 class TextElement : public VisualElement {
     public:
-        TextElement(Adafruit_ILI9341& display);
+        TextElement(Adafruit_GFX& display);
         ~TextElement();
         
         /**

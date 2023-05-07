@@ -1,7 +1,7 @@
 #ifndef _VISUAL_ELEMENT_H_
 #define _VISUAL_ELEMENT_H_
 
-#include "Adafruit_ILI9341.h"
+#include "Adafruit_GFX.h"
 #include "ui_util.h"
 #include "settings.h"
 
@@ -12,7 +12,7 @@ using namespace ui_util;
 */
 class VisualElement {
     public:
-        VisualElement(Adafruit_ILI9341& display);
+        VisualElement(Adafruit_GFX& display);
         virtual ~VisualElement();
 
         VisualElement& setParent(VisualElement* parent);
@@ -76,7 +76,7 @@ class VisualElement {
         void clear();
 
     protected:
-        Adafruit_ILI9341& _display;
+        Adafruit_GFX& _display;
         VisualElement* _parent = nullptr;
         Point _position = Point { 0, 0 };
         int16_t _width = 0;

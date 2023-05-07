@@ -1,6 +1,6 @@
 #include "TextElement.h"
 
-TextElement::TextElement(Adafruit_ILI9341& display) : VisualElement(display) {
+TextElement::TextElement(Adafruit_GFX& display) : VisualElement(display) {
     _textComponent.setOwner(this);
 }
 
