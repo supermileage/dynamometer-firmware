@@ -74,7 +74,7 @@ void VisualElement::clear() {
     if (_parent) {
         colour = _parent->getBackgroundColour();
     } else {
-        colour = _backGroundColour;
+        colour = _backgroundColour;
     }
     _display.fillRect(_position.x, _position.y, _width, _height, colour);
 }
