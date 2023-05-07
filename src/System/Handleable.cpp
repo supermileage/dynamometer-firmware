@@ -31,7 +31,7 @@ void Handleable::Handler::remove(Handleable* handleable) {
 }
 
 bool Handleable::Handler::contains(Handleable* handleable) {
-    for (int i = 0; i < _handleables.size(); i++) {
+    for (unsigned int i = 0; i < _handleables.size(); i++) {
         if (_handleables[i] == handleable) {
             return true;
         }
