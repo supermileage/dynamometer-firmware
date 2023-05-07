@@ -12,7 +12,7 @@
 */
 class Container : public VisualElement {
     public:
-        enum Alignment { Left, Center, Right };
+        enum Alignment { Left, Center, Right, Top, Bottom };
         
         /**
          * @brief initialize container class with background colour
@@ -24,12 +24,17 @@ class Container : public VisualElement {
         /**
          * @brief sets padding for this container
         */
-        void setPadding(int16_t padding);
+        Container& setPadding(int16_t padding);
 
         /**
          * @brief add set of visual elements contained within window display
         */
-        void addVisualElements(std::vector<VisualElement*>& elements);
+        Container& addVisualElements(std::vector<VisualElement*>& elements);
+
+        /**
+         * @brief add set of visual elements contained within window display
+        */
+        Container& addVisualElement(VisualElement* element);
 
         /**
          * @brief draws header, optional border and all visual elements in window
@@ -42,14 +47,17 @@ class Container : public VisualElement {
         void clear() override;
 
         /**
-         * @brief aligns elements (best effort) -- Center by default
+         * @brief aligns elements (best effort)
         */
-       void alignElements(Alignment alignment = Center);
+       void alignElements(Alignment horizontal = Center, Alignment vertical = Center);
 
     private:
-        const Adafruit_ILI9341& _display;
         std::vector<VisualElement*> _elements;
         int16_t _padding = 0;
+
+        void _onResize() override;
+        void _alignHorizontal(Alignment horizontal);
+        void _alignVertical(Alignment vertical);
 
 };
 

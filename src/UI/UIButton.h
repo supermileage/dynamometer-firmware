@@ -41,7 +41,6 @@ class UIButton : public UIElement {
         TextComponent& getTextComponent();
 
     private:
-        const Adafruit_ILI9341& _display;
         TextComponent _textComponent;
 
         void _onResize() override;

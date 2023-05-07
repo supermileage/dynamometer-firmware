@@ -25,7 +25,6 @@ class TextElement : public VisualElement {
         TextComponent& getTextComponent();
 
     private:
-        Adafruit_ILI9341& _display;
         TextComponent _textComponent;
 
         void _onResize() override;

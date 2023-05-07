@@ -1,19 +1,17 @@
 #include "UIButton.h"
 
-UIButton::UIButton(Adafruit_ILI9341& display) : _display(display) {
+UIButton::UIButton(Adafruit_ILI9341& display) : UIElement(display) {
     _textComponent.setOwner(this);
 }
 
 UIButton::~UIButton() { }
 
 void UIButton::draw() {
-    if (_parent->getBackgroundColour() != _backgroundColour) {
-        // TODO: draw background
-    }
+    // draw background and border
+    VisualElement::draw();
 
-    if (_hasBorder) {
-        // TODO: draw border
-    }
+    DEBUG_SERIAL_LN("Drawing button to screen position: ");
+    DEBUG_SERIAL_LN("\tX = " + String(_position.x) + " -- Y = " + String(_position.y));
 
     _textComponent.draw(_display);
 }

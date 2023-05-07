@@ -1,9 +1,16 @@
 {
     "files.associations": {
-        "bitset": "cpp",
-        "chrono": "cpp",
-        "algorithm": "cpp"
-    },
+		"bitset": "cpp",
+		"chrono": "cpp",
+		"algorithm": "cpp",
+		"*.tcc": "cpp",
+		"exception": "cpp",
+		"memory_resource": "cpp",
+		"iosfwd": "cpp",
+		"new": "cpp",
+		"ostream": "cpp",
+		"streambuf": "cpp"
+	},
     "testMate.cpp.test.advancedExecutables": [
 		{
 		  "pattern": "${workspaceFolder}/test/bin/*",

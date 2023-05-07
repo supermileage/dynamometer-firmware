@@ -6,6 +6,7 @@
 #include "XPT2046_Touchscreen.h"
 #include "Sensor/SensorOptical.h"
 
+#include "controller/MenuExample.h"
 #include "settings.h"
 
 /* system resources */
@@ -16,7 +17,7 @@ XPT2046_Touchscreen ts(TOUCH_CS);
 SensorOptical optical(pio0, 0, OPTICAL_SENSOR_PIN);
 
 /* ui */
-
+MenuExample menu(tft);
 
 /* global variables */
 uint64_t c0_lastUpdateTime = 0;
@@ -25,10 +26,18 @@ int c0_lastCount = 0;
 /* Core0 */
 void setup() {
 	Serial.begin(115200);
+
+	tft.begin();
+	tft.setRotation(3);
+	tft.fillScreen(COLOUR_BLACK);
+
+	delay(2000);
+
+	menu.begin();
 }
 
 void loop() {
-	Handleable::handleAll();
+	// Handleable::handleAll();
 }
 
 
@@ -37,3 +46,6 @@ void setup1() {
 
 }
 
+void loop1() {
+
+}

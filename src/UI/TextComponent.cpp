@@ -1,12 +1,8 @@
 #include "TextComponent.h"
 
-TextComponent::TextComponent() { }
-
-TextComponent::TextComponent(String& displayString) : _displayString(displayString) { }
-
 TextComponent::~TextComponent() { }
 
-void TextComponent::setOwner(VisualElement const* owner) {
+void TextComponent::setOwner(VisualElement* owner) {
     _owner = owner;
 }
 
@@ -14,22 +10,60 @@ const String& TextComponent::getDisplayString() {
     return _displayString;
 }
 
-void TextComponent::setDisplayString(const String& str) {
+TextComponent& TextComponent::setDisplayString(const String& str) {
     _displayString = str;
+    _textChanged = true;
+    return *this;
 }
 
-void TextComponent::setFont(const GFXfont* font) {
+TextComponent& TextComponent::setFont(const GFXfont* font) {
     _font = font;
+    _textChanged = true;
+    return *this;
 }
 
-void TextComponent::setFontColour(const uint16_t colour) {
+TextComponent& TextComponent::setFontColour(const uint16_t colour) {
     _fontColour = colour;
+    return *this;
 }
 
-void TextComponent::draw(const Adafruit_ILI9341& display) {
-    // TODO: write text to screen
+TextComponent& TextComponent::setFontSize(uint8_t w, uint8_t h) {
+    _textSizeX = w;
+    _textSizeY = h;
+    _textChanged = true;
+    return *this;
 }
 
-void TextComponent::clear(const Adafruit_ILI9341& display) {
-    // TODO: clear text from screen (get background colour from owner)
+void TextComponent::draw(Adafruit_ILI9341& display) {
+    if (_textChanged) {
+        Point dimensions = ui_util::computeStringDimensions(_font, _displayString, _textSizeX, _textSizeY);
+        _textWidth = dimensions.x;
+        _textHeight = dimensions.y;
+        _textChanged = false;
+    }
+
+    _drawInternal(display, _fontColour);
+}
+
+void TextComponent::clear(Adafruit_ILI9341& display) {
+    _drawInternal(display, _owner->getBackgroundColour());
+}
+
+void TextComponent::_drawInternal(Adafruit_ILI9341& display, uint16_t colour) {
+    display.setFont(_font);
+    display.setTextColor(colour);
+    display.setTextSize(_textSizeX, _textSizeY);
+
+    // horizontally center text in field
+    int16_t cursorX = _owner->getPosition().x + (_owner->getWidth() - _textWidth) / 2;
+    // vertically center text in field
+    int16_t height = _owner->getHeight();
+    int16_t cursorY = _owner->getPosition().y + height - _textSizeY - (height - _textHeight) / 2;
+    // cursor is bottom left of text region
+    display.setCursor(cursorX, cursorY);
+    display.write(_displayString.c_str());
+
+    // TODO: remove debug code
+    // draw pink box around text field
+    // display.drawRect(cursorX, _owner->getPosition().y, _textWidth, height, 0xFC18);
 }

@@ -1,19 +1,14 @@
 #include "TextElement.h"
 
-TextElement::TextElement(Adafruit_ILI9341& display) : _display(display) {
+TextElement::TextElement(Adafruit_ILI9341& display) : VisualElement(display) {
     _textComponent.setOwner(this);
 }
 
 TextElement::~TextElement() { }
 
 void TextElement::draw() {
-    if (_parent->getBackgroundColour() != _backgroundColour) {
-        // TODO: draw background
-    }
-
-    if (_hasBorder) {
-        // TODO: draw border
-    }
+    // draw background and border
+    VisualElement::draw();
 
     _textComponent.draw(_display);
 }

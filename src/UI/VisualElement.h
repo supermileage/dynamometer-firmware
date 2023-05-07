@@ -1,7 +1,9 @@
 #ifndef _VISUAL_ELEMENT_H_
 #define _VISUAL_ELEMENT_H_
 
+#include "Adafruit_ILI9341.h"
 #include "ui_util.h"
+#include "settings.h"
 
 using namespace ui_util;
 
@@ -10,9 +12,10 @@ using namespace ui_util;
 */
 class VisualElement {
     public:
+        VisualElement(Adafruit_ILI9341& display);
         virtual ~VisualElement();
 
-        void setParent(VisualElement* parent);
+        VisualElement& setParent(VisualElement* parent);
         
         /**
          * @brief get position (top left corner)
@@ -22,7 +25,7 @@ class VisualElement {
         /**
          * @brief set position (top left corner)
         */
-        void setPosition(Point pos);
+        VisualElement& setPosition(Point pos);
         
         /**
          * @brief get width of visual element relative to its position
@@ -32,7 +35,7 @@ class VisualElement {
         /**
          * @brief set width of visual element relative to its position
         */
-        void setWidth(int16_t width);
+        VisualElement& setWidth(int16_t width);
         
         /**
          * @brief get height of visual element relative to its position
@@ -42,7 +45,7 @@ class VisualElement {
         /**
          * @brief set height of visual element relative to its position
         */
-        void setHeight(int16_t height);
+        VisualElement& setHeight(int16_t height);
 
         /**
          * @brief get background colour: 5-6-5 16-bit colour
@@ -52,36 +55,36 @@ class VisualElement {
         /**
          * @brief set background to 5-6-5 16-bit colour
         */
-        void setBackgroundColour(uint16_t colour);
+        VisualElement& setBackgroundColour(uint16_t colour);
 
 
         /**
-         * @brief add border with width, height, thickness and 16-bit 5-6-5 colour
+         * @brief add border with 16-bit 5-6-5 colour and width/height
          * 
-         * @note max width = 320 and max height = 240
+         * @note width/height match _width/_height fields by default; max width = 320 and max height = 240
         */
-        void addBorder(int16_t width, int16_t height, int16_t thickness, uint16_t colour);
+        VisualElement& addBorder(uint16_t colour, int16_t width = -1, int16_t height = -1);
 
         /**
          * @brief draw visual element to screen
         */
-        virtual void draw() = 0;
+        virtual void draw();
 
         /**
          * @brief clear visual element from screen
         */
-        virtual void clear() = 0;
+        virtual void clear();
 
     protected:
+        Adafruit_ILI9341& _display;
         VisualElement* _parent = nullptr;
         Point _position = Point { 0, 0 };
         int16_t _width = 0;
         int16_t _height = 0;
         uint16_t _backgroundColour = 0;
+        uint16_t _borderColour = 0;
         int16_t _borderWidth = 0;
         int16_t _borderHeight = 0;
-        int16_t _borderThickness = 0;
-        uint16_t _borderColour = 0;
         bool _hasBorder = false;
 
         /**
