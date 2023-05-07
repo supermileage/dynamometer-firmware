@@ -73,7 +73,7 @@ class VisualElement {
         /**
          * @brief clear visual element from screen
         */
-        virtual void clear();
+        void clear();
 
     protected:
         Adafruit_ILI9341& _display;

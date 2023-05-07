@@ -16,11 +16,6 @@ class UIButton : public UIElement {
         void draw() override;
 
         /**
-         * @brief clear button from screen
-        */
-        void clear() override;
-
-        /**
          * @brief execute button focus effect
         */
         void focus() override;

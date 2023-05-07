@@ -32,16 +32,6 @@ void Container::draw() {
     }
 }
 
-void Container::clear() {
-    if (_hasBorder) {
-        // TODO: erase border
-    }
-    
-    for (VisualElement* element : _elements) {
-        element->draw();
-    }
-}
-
 void Container::alignElements(Alignment horizontal, Alignment vertical) {
     _alignHorizontal(horizontal);
     _alignVertical(vertical);

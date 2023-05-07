@@ -70,5 +70,11 @@ void VisualElement::draw() {
 }
 
 void VisualElement::clear() {
-    _display.fillRect(_position.x, _position.y, _width, _height, _backgroundColour);
+    uint16_t colour;
+    if (_parent) {
+        colour = _parent->getBackgroundColour();
+    } else {
+        colour = _backGroundColour;
+    }
+    _display.fillRect(_position.x, _position.y, _width, _height, colour);
 }

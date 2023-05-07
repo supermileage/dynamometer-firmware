@@ -13,18 +13,6 @@ void TextElement::draw() {
     _textComponent.draw(_display);
 }
 
-void TextElement::clear() {
-    if (_parent->getBackgroundColour() != _backgroundColour) {
-        // TODO: draw background
-    }
-
-    if (_hasBorder) {
-        // TODO: draw border
-    }
-
-    _textComponent.draw(_display);
-}
-
 TextComponent& TextElement::getTextComponent() {
     return _textComponent;
 }

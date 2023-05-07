@@ -15,11 +15,6 @@ class TextElement : public VisualElement {
         void draw() override;
 
         /**
-         * @brief clear text element from screen
-        */
-        void clear() override;
-
-        /**
          * @brief returns text component owned by this text element
         */
         TextComponent& getTextComponent();

@@ -42,11 +42,6 @@ class Container : public VisualElement {
         void draw() override;
 
         /**
-         * @brief clears header, optional border and all visual elements in window
-        */
-        void clear() override;
-
-        /**
          * @brief aligns elements (best effort)
         */
        void alignElements(Alignment horizontal = Center, Alignment vertical = Center);
