@@ -52,10 +52,6 @@ void Container::align(Alignment a) {
     }
 }
 
-void Container::_onResize() {
-    // resize event
-}
-
 void Container::_alignHorizontal(Alignment horizontal) {
     for (VisualElement* element : _elements) {
         int16_t elementX = _position.x + (_width - element->getWidth()) / 2;

@@ -16,7 +16,3 @@ void TextElement::draw() {
 TextComponent& TextElement::getTextComponent() {
     return _textComponent;
 }
-
-void TextElement::_onResize() {
-    // TODO: resize text element
-}

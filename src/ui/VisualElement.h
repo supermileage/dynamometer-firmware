@@ -87,11 +87,6 @@ class VisualElement {
         bool _hasBorder = false;
 
         /**
-         * @brief resize event handler
-        */
-        virtual void _onResize() = 0;
-
-        /**
          * @brief internal draw method
          * 
          * @param colour background colour for draw

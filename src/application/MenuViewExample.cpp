@@ -1,4 +1,4 @@
-#include "MenuExample.h"
+#include "MenuViewExample.h"
 
 #include "settings.h"
 #include "graphics/colour.h"
@@ -20,7 +20,7 @@
 #define NAV_BUTTON_HEIGHT 25
 #define NAV_BUTTON_WIDTH 80
 
-MenuExample::MenuExample(Adafruit_GFX& display) : _display(display) {
+MenuViewExample::MenuViewExample(Adafruit_GFX& display) : _display(display) {
     _window = new Container(_display);
     _header = new TextElement(_display);
     _menuContainer = new Container(_display);
@@ -38,7 +38,7 @@ MenuExample::MenuExample(Adafruit_GFX& display) : _display(display) {
     _interactives.push_back(_navButton2);
 }
 
-MenuExample::~MenuExample() {
+MenuViewExample::~MenuViewExample() {
     delete _window;
     delete _header;
     delete _menuContainer;
@@ -50,7 +50,7 @@ MenuExample::~MenuExample() {
     delete _navButton2;
 }
 
-void MenuExample::begin() {
+void MenuViewExample::init() {
     _window->addVisualElement(_header).addVisualElement(_menuContainer);
     _menuContainer->addVisualElement(_menuButton1).addVisualElement(_menuButton2)
         .addVisualElement(_menuButton3).addVisualElement(_navButtonContainer);
@@ -107,13 +107,13 @@ void MenuExample::begin() {
     _window->draw();
 }
 
-void MenuExample::handle() {
+void MenuViewExample::run() {
     if (millis() > _lastTime + 1000) {
         _lastTime = millis();
         UIElement* cur = _interactives[_cur];
         cur->focus();
         delay(1000);
-        cur->unfocus();
+        cur->revert();
         _cur = (_cur + 1) % _interactives.size();
     }
 }

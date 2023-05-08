@@ -10,12 +10,12 @@
 /**
  * Example menu with button focus animation
 */
-class MenuExample : public Handleable {
+class MenuViewExample {
     public:
-        MenuExample(Adafruit_GFX& display);
-        ~MenuExample();
-        void begin() override;
-        void handle() override;
+        MenuViewExample(Adafruit_GFX& display);
+        ~MenuViewExample();
+        void init();
+        void run();
 
     private:
         Adafruit_GFX& _display;

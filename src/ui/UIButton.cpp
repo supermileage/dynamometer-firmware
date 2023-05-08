@@ -19,18 +19,16 @@ TextComponent& UIButton::getTextComponent() {
 
 void UIButton::focus() {
     UIElement::focus();
-    uint16_t temp = _textComponent.getFontColour();
-    _textComponent.setFontColour(_fontFocusColour);
-    _textComponent.draw(_display);
-    _textComponent.setFontColour(temp);
+    _recolourText(_fontFocusColour);
 }
 
-void UIButton::unfocus() {
+void UIButton::revert() {
     draw();
 }
 
 void UIButton::select() {
-    // TODO: select effect
+    UIElement::focus();
+    _recolourText(_fontSelectColour);
 }
 
 UIButton& UIButton::setFontFocusColour(uint16_t colour) {
@@ -38,7 +36,14 @@ UIButton& UIButton::setFontFocusColour(uint16_t colour) {
     return *this;
 }
 
+UIButton& UIButton::setFontSelectColour(uint16_t colour) {
+    _fontSelectColour = colour;
+    return *this;
+}
 
-void UIButton::_onResize() {
-    // TODO: resize text element
+void UIButton::_recolourText(uint16_t colour) {
+    uint16_t temp = _textComponent.getFontColour();
+    _textComponent.setFontColour(_fontFocusColour);
+    _textComponent.draw(_display);
+    _textComponent.setFontColour(temp);
 }

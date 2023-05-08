@@ -22,8 +22,6 @@ class TextElement : public VisualElement {
     private:
         TextComponent _textComponent;
 
-        void _onResize() override;
-
 };
 
 #endif

@@ -60,8 +60,6 @@ class Container : public VisualElement {
         std::vector<VisualElement*> _elements;
         int16_t _padding = 0;
         Orientation _orientation = Column;
-
-        void _onResize() override;
         
         /**
          * @brief aligns elements oriented in row

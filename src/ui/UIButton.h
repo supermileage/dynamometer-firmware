@@ -21,9 +21,9 @@ class UIButton : public UIElement {
         void focus() override;
 
         /**
-         * @brief execute button unfocus effect
+         * @brief revert styling to default (undoes focus/select)
         */
-        void unfocus() override;
+        void revert() override;
 
         /**
          * @brief execute button selection effect
@@ -36,6 +36,11 @@ class UIButton : public UIElement {
         UIButton& setFontFocusColour(uint16_t colour);
 
         /**
+         * @brief set focussable font colour of this button
+        */
+        UIButton& setFontSelectColour(uint16_t colour);
+
+        /**
          * @brief get text component owned by this button
         */
         TextComponent& getTextComponent();
@@ -43,8 +48,9 @@ class UIButton : public UIElement {
     private:
         TextComponent _textComponent;
         uint16_t _fontFocusColour = 0;
+        uint16_t _fontSelectColour = 0;
 
-        void _onResize() override;
+        void _recolourText(uint16_t colour);
 };
 
 #endif

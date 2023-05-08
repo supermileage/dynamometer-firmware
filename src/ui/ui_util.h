@@ -2,6 +2,7 @@
 #define _UI_UTIL_H_
 
 #include <stdint.h>
+#include <functional>
 #include "Adafruit_GFX.h"
 
 namespace ui_util {
@@ -40,6 +41,20 @@ namespace ui_util {
         uint16_t toColour16() {
             return (r << 11) | ((g & 0x3F) << 5) | (b & 0x1F);
         }
+    };
+
+    class Animation {
+        public:
+        //     Animation(std::function<bool(void)>, float fps);
+        //     Animation(std::function<bool(void)>, uint32_t interval);
+        //     ~Animation();
+            void run(uint32_t time) {
+                // do nothing
+            }
+
+        // private:
+        //     std::function<bool(void)> _
+        //     uint32_t _interval = 1000;    
     };
 
     /**

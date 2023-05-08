@@ -21,17 +21,19 @@ class UIElement : public VisualElement {
         /**
          * @brief reverts background colour to default
         */
-        virtual void unfocus();
+        virtual void revert();
 
         /**
-         * @brief pure virtual function so derived classes can define custom select animation
+         * @brief sets background to _selectColour
         */
-        virtual void select() = 0;
+        virtual void select();
 
         UIElement& setFocusColour(uint16_t colour);
+        UIElement& setSelectColour(uint16_t colour);
 
     protected:
         uint16_t _focusColour = 0;
+        uint16_t _selectColour = 0;
 
 };
 

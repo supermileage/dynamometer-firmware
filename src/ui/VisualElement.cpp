@@ -28,13 +28,11 @@ int16_t VisualElement::getHeight() {
 
 VisualElement& VisualElement::setWidth(int16_t width) {
     _width = width;
-    _onResize();
     return *this;
 }
 
 VisualElement& VisualElement::setHeight(int16_t height) {
     _height = height;
-    _onResize();
     return *this;
 }
 
