@@ -48,7 +48,7 @@ namespace ui_util {
     */
     class Animation {
         public:
-            Animation(uin32_t interval);
+            Animation(uint32_t interval) : _interval(interval) { }
             virtual ~Animation() { }
             virtual void run(uint32_t time) = 0;
 
