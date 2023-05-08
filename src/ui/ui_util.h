@@ -43,18 +43,18 @@ namespace ui_util {
         }
     };
 
+    /**
+     * @brief abstract animation class for aggregating different animations in ui event handler
+    */
     class Animation {
         public:
-        //     Animation(std::function<bool(void)>, float fps);
-        //     Animation(std::function<bool(void)>, uint32_t interval);
-        //     ~Animation();
-            void run(uint32_t time) {
-                // do nothing
-            }
+            Animation(uin32_t interval);
+            virtual ~Animation() { }
+            virtual void run(uint32_t time) = 0;
 
-        // private:
-        //     std::function<bool(void)> _
-        //     uint32_t _interval = 1000;    
+        protected:
+            uint32_t _interval;
+            uint32_t _lastTime = 0;
     };
 
     /**
