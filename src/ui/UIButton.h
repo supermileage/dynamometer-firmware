@@ -31,12 +31,18 @@ class UIButton : public UIElement {
         void select() override;
 
         /**
+         * @brief set focussable font colour of this button
+        */
+        UIButton& setFontFocusColour(uint16_t colour);
+
+        /**
          * @brief get text component owned by this button
         */
         TextComponent& getTextComponent();
 
     private:
         TextComponent _textComponent;
+        uint16_t _fontFocusColour = 0;
 
         void _onResize() override;
 };

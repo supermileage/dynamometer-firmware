@@ -32,9 +32,24 @@ void Container::draw() {
     }
 }
 
-void Container::alignElements(Alignment horizontal, Alignment vertical) {
-    _alignHorizontal(horizontal);
-    _alignVertical(vertical);
+Container& Container::setOrientation(Orientation o) {
+    _orientation = o;
+    return *this;
+}
+
+void Container::align(Alignment a) {
+    switch (_orientation) {
+        case Column:
+            _alignHorizontal(a);
+            _applyVerticalSpacing();
+            break;
+        case Row:
+            _alignVertical(a);
+            _applyHorizontalSpacing();
+            break;
+        default:
+            break;
+    }
 }
 
 void Container::_onResize() {
@@ -42,8 +57,6 @@ void Container::_onResize() {
 }
 
 void Container::_alignHorizontal(Alignment horizontal) {
-    // ignore alignment and only do center
-    // TODO: implement alignment for other configurations
     for (VisualElement* element : _elements) {
         int16_t elementX = _position.x + (_width - element->getWidth()) / 2;
         element->setPosition(Point { elementX, element->getPosition().y });
@@ -51,6 +64,13 @@ void Container::_alignHorizontal(Alignment horizontal) {
 }
 
 void Container::_alignVertical(Alignment vertical) {
+    for (VisualElement* element : _elements) {
+        int16_t elementY = _position.y + (_height - element->getHeight()) / 2;
+        element->setPosition(Point { element->getPosition().x, elementY });
+    }
+}
+
+void Container::_applyVerticalSpacing() {
     int16_t totalHeight = 0;
     for (VisualElement* element : _elements) {
         totalHeight += element->getHeight();
@@ -64,5 +84,20 @@ void Container::_alignVertical(Alignment vertical) {
         cur += (padding + element->getHeight());
     }
 }
+
+void Container::_applyHorizontalSpacing() {
+    int16_t total = 0;
+    for (VisualElement* element : _elements) {
+        total += element->getWidth();
+    }
+
+    int16_t padding = (_width - total) / (_elements.size() + 1);
+    int16_t cur = padding + _position.x;
+    for (VisualElement* element : _elements) {
+        element->setPosition(Point { cur, element->getPosition().y });
+        cur += (padding + element->getWidth());
+    }
+}
+
 
 

@@ -1,6 +1,8 @@
 #ifndef _COLOUR_H_
 #define _COLOUR_H_
 
+#include "Adafruit_ILI9341.h"
+
 #define COLOUR_BLACK        ILI9341_BLACK       ///<   0,   0,   0
 #define COLOUR_NAVY         ILI9341_NAVY        ///<   0,   0, 123
 #define COLOUR_DARKGREEN    ILI9341_DARKGREEN   ///<   0, 125,   0

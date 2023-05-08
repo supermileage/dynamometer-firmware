@@ -3,7 +3,6 @@
 
 #include "Adafruit_GFX.h"
 #include "ui_util.h"
-#include "settings.h"
 
 using namespace ui_util;
 
@@ -91,6 +90,13 @@ class VisualElement {
          * @brief resize event handler
         */
         virtual void _onResize() = 0;
+
+        /**
+         * @brief internal draw method
+         * 
+         * @param colour background colour for draw
+        */
+        virtual void _drawInternal(uint16_t colour);
 
 };
 

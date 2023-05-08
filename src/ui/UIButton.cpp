@@ -18,15 +18,24 @@ TextComponent& UIButton::getTextComponent() {
 }
 
 void UIButton::focus() {
-    // TODO: focus effect
+    UIElement::focus();
+    uint16_t temp = _textComponent.getFontColour();
+    _textComponent.setFontColour(_fontFocusColour);
+    _textComponent.draw(_display);
+    _textComponent.setFontColour(temp);
 }
 
 void UIButton::unfocus() {
-    // TODO: unfocus effect
+    draw();
 }
 
 void UIButton::select() {
     // TODO: select effect
+}
+
+UIButton& UIButton::setFontFocusColour(uint16_t colour) {
+    _fontFocusColour = colour;
+    return *this;
 }
 
 

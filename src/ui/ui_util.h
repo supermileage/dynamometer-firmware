@@ -42,8 +42,6 @@ namespace ui_util {
         }
     };
 
-    #define pgm_read_byte 
-
     /**
      * @brief computes the pixel width and height of single character for given font
     */

@@ -27,6 +27,10 @@ TextComponent& TextComponent::setFontColour(const uint16_t colour) {
     return *this;
 }
 
+uint16_t TextComponent::getFontColour() {
+    return _fontColour;
+}
+
 TextComponent& TextComponent::setFontSize(uint8_t w, uint8_t h) {
     _textSizeX = w;
     _textSizeY = h;
@@ -62,8 +66,4 @@ void TextComponent::_drawInternal(Adafruit_GFX& display, uint16_t colour) {
     // cursor is bottom left of text region
     display.setCursor(cursorX, cursorY);
     display.write(_displayString.c_str());
-
-    // TODO: remove debug code
-    // draw pink box around text field
-    // display.drawRect(cursorX, _owner->getPosition().y, _textWidth, height, 0xFC18);
 }

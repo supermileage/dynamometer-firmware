@@ -1,6 +1,8 @@
 #ifndef SETTINGS_H_
 #define SETTINGS_H_
 
+#include "Arduino.h"
+
 /* Display */
 #define TFT_DC 15
 #define TFT_CS 17

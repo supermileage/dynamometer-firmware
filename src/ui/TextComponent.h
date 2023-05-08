@@ -36,6 +36,11 @@ class TextComponent {
         TextComponent& setFontColour(const uint16_t colour);
 
         /**
+         * @brief gets the 16-bit 5-6-5 RGB font colour of this text component
+        */
+        uint16_t getFontColour();
+
+        /**
          * @brief sets the values by which font width and height will be scaled
         */
         TextComponent& setFontSize(uint8_t w, uint8_t h);

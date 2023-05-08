@@ -56,17 +56,7 @@ VisualElement& VisualElement::addBorder(uint16_t colour, int16_t width, int16_t 
 }
 
 void VisualElement::draw() {
-    if (_parent && _parent->getBackgroundColour() != _backgroundColour) {
-        _display.fillRect(_position.x, _position.y, _width, _height, _backgroundColour);
-    }
-
-    if (_hasBorder) {
-        // compute border inset to center border with background
-        int16_t insetX = (_width - _borderWidth) / 2;
-        int16_t insetY = (_height - _borderHeight) / 2;
-        _display.drawRect(_position.x + insetX, _position.y + insetY,
-            _borderWidth, _borderHeight, _borderColour);
-    }
+    _drawInternal(_backgroundColour);
 }
 
 void VisualElement::clear() {
@@ -77,4 +67,18 @@ void VisualElement::clear() {
         colour = _backgroundColour;
     }
     _display.fillRect(_position.x, _position.y, _width, _height, colour);
+}
+
+void VisualElement::_drawInternal(uint16_t colour) {
+    if (_parent && _parent->getBackgroundColour() != colour) {
+        _display.fillRect(_position.x, _position.y, _width, _height, colour);
+    }
+
+    if (_hasBorder) {
+        // compute border inset to center border with background
+        int16_t insetX = (_width - _borderWidth) / 2;
+        int16_t insetY = (_height - _borderHeight) / 2;
+        _display.drawRect(_position.x + insetX, _position.y + insetY,
+            _borderWidth, _borderHeight, _borderColour);
+    }
 }

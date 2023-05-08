@@ -7,6 +7,7 @@
 #include "Sensor/SensorOptical.h"
 
 #include "controller/MenuExample.h"
+#include "graphics/colour.h"
 #include "settings.h"
 
 /* system resources */
@@ -32,20 +33,19 @@ void setup() {
 	tft.fillScreen(COLOUR_BLACK);
 
 	delay(2000);
-
-	menu.begin();
+	Handleable::beginAll();
 }
 
 void loop() {
-	// Handleable::handleAll();
+	Handleable::handleAll();
 }
 
 
 /* Core1 */
-void setup1() {
+// void setup1() {
 
-}
+// }
 
-void loop1() {
+// void loop1() {
 
-}
+// }

@@ -10,24 +10,29 @@
 */
 class UIElement : public VisualElement {
     public:
-        UIElement(Adafruit_GFX& display) : VisualElement(display) { }
-
+        UIElement(Adafruit_GFX& display);
         virtual ~UIElement() { }
         
         /**
-         * @brief pure virtual function so derived classes can define custom focus graphics
+         * @brief sets background to _focusColour
         */
-        virtual void focus() = 0;
+        virtual void focus();
 
         /**
-         * @brief pure virtual function so derived classes can define custom unfocus graphics
+         * @brief reverts background colour to default
         */
-        virtual void unfocus() = 0;
+        virtual void unfocus();
 
         /**
          * @brief pure virtual function so derived classes can define custom select animation
         */
         virtual void select() = 0;
+
+        UIElement& setFocusColour(uint16_t colour);
+
+    protected:
+        uint16_t _focusColour = 0;
+
 };
 
 #endif

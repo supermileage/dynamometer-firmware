@@ -32,7 +32,12 @@ class Handleable {
         virtual void handle() = 0;
 
         /*
-         * Calls handler to run all handleable objects
+         * Calls begin on all handleable objects
+        */
+        static void beginAll();
+
+        /*
+         * Calls handle on all currently active handleable objects
         */
         static void handleAll();
 
