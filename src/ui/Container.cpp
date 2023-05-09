@@ -53,6 +53,7 @@ void Container::align(Alignment a) {
 }
 
 void Container::_alignHorizontal(Alignment horizontal) {
+    // TODO: implement top/bottom alignment
     for (VisualElement* element : _elements) {
         int16_t elementX = _position.x + (_width - element->getWidth()) / 2;
         element->setPosition(Point { elementX, element->getPosition().y });
@@ -60,6 +61,7 @@ void Container::_alignHorizontal(Alignment horizontal) {
 }
 
 void Container::_alignVertical(Alignment vertical) {
+    // TODO: implement left/right alignment
     for (VisualElement* element : _elements) {
         int16_t elementY = _position.y + (_height - element->getHeight()) / 2;
         element->setPosition(Point { element->getPosition().x, elementY });
