@@ -20,7 +20,7 @@ SensorOptical optical(pio0, 0, OPTICAL_SENSOR_PIN);
 
 /* ui */
 MenuViewExample menu(tft);
-UIEventHandler display;
+UIEventHandler uiCore;
 
 /* global variables */
 uint64_t c0_lastUpdateTime = 0;
@@ -35,14 +35,14 @@ void setup() {
 	tft.fillScreen(COLOUR_BLACK);
 
 	delay(1000);
-	display.addEvent([]() { menu.init(); });
+	uiCore.addEvent([]() { menu.init(); });
 	Handleable::beginAll();
 }
 
 void loop() {
 	if (millis() > c0_lastUpdateTime + 100) {
 		c0_lastUpdateTime = millis();
-		display.addEvent([]() { menu.run(); });
+		uiCore.addEvent([]() { menu.run(); });
 	}
 
 	Handleable::handleAll();
@@ -50,9 +50,9 @@ void loop() {
 
 /* Core1 */
 void setup1() {
-	display.init();
+	uiCore.init();
 }
 
 void loop1() {
-	display.run();
+	uiCore.run();
 }
