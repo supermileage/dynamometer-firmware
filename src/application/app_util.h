@@ -6,6 +6,9 @@
 #include "ui/Container.h"
 #include "ui/TextElement.h"
 
+/**
+ * @brief configures visual elements according to style macros defined in style.h
+*/
 namespace app_util {
     void configureMainWindow(Container* window);
     void configureHeader(TextElement* header, const String& displayString);

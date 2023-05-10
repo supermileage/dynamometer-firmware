@@ -1,26 +1,9 @@
 #include "MenuViewExample.h"
 
 #include "settings.h"
-
 #include "graphics/colour.h"
 #include "graphics/fonts.h"
 #include "application/app_util.h"
-
-#define WINDOW_TOP_LEFT Point { 5, 5 }
-#define WINDOW_WIDTH 310
-#define WINDOW_HEIGHT 230
-#define HEADER_WIDTH 200
-#define HEADER_HEIGHT 25
-
-#define MENU_WIDTH 290
-#define MENU_HEIGHT 180
-#define MENU_BUTTON_HEIGHT 30
-#define MENU_BUTTON_WIDTH 200
-
-#define NAV_WIDTH 260
-#define NAV_HEIGHT 35
-#define NAV_BUTTON_HEIGHT 25
-#define NAV_BUTTON_WIDTH 80
 
 MenuViewExample::MenuViewExample(Adafruit_GFX& display) : _display(display) {
     _window = new Container(_display);
