@@ -3,23 +3,7 @@
 #include "settings.h"
 #include "graphics/colour.h"
 #include "graphics/fonts.h"
-#include "ui/UIEventHandler.h"
-
-#define WINDOW_TOP_LEFT Point { 5, 5 }
-#define WINDOW_WIDTH 310
-#define WINDOW_HEIGHT 230
-#define HEADER_WIDTH 200
-#define HEADER_HEIGHT 25
-
-#define MENU_WIDTH 290
-#define MENU_HEIGHT 180
-#define MENU_BUTTON_HEIGHT 30
-#define MENU_BUTTON_WIDTH 200
-
-#define NAV_WIDTH 260
-#define NAV_HEIGHT 35
-#define NAV_BUTTON_HEIGHT 25
-#define NAV_BUTTON_WIDTH 80
+#include "application/app_util.h"
 
 MenuViewExample::MenuViewExample(Adafruit_GFX& display) : _display(display) {
     _window = new Container(_display);
@@ -57,47 +41,15 @@ void MenuViewExample::init() {
         .addVisualElement(_menuButton3).addVisualElement(_navButtonContainer);
     _navButtonContainer->addVisualElement(_navButton1).addVisualElement(_navButton2);
 
-    _header->getTextComponent().setDisplayString("Example Header")
-        .setFontColour(COLOUR_WHITE).setFont(FREE_SANS_12PT7B);
-    _header->setWidth(HEADER_WIDTH).setHeight(HEADER_HEIGHT).setBackgroundColour(COLOUR_BLACK);
-    
-    _menuButton1->getTextComponent().setDisplayString("Button 1").setFontSize(1,1)
-        .setFontColour(COLOUR_BLACK).setFont(FREE_SANS_BOLD_9PT7B);
-    _menuButton1->setFontFocusColour(COLOUR_WHITE).setFocusColour(COLOUR_BLACK)
-        .setWidth(MENU_BUTTON_WIDTH).setHeight(MENU_BUTTON_HEIGHT)
-        .setBackgroundColour(COLOUR_LIGHTGREY).addBorder(COLOUR_BLACK);
-
-    _menuButton2->getTextComponent().setDisplayString("Button 2").setFontSize(1,1)
-        .setFontColour(COLOUR_BLACK).setFont(FREE_SANS_BOLD_9PT7B);
-    _menuButton2->setFontFocusColour(COLOUR_WHITE).setFocusColour(COLOUR_BLACK)
-        .setWidth(MENU_BUTTON_WIDTH).setHeight(MENU_BUTTON_HEIGHT)
-        .setBackgroundColour(COLOUR_LIGHTGREY).addBorder(COLOUR_BLACK);
-
-    _menuButton3->getTextComponent().setDisplayString("Button 3").setFontSize(1,1)
-        .setFontColour(COLOUR_BLACK).setFont(FREE_SANS_BOLD_9PT7B);
-    _menuButton3->setFontFocusColour(COLOUR_WHITE).setFocusColour(COLOUR_BLACK)
-        .setWidth(MENU_BUTTON_WIDTH).setHeight(MENU_BUTTON_HEIGHT)
-        .setBackgroundColour(COLOUR_LIGHTGREY).addBorder(COLOUR_BLACK);
-
-    _navButton1->getTextComponent().setDisplayString("Back").setFontSize(1,1)
-        .setFontColour(COLOUR_WHITE).setFont(FREE_SANS_BOLD_9PT7B);
-    _navButton1->setFontFocusColour(COLOUR_WHITE).setFocusColour(COLOUR_PURPLE)
-        .setWidth(NAV_BUTTON_WIDTH).setHeight(NAV_BUTTON_HEIGHT)
-        .setBackgroundColour(COLOUR_RED).addBorder(COLOUR_BLACK);
-
-    _navButton2->getTextComponent().setDisplayString("Select").setFontSize(1,1)
-        .setFontColour(COLOUR_WHITE).setFont(FREE_SANS_BOLD_9PT7B);
-    _navButton2->setFontFocusColour(COLOUR_WHITE).setFocusColour(COLOUR_DARKCYAN)
-        .setWidth(NAV_BUTTON_WIDTH).setHeight(NAV_BUTTON_HEIGHT)
-        .setBackgroundColour(COLOUR_GREEN).addBorder(COLOUR_BLACK);
-
-    // padding
-    _window->setOrientation(Container::Column).setWidth(WINDOW_WIDTH).setHeight(WINDOW_HEIGHT)
-        .setPosition(WINDOW_TOP_LEFT).setBackgroundColour(COLOUR_BLACK).addBorder(COLOUR_RED);
-    _menuContainer->setOrientation(Container::Column).setWidth(MENU_WIDTH).setHeight(MENU_HEIGHT)
-        .setBackgroundColour(COLOUR_DARKGREY).addBorder(COLOUR_MAGENTA);
-    _navButtonContainer->setOrientation(Container::Row).setWidth(NAV_WIDTH).setHeight(NAV_HEIGHT)
-        .setBackgroundColour(COLOUR_NAVY).addBorder(COLOUR_BLACK);
+    app_util::configureHeader(_header, "Example Header");
+    app_util::configureMenuButton(_menuButton1, "Button 1");
+    app_util::configureMenuButton(_menuButton2, "Button 2");
+    app_util::configureMenuButton(_menuButton3, "Button 3");
+    app_util::configureBackButton(_navButton1);
+    app_util::configureSelectButton(_navButton2);
+    app_util::configureMainWindow(_window);
+    app_util::configureMenuContainer(_menuContainer);
+    app_util::configureNavButtonContainer(_navButtonContainer);
     
     // order matters for alignment: align top-level container first, then down
     _window->align();

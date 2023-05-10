@@ -49,7 +49,20 @@
 		"cinttypes": "cpp",
 		"typeinfo": "cpp",
 		"fstream": "cpp",
-		"sstream": "cpp"
+		"sstream": "cpp",
+		"condition_variable": "cpp",
+		"cstring": "cpp",
+		"ctime": "cpp",
+		"set": "cpp",
+		"ratio": "cpp",
+		"regex": "cpp",
+		"future": "cpp",
+		"iomanip": "cpp",
+		"iostream": "cpp",
+		"istream": "cpp",
+		"mutex": "cpp",
+		"stop_token": "cpp",
+		"thread": "cpp"
 	},
     "testMate.cpp.test.advancedExecutables": [
 		{

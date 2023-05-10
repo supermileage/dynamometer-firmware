@@ -6,7 +6,7 @@
 #include "MenuViewExample.h"
 
 /**
- * @brief responds to user input and updates ui and data appropriately
+ * @brief manages control layer between data and gui
 */
 class MenuControllerExample {
     public:
@@ -14,10 +14,16 @@ class MenuControllerExample {
             _menu = new MenuViewExample(display);
         }
 
-        ~MenuControllerExample() { }
+        ~MenuControllerExample() {
+            
+        }
         
         void addInputHooks(InputManager& manager) {
-            manager.registerAction( ID_SERIAL, [this](int32_t i) { _handleSerialInput(i); }; );
+            manager.registerAction( ID_SERIAL, [this](int32_t arg) { _handleInputSerial(arg); }; );
+            manager.registerAction( ID_SELECT, [this](int32_t arg) { _handleInputSelect(arg); }; );
+            manager.registerAction( ID_BACK, [this](int32_t arg) { _handleInputBack(arg); }; );
+            manager.registerAction( ID_BRAKE_BUTTON, [this](int32_t arg) { _handleInputBrakeButton(arg); }; );
+            manager.registerAction( ID_BRAKE_POT, [this](int32_t arg) { _handleInputBrakePot(arg); }; );
         }
 
         void init() {
@@ -30,9 +36,8 @@ class MenuControllerExample {
         MenuViewExample* _menu = nullptr;
         UIElement* _inFocus = nullptr;
 
-        void _handleSerialInput(int32_t i) {
-            
-            switch (i) {
+        void _handleInputSerial(int32_t arg) {
+            switch (arg) {
                 case 65:
                     UIEventHandler::instance().addEvent( [_inFocus]() { _inFocus->unfocus(); } );
                     
@@ -54,6 +59,21 @@ class MenuControllerExample {
         }
 
 
+        void _handleInputSelect(int32_t arg) {
+            
+        }
+
+        void _handleInputBack(int32_t arg) {
+
+        }
+
+        void _handleInputBrakeButton(int32_t arg) {
+
+        }
+
+        void _handleInputBrakePot(int32_t arg) {
+
+        }
 };
 
 #endif

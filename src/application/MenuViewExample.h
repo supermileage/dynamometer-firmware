@@ -17,9 +17,10 @@ class MenuViewExample {
         MenuViewExample(Adafruit_GFX& display);
         ~MenuViewExample();
         void init();
-        const std::vector<UIElement*>& getUIElements() {
-            return _interactives;
-        }
+        void setHeader(const String& str)
+        void addMenuButton(UIElement* btn);
+        void addSelectButton(UIElement* btn);
+        void addBackButton(UIElement* btn);
 
     private:
         Adafruit_GFX& _display;
@@ -27,12 +28,7 @@ class MenuViewExample {
         TextElement* _header;
         Container* _menuContainer;
         Container* _navButtonContainer;
-        UIButton* _menuButton1;
-        UIButton* _menuButton2;
-        UIButton* _menuButton3;
-        UIButton* _navButton1;
-        UIButton* _navButton2;
-
+        
         // for demo purposes
         std::vector<UIElement*> _interactives;
         unsigned int _cur = 0;
