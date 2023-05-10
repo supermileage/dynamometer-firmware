@@ -1,13 +1,13 @@
-#ifndef BUTTON_H_
-#define BUTTON_H_
+#ifndef _HARDWARE_BUTTON_H_
+#define _HARDWARE_BUTTON_H_
 
 #include <Arduino.h>
 #include <stdint.h>
 
-class Button {
+class HardwareButton {
 	public:
-		Button(int32_t pin, PinMode pinMode, void (*action)(void));
-		~Button();
+		HardwareButton(int32_t pin, PinMode pinMode, void (*action)(void));
+		~HardwareButton();
 		void init();
 		void run();
 

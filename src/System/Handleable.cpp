@@ -1,6 +1,10 @@
 #include "Handleable.h"
 #include <algorithm>
 
+#include "settings.h"
+
+/* Handleable */
+
 Handleable::Handleable() {
 	Handleable::Handler::instance().add(this);
 }
@@ -9,11 +13,17 @@ Handleable::~Handleable() {
 	Handleable::Handler::instance().remove(this);
 }
 
-Handleable::Handler* Handleable::Handler::_instance;
+void Handleable::beginAll() {
+    Handleable::Handler::instance().begin();
+}
 
 void Handleable::handleAll() {
     Handleable::Handler::instance().handle();
 }
+
+/* Handler */
+
+Handleable::Handler* Handleable::Handler::_instance = nullptr;
 
 Handleable::Handler &Handleable::Handler::instance() {
     if (!_instance) {
@@ -31,7 +41,7 @@ void Handleable::Handler::remove(Handleable* handleable) {
 }
 
 bool Handleable::Handler::contains(Handleable* handleable) {
-    for (int i = 0; i < _handleables.size(); i++) {
+    for (unsigned int i = 0; i < _handleables.size(); i++) {
         if (_handleables[i] == handleable) {
             return true;
         }
