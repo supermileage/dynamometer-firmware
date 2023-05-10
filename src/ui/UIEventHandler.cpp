@@ -2,9 +2,18 @@
 
 #include <algorithm>
 
+UIEventHandler* UIEventHandler::_instance = nullptr;
+
 UIEventHandler::UIEventHandler() { }
 
 UIEventHandler::~UIEventHandler() { }
+
+UIEventHandler& UIEventHandler::instance() {
+    if (_instance == nullptr) {
+        _instance = new UIEventHandler();
+    }
+    return *_instance;
+}
 
 void UIEventHandler::init() {
     mutex_init(&_eventQueueMtx);

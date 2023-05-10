@@ -3,6 +3,7 @@
 #include "settings.h"
 #include "graphics/colour.h"
 #include "graphics/fonts.h"
+#include "ui/UIEventHandler.h"
 
 #define WINDOW_TOP_LEFT Point { 5, 5 }
 #define WINDOW_WIDTH 310
@@ -105,16 +106,8 @@ void MenuViewExample::init() {
 
     // call to principal container draws all elements
     _window->draw();
-}
 
-void MenuViewExample::run() {
-    if (millis() > _lastTime + 1000) {
-        _lastTime = millis();
-        UIElement* cur = _interactives[_cur];
-        cur->focus();
-        delay(1000);
-        cur->revert();
-        _cur = (_cur + 1) % _interactives.size();
-    }
+    _cur = 0;
+    _interactives[_cur]->focus();
 }
 

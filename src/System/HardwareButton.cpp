@@ -1,9 +1,12 @@
 #include "HardwareButton.h"
 
-#define DEBOUNCE_TIME 250
+#define DEBOUNCE_TIME 50
 
-HardwareButton::HardwareButton(int32_t pin, PinMode pinMode, void (*action)(void)) :
-	_pin(pin), _pinMode(pinMode), _action(action) {  }
+HardwareButton::HardwareButton(InputCallback action, int32_t pin, PinMode pinMode) {
+		_action = action;
+		_pin = pin;
+		_pinMode = pinMode;
+}
 
 HardwareButton::~HardwareButton() { }
 
@@ -13,10 +16,10 @@ void HardwareButton::init() {
 
 void HardwareButton::run() {
 	PinStatus read = digitalRead(_pin);
-	uint64_t currentTime = millis();
-
-	if (currentTime > _lastReadHigh + DEBOUNCE_TIME && read == LOW) {
-		(_action)();
-		_lastReadHigh = currentTime;
+	
+	if (read != _lastRead && millis() > _lastReadMillis + DEBOUNCE_TIME) {
+		(_action)(static_cast<uint32_t>(read));
+		_lastReadMillis = millis();
+		_lastRead = read;
 	}
 }

@@ -14,8 +14,9 @@
 */
 class UIEventHandler {
     public:
-        UIEventHandler();
         ~UIEventHandler();
+
+        static UIEventHandler& instance();
 
         /**
          * @brief initializes mutexes
@@ -57,9 +58,12 @@ class UIEventHandler {
         void clearAnimations();
 
     private:
+        static UIEventHandler* _instance;
         mutex_t _eventQueueMtx;
         std::queue<std::function<void(void)>> _eventQueue;
         std::vector<ui_util::Animation*> _animations;
+
+        UIEventHandler();
 
 };
 

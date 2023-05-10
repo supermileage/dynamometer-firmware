@@ -7,6 +7,8 @@
 #include "ui/UIButton.h"
 #include "ui/TextElement.h"
 
+#include "settings.h"
+
 /**
  * Example menu with button focus animation
 */
@@ -15,7 +17,9 @@ class MenuViewExample {
         MenuViewExample(Adafruit_GFX& display);
         ~MenuViewExample();
         void init();
-        void run();
+        const std::vector<UIElement*>& getUIElements() {
+            return _interactives;
+        }
 
     private:
         Adafruit_GFX& _display;
@@ -29,7 +33,7 @@ class MenuViewExample {
         UIButton* _navButton1;
         UIButton* _navButton2;
 
-        // for focus/selection animation
+        // for demo purposes
         std::vector<UIElement*> _interactives;
         unsigned int _cur = 0;
         unsigned int _lastTime = 0;

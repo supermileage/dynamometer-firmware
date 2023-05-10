@@ -20,6 +20,15 @@
 #define FORCE_SENSOR GPIO_ADC1
 #define OPTICAL_SENSOR_PIN 2
 
+// Input IDs
+#define ID_SERIAL               0
+#define ID_ROT_ENCODER          1
+#define ID_ROTARY_EN_SELECT     2
+#define ID_BACK                 3
+#define ID_SELECT               4
+#define ID_BRAKE_BUTTON         5
+#define ID_BRAKE_POT            6
+
 /* Debugging */
 #define DEBUG_SERIAL_EN 1
 

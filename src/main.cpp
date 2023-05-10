@@ -9,6 +9,8 @@
 #include "application/MenuViewExample.h"
 #include "graphics/colour.h"
 #include "ui/UIEventHandler.h"
+#include "System/HardwareInputSerial.h"
+#include "System/InputManager.h"
 #include "settings.h"
 
 /* system resources */
@@ -18,9 +20,12 @@ XPT2046_Touchscreen ts(TOUCH_CS);
 /* sensors */
 SensorOptical optical(pio0, 0, OPTICAL_SENSOR_PIN);
 
+/* io */
+InputManager inputManager;
+HardwareInputSerial inputSerial;
+
 /* ui */
 MenuViewExample menu(tft);
-UIEventHandler uiCore;
 
 /* global variables */
 uint64_t c0_lastUpdateTime = 0;
@@ -34,25 +39,22 @@ void setup() {
 	tft.setRotation(3);
 	tft.fillScreen(COLOUR_BLACK);
 
+	inputManager.registerInput(0, &inputSerial);
+
 	delay(1000);
-	uiCore.addEvent([]() { menu.init(); });
+	UIEventHandler::instance().addEvent([]() { menu.init(); });
 	Handleable::beginAll();
 }
 
 void loop() {
-	if (millis() > c0_lastUpdateTime + 100) {
-		c0_lastUpdateTime = millis();
-		uiCore.addEvent([]() { menu.run(); });
-	}
-
 	Handleable::handleAll();
 }
 
 /* Core1 */
 void setup1() {
-	uiCore.init();
+	UIEventHandler::instance().init();
 }
 
 void loop1() {
-	uiCore.run();
+	UIEventHandler::instance().run();
 }
