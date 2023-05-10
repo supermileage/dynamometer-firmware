@@ -49,8 +49,8 @@ void TextComponent::draw(Adafruit_GFX& display) {
     _drawInternal(display, _fontColour);
 }
 
-void TextComponent::clear(Adafruit_GFX& display) {
-    _drawInternal(display, _owner->getBackgroundColour());
+void TextComponent::draw(Adafruit_GFX& display, uint16_t colour) {
+    _drawInternal(display, colour);
 }
 
 void TextComponent::_drawInternal(Adafruit_GFX& display, uint16_t colour) {

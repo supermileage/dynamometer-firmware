@@ -28,12 +28,12 @@ class Container : public VisualElement {
         Container& setPadding(int16_t padding);
 
         /**
-         * @brief add set of visual elements contained within window display
+         * @brief add set of visual element children to container
         */
         Container& addVisualElements(std::vector<VisualElement*>& elements);
 
         /**
-         * @brief add set of visual elements contained within window display
+         * @brief add visual element child to container
         */
         Container& addVisualElement(VisualElement* element);
 
