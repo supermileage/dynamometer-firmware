@@ -46,14 +46,14 @@ class TextComponent {
         TextComponent& setFontSize(uint8_t w, uint8_t h);
 
         /**
-         * @brief draw -- only intended to be called from within VisualElement owner of this class
+         * @brief draw -- only to be called from within VisualElement owner of this class
         */
         void draw(Adafruit_GFX& display);
 
         /**
-         * @brief clear text -- only intended to be called from within VisualElement owner of this class
+         * @brief draw with colour -- only to be called from within VisualElement owner of this class
         */
-        void clear(Adafruit_GFX& display);
+        void draw(Adafruit_GFX& display, uint16_t colour);
 
     private:
         VisualElement* _owner;
