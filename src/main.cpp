@@ -6,7 +6,7 @@
 #include "XPT2046_Touchscreen.h"
 #include "Sensor/SensorOptical.h"
 
-#include "application/MenuViewExample.h"
+#include "application/ApplicationContext.h"
 #include "graphics/colour.h"
 #include "ui/UIEventHandler.h"
 #include "System/HardwareInputSerial.h"
@@ -25,7 +25,7 @@ InputManager inputManager;
 HardwareInputSerial inputSerial;
 
 /* ui */
-MenuViewExample menu(tft);
+ApplicationContext context(inputManager, tft, ApplicationContext::MainMenu);
 
 /* global variables */
 uint64_t c0_lastUpdateTime = 0;
@@ -39,10 +39,9 @@ void setup() {
 	tft.setRotation(3);
 	tft.fillScreen(COLOUR_BLACK);
 
-	inputManager.registerInput(0, &inputSerial);
+	inputManager.registerInput(ID_SERIAL, &inputSerial);
 
 	delay(1000);
-	UIEventHandler::instance().addEvent([]() { menu.init(); });
 	Handleable::beginAll();
 }
 
