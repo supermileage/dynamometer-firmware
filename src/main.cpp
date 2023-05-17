@@ -76,12 +76,12 @@ void loop() {
 
 /* function definitions */
 
-#define INCHES_PER_METER 39.3701
-#define WHEEL_CIRCUMFERENCE (21.0 * _PI)
+#define WHEEL_DIAMETER 0.5334
+#define WHEEL_CIRCUMFERENCE (WHEEL_DIAMETER * _PI)
 #define PROTO_GEAR_RATIO 9.7
 
 // convert linear velocity (m/s) to RPM
 double getProtoRpm() {
-	// (m/s) * 60s * (inches per meter) / (wheel diameter) * (gear ratio)
-	return optical.getLinearVelocity() * 60.0 * INCHES_PER_METER / WHEEL_CIRCUMFERENCE * PROTO_GEAR_RATIO;
+	// (m/s) -> (rad/s) * 60 * (gear ratio)
+	return (optical.getLinearVelocity() / WHEEL_CIRCUMFERENCE) * 60.0 * PROTO_GEAR_RATIO;
 }
