@@ -4,10 +4,9 @@
 // div of 8.0 works fine, but will count 2x when pio runs any faster
 #define PIO_CLOCK_DIV 8.0f
 #define MEGA 1000000
-#define _PI 3.1415
 
 #define NUM_APERTURES 64
-#define GEAR_RATIO 0.2 
+#define GEAR_RATIO 0.2
 #define ROLLER_RADIUS 0.08276057 // metres
 #define VELOCITY_FACTOR (GEAR_RATIO * ROLLER_RADIUS) // speed of vehicle [m/s] = velocity factor * angular velocity [rad/s]
 
@@ -35,11 +34,11 @@ void SensorOptical::handle() {
     if (currentTime >= _lastUpdateTime + _readInterval) {
         // n is num apertures we've passed over since last velocity update
         int32_t currentCount = pio_counter_get_count(_pio, _stateMachine);
-        int32_t n = currentCount - _lastUpdateCount;
+        int32_t n = currentCount - _lastCount;
         uint32_t deltaT = currentTime - _lastUpdateTime;
 
-        _angularVelocity = ((double)n / NUM_APERTURES) * 2 * _PI * (MEGA / (double)deltaT);
-        _lastUpdateCount = currentCount;
+        _angularVelocity = ((double)n / NUM_APERTURES) * TWO_PI * (MEGA / (double)deltaT);
+        _lastCount = currentCount;
         _lastUpdateTime = currentTime;
     }
 

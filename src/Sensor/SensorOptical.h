@@ -7,7 +7,7 @@
 
 // #define DEBUG_OPTICAL_ENABLED
 
-#define SENSOR_OPTICAL_DEFAULT_READ_INTERVAL 1000
+#define SENSOR_OPTICAL_DEFAULT_READ_INTERVAL 100000
 
 class SensorOptical: public Sensor {
     public:
@@ -28,7 +28,7 @@ class SensorOptical: public Sensor {
         PIO _pio;
         uint _stateMachine; 
         uint32_t _lastUpdateTime = 0;
-        int32_t _lastUpdateCount = 0;
+        int32_t _lastCount = 0;
         uint32_t _readInterval = 0;
         double _angularVelocity = 0;
 
