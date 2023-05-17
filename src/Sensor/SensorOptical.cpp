@@ -62,6 +62,8 @@ double SensorOptical::getAngularVelocity() {
     return _angularVelocity;
 }
 
+#include "random"
+
 double SensorOptical::getLinearVelocity() {
     return VELOCITY_FACTOR * _angularVelocity;
 }

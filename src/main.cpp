@@ -23,10 +23,10 @@ XPT2046_Touchscreen ts(TOUCH_CS);
 SensorOptical optical(pio0, 0, OPTICAL_SENSOR_PIN);
 
 /* ui */
-MenuViewExample menu(tft);
-UIEventHandler uiCore;
-TextDisplay<double> rpmDisplay(getProtoRpm, 3, ILI9341_WHITE, 2, String("rpm "));
-TextDisplay<double> velocityDisplay([]() { return optical.getLinearVelocity(); }, 3, ILI9341_WHITE, 2, String("vel "));
+// MenuViewExample menu(tft);
+// UIEventHandler uiCore;
+TextDisplay<double> rpmDisplay(getProtoRpm, 5, ILI9341_WHITE, 2, String("rpm "));
+TextDisplay<double> velocityDisplay([]() { return optical.getLinearVelocity(); }, 5, ILI9341_WHITE, 2, String("vel "));
 
 /* global variables */
 uint64_t c0_lastUpdateTime = 0;
@@ -40,10 +40,13 @@ void setup() {
 	tft.setRotation(3);
 	tft.fillScreen(COLOUR_BLACK);
 
-	rpmDisplay.setPosition(20, 20);
-	velocityDisplay.setPosition(20, 100);
-	rpmDisplay.setMinTextLength(5); // 00.00
+	rpmDisplay.setPosition(30, 60);
+	velocityDisplay.setPosition(30, 140);
+	rpmDisplay.setMinTextLength(7); // 00.00
     velocityDisplay.setMinTextLength(5); // 00.00
+	rpmDisplay.setBackgroundColour(COLOUR_BLACK);
+	velocityDisplay.setBackgroundColour(COLOUR_BLACK);
+
 
 	delay(1000);
 	// uiCore.addEvent([]() { menu.init(); });

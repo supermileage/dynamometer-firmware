@@ -20,7 +20,7 @@ class TextDisplay : public DisplayElement {
         ~TextDisplay() { }
 
         void draw(Adafruit_GFX& display) override {
-            display.setTextColor(_textColour);
+            display.setTextColor(_textColour, _backgroundColour);
             display.setCursor(_x, _y);
             
             if (_labelSize != 0) {
@@ -58,6 +58,10 @@ class TextDisplay : public DisplayElement {
             _paddingCharacter = c;
         }
 
+        void setBackgroundColour(uint16_t colour) {
+            _backgroundColour = colour;
+        }
+
     private:
         T (*_displayFunc)();
         int16_t _x = 0;
@@ -65,6 +69,7 @@ class TextDisplay : public DisplayElement {
         uint8_t _textSize;
         uint8_t _minTextLength = 0;
 		uint16_t _textColour;
+        uint16_t _backgroundColour = 0x0;
         uint8_t _labelSize = 0;
 		char _paddingCharacter = '0';
 		String _label;
