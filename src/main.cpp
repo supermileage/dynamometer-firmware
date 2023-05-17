@@ -74,7 +74,7 @@ void loop() {
 /* function definitions */
 
 #define INCHES_PER_METER 39.3701
-#define WHEEL_CIRCUMFERENCE (21.0 * PI)
+#define WHEEL_CIRCUMFERENCE (21.0 * _PI)
 #define PROTO_GEAR_RATIO 9.7
 
 // convert linear velocity (m/s) to RPM

@@ -29,4 +29,8 @@
 #define DEBUG_SERIAL_LN(x) { }
 #endif
 
+/* Constants */
+#define _PI 3.14159
+#define _TWO_PI 6.28318
+
 #endif
