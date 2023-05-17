@@ -76,6 +76,7 @@ void loop() {
 
 /* function definitions */
 
+// wheel diameter = (21" / inches_per_meter)
 #define WHEEL_DIAMETER 0.5334
 #define WHEEL_CIRCUMFERENCE (WHEEL_DIAMETER * _PI)
 #define PROTO_GEAR_RATIO 9.7
