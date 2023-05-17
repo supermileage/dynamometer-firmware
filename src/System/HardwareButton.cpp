@@ -18,7 +18,7 @@ void HardwareButton::run() {
 	PinStatus read = digitalRead(_pin);
 	
 	if (read != _lastRead && millis() > _lastReadMillis + DEBOUNCE_TIME) {
-		(_action)(static_cast<uint32_t>(read));
+		(_action)((input_data_t)read);
 		_lastReadMillis = millis();
 		_lastRead = read;
 	}

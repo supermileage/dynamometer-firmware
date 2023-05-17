@@ -9,7 +9,7 @@
 /**
  * @brief input manager class hooks up dyno inputs to their respective functions
  * 
- * @note sensor inputs are handled by sensor classes -- this class is to deal with assignable user inputs
+ * @note sensor inputs are handled by sensor classes -- this class deals with assignable user inputs
 */
 class InputManager : public Handleable {
     public:
