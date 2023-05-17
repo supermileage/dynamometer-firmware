@@ -10,8 +10,14 @@
 
 class MenuControllerExample;
 
+/**
+ * @brief maintains state and state transitions of application
+ * 
+ */
 class ApplicationContext : public Handleable {
     public:
+		// represents different application states
+		// ok to modify if states are added / removed
         enum ApplicationState { MainMenu, ManualControlMenu, CalibrationMenu, SettingsMenu };
 
 		struct StateData {

@@ -8,13 +8,17 @@
 class Handleable {
     public:
         /**
+         * Constructor
+         * 
          * Adds this object to the handler's list of handleables
-         */
+         * */
         Handleable();
 
         /**
+         * Destructor
+         * 
          * Removes this object from the handler's list of handleables
-        */
+         * */
         virtual ~Handleable();
 
         /**
