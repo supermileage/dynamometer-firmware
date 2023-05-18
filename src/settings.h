@@ -4,9 +4,9 @@
 #include "Arduino.h"
 
 /* Display */
-#define TFT_DC 15
+#define TFT_DC 20
 #define TFT_CS 17
-#define TFT_RST 14
+#define TFT_RST 21
 #define TOUCH_CS 13
 
 /* IO */

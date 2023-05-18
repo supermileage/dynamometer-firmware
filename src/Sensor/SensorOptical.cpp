@@ -4,7 +4,7 @@
 // div of 8.0 works fine, but will count 2x when pio runs any faster
 #define PIO_CLOCK_DIV 8.0f
 
-#define MEGA 1000000
+#define MEGA 1000000.0
 #define NUM_APERTURES 64
 #define GEAR_RATIO 0.2
 #define ROLLER_RADIUS 0.08276057 // metres

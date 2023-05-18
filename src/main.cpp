@@ -20,7 +20,7 @@ Adafruit_ILI9341 tft = Adafruit_ILI9341(&SPI, TFT_DC, TFT_CS, TFT_RST);
 XPT2046_Touchscreen ts(TOUCH_CS);
 
 /* sensors */
-SensorOptical optical(pio0, 0, OPTICAL_SENSOR_PIN);
+SensorOptical optical(pio0, 0);
 
 /* ui */
 // MenuViewExample menu(tft);

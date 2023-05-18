@@ -7,7 +7,7 @@
 
 // #define DEBUG_OPTICAL_ENABLED
 
-#define SENSOR_OPTICAL_DEFAULT_READ_INTERVAL 100000
+#define SENSOR_OPTICAL_DEFAULT_READ_INTERVAL 250000
 
 class SensorOptical: public Sensor {
     public:
