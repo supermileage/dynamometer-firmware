@@ -3,10 +3,10 @@
 
 #include "Arduino.h"
 
-/* IO */
-#define TFT_DC 15
-#define TFT_CS 17
-#define TFT_RST 14
+/* Display */
+#define LCD_CS 17
+#define LCD_DC 21
+#define LCD_RST 20
 #define TOUCH_CS 13
 
 #define OPTICAL_SENSOR_PIN 2
