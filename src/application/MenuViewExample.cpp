@@ -57,3 +57,8 @@ void MenuViewExample::back() {
     _navButtonBack->select();
 }
 
+void MenuViewExample::revert() {
+    _navButtonBack->revert();
+    _navButtonSelect->revert();
+}
+

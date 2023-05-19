@@ -22,7 +22,9 @@ MenuControllerExample::~MenuControllerExample() {
 }
 
 void MenuControllerExample::init(InputManager& manager) {
-    manager.registerAction( ID_SERIAL, [this](int32_t arg) { _handleInputSerial(arg); } );
+    manager.registerAction( ID_SERIAL, [this](input_data_t data) { _handleInputSerial(data); } );
+    manager.registerAction( ID_ROT_EN, [this](input_data_t data) { _handleInputRotaryEncoder(data); } );
+    manager.registerAction( ID_ROT_EN_SW, [this](input_data_t data) { _handleInputRotarySwitch(data); } );
 
     _menu->addMenuButton(_menuButtonCalibrate, "Run Calibration");
     _buttonCallbackMap[BUTTON_ID_CALIBRATE] =
@@ -44,11 +46,11 @@ uint8_t MenuControllerExample::getInFocus() {
 	return _inFocus;
 }
 
-void MenuControllerExample::_handleInputSerial(int32_t arg) {
-    DEBUG_SERIAL_LN("Serial input received: " + String(arg));
+void MenuControllerExample::_handleInputSerial(input_data_t data) {
+    DEBUG_SERIAL_LN("Serial input received: " + String(data));
     UIElement* cur;
 
-    switch (arg) {
+    switch (data) {
         case 65:
             cur = _buttonCallbackMap[_inFocus].first;
             UIEventHandler::instance().addEvent( [cur]() { cur->revert(); } );
@@ -74,18 +76,44 @@ void MenuControllerExample::_handleInputSerial(int32_t arg) {
     }
 }
 
-void MenuControllerExample::_handleInputSelect(int32_t arg) {
+void MenuControllerExample::_handleInputSelect(input_data_t data) {
 
 }
 
-void MenuControllerExample::_handleInputBack(int32_t arg) {
+void MenuControllerExample::_handleInputBack(input_data_t data) {
 
 }
 
-void MenuControllerExample::_handleInputBrakeButton(int32_t arg) {
+void MenuControllerExample::_handleInputBrakeButton(input_data_t data) {
 
 }
 
-void MenuControllerExample::_handleInputBrakePot(int32_t arg) {
+void MenuControllerExample::_handleInputBrakePot(input_data_t data) {
 
+}
+
+void MenuControllerExample::_handleInputRotaryEncoder(input_data_t data) {
+    // revert previously focussed element
+    UIElement* cur = _buttonCallbackMap[_inFocus].first;
+    UIEventHandler::instance().addEvent( [cur]() { cur->revert(); } );
+
+    // compute index of new focussed element
+    int32_t modVal = _buttonCallbackMap.size();
+    input_data_t val = ((_inFocus + data) % modVal + modVal) % modVal;
+    _inFocus = static_cast<uint8_t>(val);
+
+    // focus new element
+    cur = _buttonCallbackMap[_inFocus].first;
+    UIEventHandler::instance().addEvent([cur]() { cur->focus(); });
+}
+
+void MenuControllerExample::_handleInputRotarySwitch(input_data_t data) {
+    if (data) {
+        UIElement* cur = _buttonCallbackMap[_inFocus].first;
+        UIEventHandler::instance().addEvent( [this, cur]() { cur->select(); _menu->select(); } );
+        (_buttonCallbackMap[_inFocus].second)();
+    } else {
+        UIElement* cur = _buttonCallbackMap[_inFocus].first;
+        UIEventHandler::instance().addEvent( [this]() { _menu->revert(); } );
+    }
 }

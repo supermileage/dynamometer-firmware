@@ -19,7 +19,7 @@
 #include "settings.h"
 
 /* system resources */
-Adafruit_ILI9341 tft = Adafruit_ILI9341(&SPI, TFT_DC, TFT_CS, TFT_RST);
+Adafruit_ILI9341 tft = Adafruit_ILI9341(&SPI, LCD_DC, LCD_CS, LCD_RST);
 XPT2046_Touchscreen ts(TOUCH_CS);
 
 /* sensors */
@@ -67,9 +67,9 @@ void setup() {
 	Handleable::beginAll();
 
 	// INPUT TEST
-	inputManager.registerAction(ID_BRAKE_BUTTON, [](input_data_t d) { Serial.printf("Brake button is %s\n", String(d == 0 ? "Low" : "High").c_str()); });
-	inputManager.registerAction(ID_ROT_EN_SW, [](input_data_t d) { Serial.printf("Rotary switch is %s\n", String(d == 0 ? "Low" : "High").c_str()); });
-	inputManager.registerAction(ID_ROT_EN, [](input_data_t d) { Serial.printf("Rotary encoder changed: %s\n", String(d).c_str()); });
+	// inputManager.registerAction(ID_BRAKE_BUTTON, [](input_data_t d) { Serial.printf("Brake button is %s\n", String(d == 0 ? "Low" : "High").c_str()); });
+	// inputManager.registerAction(ID_ROT_EN_SW, [](input_data_t d) { Serial.printf("Rotary switch is %s\n", String(d == 0 ? "Low" : "High").c_str()); });
+	// inputManager.registerAction(ID_ROT_EN, [](input_data_t d) { Serial.printf("Rotary encoder changed: %s\n", String(d).c_str()); });
 }
 
 void loop() {

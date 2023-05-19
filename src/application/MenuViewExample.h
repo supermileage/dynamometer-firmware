@@ -21,6 +21,7 @@ class MenuViewExample {
         void addMenuButton(UIButton* button, const String& str);
         void select();
         void back();
+        void revert();
 
     private:
         Adafruit_GFX& _display;

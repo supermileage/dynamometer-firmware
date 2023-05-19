@@ -31,11 +31,13 @@ class MenuControllerExample {
         UIButton* _menuButtonSettings;
         uint8_t _inFocus = 0;
 
-        void _handleInputSerial(int32_t arg);
-        void _handleInputSelect(int32_t arg);
-        void _handleInputBack(int32_t arg);
-        void _handleInputBrakeButton(int32_t arg);
-        void _handleInputBrakePot(int32_t arg);
+        void _handleInputSerial(input_data_t arg);
+        void _handleInputSelect(input_data_t arg);
+        void _handleInputBack(input_data_t arg);
+        void _handleInputBrakeButton(input_data_t arg);
+        void _handleInputBrakePot(input_data_t arg);
+        void _handleInputRotaryEncoder(input_data_t arg);
+        void _handleInputRotarySwitch(input_data_t arg);
 };
 
 #endif
