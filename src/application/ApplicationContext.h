@@ -10,9 +10,20 @@
 
 class MenuControllerExample;
 
+/**
+ * @brief maintains state and state transitions of application
+ * 
+ */
 class ApplicationContext : public Handleable {
     public:
+		// represents different application states
+		// ok to modify if states are added / removed
         enum ApplicationState { MainMenu, ManualControlMenu, CalibrationMenu, SettingsMenu };
+
+		struct StateData {
+			ApplicationState state;
+			uint8_t inFocus;
+		};
 
         ApplicationContext(InputManager& manager, Adafruit_GFX& display, ApplicationState state = MainMenu);
 
@@ -27,9 +38,9 @@ class ApplicationContext : public Handleable {
         InputManager& _inputManager;
         Adafruit_GFX& _display;
         ApplicationState _currentState;
-        std::stack<ApplicationState> _previousStates;
+        std::stack<StateData> _previousStates;
 
-        void _changeStateInternal(ApplicationState state);
+        void _changeStateInternal(StateData state);
         static const String stateToString(ApplicationState state);
 };
 

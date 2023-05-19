@@ -12,7 +12,7 @@ class HardwareInputSerial : public HardwareInput {
 
         void run() override {
             while (Serial.available()) {
-                (_action)((int32_t)Serial.read());
+                (_action)((input_data_t)Serial.read());
             }
         }
 };

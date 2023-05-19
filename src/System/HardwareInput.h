@@ -5,7 +5,8 @@
 #include <functional>
 #include "settings.h"
 
-typedef std::function<void(int32_t)> InputCallback;
+typedef int32_t input_data_t;
+typedef std::function<void(input_data_t)> InputCallback;
 
 class HardwareInput {
     public:

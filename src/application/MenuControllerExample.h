@@ -17,9 +17,10 @@ class ApplicationContext;
 */
 class MenuControllerExample {
     public:
-        MenuControllerExample(ApplicationContext& context, Adafruit_GFX& display);
+        MenuControllerExample(ApplicationContext& context, Adafruit_GFX& display, uint8_t inFocus = 0);
         ~MenuControllerExample();
         void init(InputManager& manager);
+		uint8_t getInFocus();
 
     private:
         ApplicationContext& _context;
