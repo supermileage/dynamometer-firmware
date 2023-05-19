@@ -4,11 +4,12 @@
 #define BUTTON_ID_CONTROL   1
 #define BUTTON_ID_SETTINGS  2
 
-MenuControllerExample::MenuControllerExample(ApplicationContext& context, Adafruit_GFX& display) : _context(context) {
-    _menu = new MenuViewExample(display);
-    _menuButtonCalibrate = new UIButton(display);
-    _menuButtonCtrl = new UIButton(display);
-    _menuButtonSettings = new UIButton(display);
+MenuControllerExample::MenuControllerExample(ApplicationContext& context, Adafruit_GFX& display, uint8_t inFocus) :
+	_context(context), _inFocus(inFocus) {
+    	_menu = new MenuViewExample(display);
+    	_menuButtonCalibrate = new UIButton(display);
+    	_menuButtonCtrl = new UIButton(display);
+    	_menuButtonSettings = new UIButton(display);
 }
 
 MenuControllerExample::~MenuControllerExample() {
@@ -16,6 +17,8 @@ MenuControllerExample::~MenuControllerExample() {
     for (const auto& pair : _buttonCallbackMap) {
         delete pair.second.first;
     }
+
+	delete _menu;
 }
 
 void MenuControllerExample::init(InputManager& manager) {
@@ -35,6 +38,10 @@ void MenuControllerExample::init(InputManager& manager) {
 
     UIEventHandler::instance().addEvent( [this]() { _menu->init(); } );
     UIEventHandler::instance().addEvent( [this]() { _buttonCallbackMap[_inFocus].first->focus(); } );
+}
+
+uint8_t MenuControllerExample::getInFocus() {
+	return _inFocus;
 }
 
 void MenuControllerExample::_handleInputSerial(int32_t arg) {
