@@ -3,8 +3,8 @@
 #include "settings.h"
 
 /* Hardware Button */
-HardwareDemuxButton::HardwareDemuxButton(HardwareDemuxer& demuxer, uint8_t selectId, pin_size_t ledPin, bool normalLow)
-	: _demuxer(demuxer), _selectId(selectId), _ledPin(ledPin), _normalLow(normalLow) { }
+HardwareDemuxButton::HardwareDemuxButton(HardwareDemuxer& demuxer, uint8_t selectId, pin_size_t ledPin, bool normalHigh)
+	: _demuxer(demuxer), _selectId(selectId), _ledPin(ledPin), _normalHigh(normalHigh) { }
 
 HardwareDemuxButton::~HardwareDemuxButton() { }
 

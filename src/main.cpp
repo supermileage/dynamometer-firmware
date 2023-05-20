@@ -29,10 +29,10 @@ SensorOptical optical(pio0, 0);
 InputManager inputManager;
 HardwareInputSerial inputSerial;
 HardwareDemuxer demuxer(DEMUX_SELECT0, DEMUX_SELECT1, DEMUX_OUT);
-HardwareDemuxButton selectButton(demuxer, DEMUX_SELECT_SELECT, LED_SELECT, true);
-HardwareDemuxButton backButton(demuxer, DEMUX_SELECT_BACK, LED_BACK, true);
-HardwareDemuxButton brakeButton(demuxer, DEMUX_SELECT_BRAKE, LED_BRAKE, true);
-HardwareDemuxButton encoderButton(demuxer, DEMUX_SELECT_ROT_EN_SW, LED_NULL, false);
+HardwareDemuxButton selectButton(demuxer, DEMUX_SELECT_SELECT, LED_SELECT, false);
+HardwareDemuxButton backButton(demuxer, DEMUX_SELECT_BACK, LED_BACK, false);
+HardwareDemuxButton brakeButton(demuxer, DEMUX_SELECT_BRAKE, LED_BRAKE, false);
+HardwareDemuxButton encoderButton(demuxer, DEMUX_SELECT_ROT_EN_SW, LED_NULL, true);
 HardwarePotentiometer pot(POT_IN);
 HardwareRotaryEncoder rot(ROT_EN_A, ROT_EN_B);
 
@@ -68,6 +68,7 @@ void setup() {
 
 	// INPUT TEST
 	// inputManager.registerAction(ID_BRAKE_BUTTON, [](input_data_t d) { Serial.printf("Brake button is %s\n", String(d == 0 ? "Low" : "High").c_str()); });
+	// inputManager.registerAction(ID_BRAKE_POT, [](input_data_t d) { Serial.printf("Brake pot value: %s\n", String(d).c_str()); });
 	// inputManager.registerAction(ID_ROT_EN_SW, [](input_data_t d) { Serial.printf("Rotary switch is %s\n", String(d == 0 ? "Low" : "High").c_str()); });
 	// inputManager.registerAction(ID_ROT_EN, [](input_data_t d) { Serial.printf("Rotary encoder changed: %s\n", String(d).c_str()); });
 }

@@ -16,6 +16,8 @@
 
 /* IO */
 
+/* General */
+
 /* Screen */
 #define LCD_RST     20
 #define LCD_DC      21

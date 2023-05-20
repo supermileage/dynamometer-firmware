@@ -5,7 +5,8 @@
 
 #include "HardwareInput.h"
 
-#define POTENTIOMETER_MAX 1023
+#define ALPHA 0.125f
+#define POTENTIOMETER_MAX 1016
 
 class HardwarePotentiometer : public HardwareInput {
     public:
@@ -15,20 +16,27 @@ class HardwarePotentiometer : public HardwareInput {
         
         void init() override {
             pinMode(_pin, INPUT);
+            _lastReadVal = analogRead(_pin);
         }
 
         void run() override {
-            int32_t readVal = static_cast<int32_t>(analogRead(_pin));
+            int32_t readVal = analogRead(_pin);
+
+            // compute exponential moving average ()
+            float accumulator = static_cast<float>(_lastReadVal) * (1 - ALPHA);
+            readVal = static_cast<int32_t>(accumulator + static_cast<float>(readVal) * ALPHA);
 
             if (readVal != _lastReadVal) {
-                (_action)(POTENTIOMETER_MAX - readVal);
+                input_data_t data = POTENTIOMETER_MAX - readVal;
+                (_action)(data < 0 ? 0 : data);
                 _lastReadVal = readVal;
             }
         }
 
     private:
         pin_size_t _pin;
-        int32_t _lastReadVal = INT32_MIN;
+        input_data_t _lastReadVal = INT32_MIN;
+        float _accumulator;
 };
 
 #endif
