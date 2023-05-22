@@ -11,7 +11,7 @@ class DataLogger {
     public:
 
         //Constructs a DataLogger object and begins access to the SDcard.
-        DataLogger(int pinNumber, bool O_SYNC = false);
+        DataLogger(int pinNumber, bool O_SYNC_FLAG = false);
 
         ~DataLogger();
 
@@ -21,7 +21,7 @@ class DataLogger {
 
         //Allows a user to load a CSV file located with the specified name.
         //Returns true on success, false otherwise.
-        bool open(String name);
+        bool open(String name, int numColumns);
 
         //Saves any csv data for current file to disk.
         bool saveToDisk();
@@ -49,7 +49,7 @@ class DataLogger {
         private:
         int _numColumns;
         int _curColumn;
-        File _curFile;
+        File* _curFilePtr;
         String _buffer;
 
         bool _O_SYNC;

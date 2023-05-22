@@ -6,7 +6,7 @@ using namespace std;
 
 //public methods:
 
-DataLogger::DataLogger(int pinNumber, bool O_SYNC = false)
+DataLogger::DataLogger(int pinNumber, bool O_SYNC_FLAG /*= false*/)
 {
     if (SD.begin(pinNumber, SPI1))
     {
@@ -17,19 +17,20 @@ DataLogger::DataLogger(int pinNumber, bool O_SYNC = false)
         DEBUG_SERIAL_LN("SD card missing or failed");
     }
 
-    _O_SYNC = O_SYNC;
+    _O_SYNC = O_SYNC_FLAG;
 }
 
 DataLogger::~DataLogger(){};
 
 bool DataLogger::create(String name, int numColumns)
 {
-    _curFile = SD.open(name, FILE_WRITE);
+    File curFile = SD.open(name, FILE_WRITE);
+    _curFilePtr = &curFile;
     _numColumns = numColumns;
     _curColumn = 0;
     _buffer = "";
     
-    if (_curFile)
+    if (_curFilePtr != nullptr)
     {
         DEBUG_SERIAL_LN("Creating file successful");
         return true;
@@ -100,7 +101,7 @@ bool DataLogger::open(String name, int numColumns)
         if (columnsInFile == numColumns) {
             // file is good
             _numColumns = numColumns;
-            _curFile = tempFile;
+            _curFilePtr = &tempFile;
             return true;
         }
         // check if it is an empty file
@@ -108,7 +109,7 @@ bool DataLogger::open(String name, int numColumns)
         {
             // file is empty
             _numColumns = numColumns;
-            _curFile = tempFile;
+            _curFilePtr = &tempFile;
             return true;
         }
         else 
@@ -129,9 +130,9 @@ bool DataLogger::open(String name, int numColumns)
 }
 
 bool DataLogger::saveToDisk() {
-    if (_curFile)
+    if (_curFilePtr != nullptr)
     {
-        _curFile.print(_buffer);
+        (*_curFilePtr).print(_buffer);
         _buffer = "";
         DEBUG_SERIAL_LN("Write to file successful.");
         return true;
@@ -145,10 +146,13 @@ bool DataLogger::saveToDisk() {
 
 bool DataLogger::close()
 {
-    if (_curFile)
+    if (*_curFilePtr)
     {
-        _curFile.close();
-        _curFile = null; // sets _curFile to null so saveToDisk() doesnt try writing to a closed file
+        (*_curFilePtr).close();
+
+        // sets _curFile to null so saveToDisk() doesnt try writing to a closed file
+        _curFilePtr = nullptr;
+
         DEBUG_SERIAL_LN("Closed loaded file.");
         return true;
     }
