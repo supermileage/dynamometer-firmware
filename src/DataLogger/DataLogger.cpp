@@ -117,7 +117,40 @@ bool DataLogger::open(String name, int numColumns)
             // file is not empty, and does not have the correct number of columns
             DEBUG_SERIAL_LN("Incorrect column number. Creating in file copyof_" + name);
             tempFile.close();
-            return open("copyof_" + name, numColumns);
+
+            // create new name for file
+
+            // find extension (example: myFile.csv)
+            int extensionIndex = name.lastIndexOf('.');
+            String base = name.substring(0, extensionIndex == -1 ? name.length() : extensionIndex);
+            String extension = extensionIndex == -1 ? "" : name.substring(extensionIndex + 1);
+            base.trim();
+
+            // find current file count (example: myFile (2).csv)
+            int fileCountStart = base.lastIndexOf('(');
+            int fileCountEnd = base.lastIndexOf(')');
+            int count = 0;
+            if (fileCountStart != -1 && fileCountEnd != -1 && fileCountEnd == base.length() - 1) {
+                String countString = base.substring(fileCountStart + 1, fileCountEnd);
+                bool numeric = true;
+                
+                // checks if all characters in countString are numeric
+                for (size_t i = 0; i < countString.length(); i++) {
+                    if (!isdigit(countString.charAt(i))) {
+                        numeric = false;
+                        break;
+                    }
+                }
+
+                if (numeric) {
+                    count = countString.toInt();
+                    // take count out of file name
+                    base = base.substring(0, fileCountStart);
+                    base.trim();
+                }
+            }
+            String newFileName = base + " (" + (count + 1) + ")" + (extension != "" ? "." + extension : "");
+            return open(newFileName, numColumns);
         }
     }
     else
