@@ -1,7 +1,7 @@
 #ifndef _HANDLEABLE_H
 #define _HANDLEABLE_H
 
-#include <Vector.h>
+#include <vector>
 
 // Abstract class for any object that can be "handleable"
 // (ie. would need a function to run regularly in the loop)
@@ -32,7 +32,12 @@ class Handleable {
         virtual void handle() = 0;
 
         /*
-         * Calls handler to run all handleable objects
+         * Calls begin on all handleable objects
+        */
+        static void beginAll();
+
+        /*
+         * Calls handle on all currently active handleable objects
         */
         static void handleAll();
 
@@ -47,7 +52,7 @@ class Handleable {
                  * @return reference to handler instance
                  */
                 static Handler &instance();
-
+                
                 /**
                  * Add a handleable object to list of handleables
                  * 
@@ -81,7 +86,7 @@ class Handleable {
             
             private:
                 static Handler* _instance;
-                Vector<Handleable*> _handleables;
+                std::vector<Handleable*> _handleables;
         };
         
 };
