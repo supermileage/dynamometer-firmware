@@ -179,7 +179,7 @@ bool DataLogger::saveToDisk() {
 
 bool DataLogger::close()
 {
-    if (*_curFilePtr)
+    if (_curFilePtr != nullptr)
     {
         (*_curFilePtr).close();
 
