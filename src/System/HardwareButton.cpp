@@ -2,13 +2,10 @@
 
 #include "settings.h"
 
-HardwareButton::HardwareButton(InputCallback action, pin_size_t pin, PinMode pinMode) {
-		_action = action;
+HardwareButton::HardwareButton(pin_size_t pin, PinMode pinMode) {
 		_pin = pin;
 		_pinMode = pinMode;
 }
-
-HardwareButton::~HardwareButton() { }
 
 void HardwareButton::init() {
 	pinMode(_pin, _pinMode);

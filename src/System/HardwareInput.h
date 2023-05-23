@@ -8,71 +8,32 @@
 typedef int32_t input_data_t;
 typedef std::function<void(input_data_t)> InputCallback;
 
+/**
+ * @brief base class for all hardware ui inputs
+*/
 class HardwareInput {
     public:
         virtual ~HardwareInput() { }
+
+        /**
+         * @brief virtual init method implemented in derived classes: called once in setup
+        */
         virtual void init() = 0;
+
+        /**
+         * @brief virtual run method implemented in derived classes: called every control loop
+        */
         virtual void run() = 0;
-        void setAction(InputCallback action) { _action = action; }
+
+        /**
+         * @brief sets the callback action for this input
+         * 
+         * @note callback only called when input state changes
+        */
+        virtual void setAction(InputCallback action) { _action = action; }
 
     protected:
-        InputCallback _action = [](int32_t) { }; // default action
-};
-
-class HardwareDemuxer {
-    public:
-        HardwareDemuxer(pin_size_t select0, pin_size_t select1) :
-            _select0(select0), _select1(select1) { }
-
-        ~HardwareDemuxer() { }
-
-        void init() {
-            pinMode(_select0, OUTPUT);
-            pinMode(_select1, OUTPUT);
-        }
-
-        void setSelect(uint8_t selectId) {
-            digitalWrite(_select0, static_cast<PinMode>(selectId & 0x1));
-            digitalWrite(_select1, static_cast<PinMode>(selectId & 0x2));
-        }
-
-    private:
-        pin_size_t _select0;
-        pin_size_t _select1;
-};
-
-class HardwareDemuxButton : public HardwareInput {
-    public:
-        HardwareDemuxButton(InputCallback action, HardwareDemuxer& demuxer, pin_size_t pin, PinMode pinMode,
-            uint8_t selectId) : _demuxer(demuxer), _pin(pin), _pinMode(pinMode), _selectId(selectId) {
-            _action = action;
-        }
-		
-        ~HardwareDemuxButton() { }
-
-		void init() override {
-            pinMode(_pin, _pinMode);
-        }
-
-		void run() override {
-            _demuxer.setSelect(_selectId);
-            PinStatus read = digitalRead(_pin);
-	
-            if (read != _lastRead && millis() > _lastReadMillis + BUTTON_DEBOUNCE_MILLIS) {
-                (_action)(static_cast<uint32_t>(read));
-                _lastReadMillis = millis();
-                _lastRead = read;
-            }
-        }
-
-
-    private:
-        HardwareDemuxer& _demuxer;
-        pin_size_t _pin;
-        PinMode _pinMode;
-        uint8_t _selectId;
-        PinStatus _lastRead = LOW;
-		uint32_t _lastReadMillis = 0;
+        InputCallback _action = [](int32_t) { /* default action does nothing */ };
 };
 
 #endif

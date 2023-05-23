@@ -23,8 +23,6 @@ SensorOptical optical(pio0, 0);
 /* io */
 InputManager inputManager;
 HardwareInputSerial inputSerial;
-HardwareDemuxer demuxer();
-
 
 /* ui */
 ApplicationContext context(inputManager, tft, ApplicationContext::MainMenu);
