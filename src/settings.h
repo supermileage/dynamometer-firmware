@@ -16,7 +16,7 @@
 
 #define BUTTON_DEBOUNCE_MILLIS 50
 
-// Input IDs
+// UI Input IDs (must be sequential)
 #define ID_SERIAL               0
 #define ID_ROT_ENCODER          1
 #define ID_ROTARY_EN_SELECT     2
@@ -24,6 +24,7 @@
 #define ID_SELECT               4
 #define ID_BRAKE_BUTTON         5
 #define ID_BRAKE_POT            6
+#define NUM_INPUT_IDS           7
 
 /* Debugging */
 #define DEBUG_SERIAL_EN 1

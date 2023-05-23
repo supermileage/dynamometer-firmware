@@ -1,5 +1,6 @@
 #include "test_config.h"
 #include "SensorOptical.h"
+#include "Arduino.h"
 
 /* Helpers */
 void simulateAperturePasses(SensorOptical& optical, uint32_t numPasses);
@@ -7,6 +8,9 @@ void simulateAperturePasses(SensorOptical& optical, uint32_t numPasses);
 TEST_CASE( "SensorOptical::getAngularVelocity", "[SensorOptical]" ) {
 	SensorOptical optical(0, 0, 10000);
     setMicros(0);
+
+    String s1("123");
+    String s2 = (String)"123";
 
     SECTION("full rotation in one second") {
         optical.begin();

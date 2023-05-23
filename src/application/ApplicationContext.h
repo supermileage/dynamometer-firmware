@@ -12,7 +12,6 @@ class MenuControllerExample;
 
 /**
  * @brief maintains state and state transitions of application
- * 
  */
 class ApplicationContext : public Handleable {
     public:

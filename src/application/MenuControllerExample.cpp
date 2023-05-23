@@ -5,24 +5,24 @@
 #define BUTTON_ID_SETTINGS  2
 
 MenuControllerExample::MenuControllerExample(ApplicationContext& context, Adafruit_GFX& display, uint8_t inFocus) :
-	_context(context), _inFocus(inFocus) {
-    	_menu = new MenuViewExample(display);
+    _context(context) {
+        _inFocus = inFocus;
+        _menu = new MenuViewExample(display);
     	_menuButtonCalibrate = new UIButton(display);
     	_menuButtonCtrl = new UIButton(display);
     	_menuButtonSettings = new UIButton(display);
 }
 
 MenuControllerExample::~MenuControllerExample() {
-    // delete each UIElement stored in map
-    for (const auto& pair : _buttonCallbackMap) {
-        delete pair.second.first;
-    }
-
-	delete _menu;
+    delete _menu;
+    delete _menuButtonCalibrate;
+	delete _menuButtonCtrl;
+    delete _menuButtonSettings;
 }
 
 void MenuControllerExample::init(InputManager& manager) {
-    manager.registerAction( ID_SERIAL, [this](int32_t arg) { _handleInputSerial(arg); } );
+    // register all input callbacks with input manager
+    ControllerBase::init(manager);
 
     _menu->addMenuButton(_menuButtonCalibrate, "Run Calibration");
     _buttonCallbackMap[BUTTON_ID_CALIBRATE] =
@@ -44,11 +44,11 @@ uint8_t MenuControllerExample::getInFocus() {
 	return _inFocus;
 }
 
-void MenuControllerExample::_handleInputSerial(int32_t arg) {
-    DEBUG_SERIAL_LN("Serial input received: " + String(arg));
+void MenuControllerExample::_handleInputSerial(input_data_t d) {
+    DEBUG_SERIAL_LN("Serial input received: " + String(d));
     UIElement* cur;
 
-    switch (arg) {
+    switch (d) {
         case 65:
             cur = _buttonCallbackMap[_inFocus].first;
             UIEventHandler::instance().addEvent( [cur]() { cur->revert(); } );
@@ -72,20 +72,4 @@ void MenuControllerExample::_handleInputSerial(int32_t arg) {
             // do nothing
             break;
     }
-}
-
-void MenuControllerExample::_handleInputSelect(int32_t arg) {
-
-}
-
-void MenuControllerExample::_handleInputBack(int32_t arg) {
-
-}
-
-void MenuControllerExample::_handleInputBrakeButton(int32_t arg) {
-
-}
-
-void MenuControllerExample::_handleInputBrakePot(int32_t arg) {
-
 }
