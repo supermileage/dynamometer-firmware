@@ -13,15 +13,7 @@ class File;
 /**
  * @brief Dummy SPI class for testing
  */
-class HardwareSPI {
-    public:
-        static HardwareSPI instance();
-
-    private:
-        static HardwareSPI* _instance;
-
-        HardwareSPI();
-};
+class HardwareSPI { };
 
 /**
  * @brief Mock SDClass for testing purposes
@@ -33,8 +25,8 @@ class MockSDClass {
         bool exists(const String& filePath);
 };
 
-// SD object for tests
-#define SPI1 HardwareSPI::instance();
+// Global objects for test
+extern HardwareSPI SPI1;
 extern MockSDClass SD;
 
 /**
@@ -46,9 +38,11 @@ class File {
         int read();
         void close();
         size_t print(String buf);
+        operator bool() const;
 
     private:
         int _fd;
+        int _status = -1;
 };
 
 #endif

@@ -3,6 +3,7 @@
 #include <fcntl.h>
 
 MockSDClass SD;
+HardwareSPI SPI1;
 
 bool MockSDClass::begin(uint8_t pin, HardwareSPI spi) {
     return true;
@@ -34,11 +35,6 @@ size_t File::print(String buf) {
     return 0;
 }
 
-HardwareSPI* HardwareSPI::_instance = nullptr;
-
-HardwareSPI& HardwareSPI::instance() {
-    if (!_instance) {
-        _instance = new HardwareSPI();
-    }
-    return *_instance;
+File::operator bool() const {
+    return _status >= 0;
 }
