@@ -69,7 +69,8 @@ class DataLogger {
         private:
         int _numColumns;
         int _curColumn;
-        File* _curFilePtr;
+        File _curFile;
+        bool _fileValid;
         String _buffer;
 
         bool _osync;
