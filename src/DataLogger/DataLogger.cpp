@@ -5,7 +5,7 @@ using namespace std;
 
 //public methods:
 
-DataLogger::DataLogger(int pinNumber, bool O_SYNC_FLAG /*= false*/)
+DataLogger::DataLogger(int pinNumber, bool osync /*= false*/)
 {
     if (SD.begin(pinNumber, SPI1))
     {
@@ -16,26 +16,33 @@ DataLogger::DataLogger(int pinNumber, bool O_SYNC_FLAG /*= false*/)
         DEBUG_SERIAL_LN("SD card missing or failed");
     }
 
-    _O_SYNC = O_SYNC_FLAG;
+    _osync = osync;
 }
 
 DataLogger::~DataLogger(){};
 
 bool DataLogger::create(String name, int numColumns)
 {
-    File curFile = SD.open(name, FILE_WRITE);
-    _curFilePtr = &curFile;
+    // if file is already open, close that file
+    if(_fileValid == true) {
+        _curFile.close();
+        _fileValid = false;
+    }
+
+    _curFile = SD.open(name, FILE_WRITE);
     _numColumns = numColumns;
     _curColumn = 0;
     _buffer = "";
     
-    if (_curFilePtr != nullptr)
+    if (_curFile)
     {
+        _fileValid = true;
         DEBUG_SERIAL_LN("Creating file successful");
         return true;
     }
     else
     {
+        _fileValid = false;
         DEBUG_SERIAL_LN("Creating file failed.");
         return false;
     }
@@ -43,6 +50,12 @@ bool DataLogger::create(String name, int numColumns)
 
 bool DataLogger::open(String name, int numColumns)
 {
+    // if file is already open, close that file
+    if(_fileValid == true) {
+        _curFile.close();
+        _fileValid = false;
+    }
+
     _curColumn = 0;
     _buffer = "";
 
@@ -54,8 +67,21 @@ bool DataLogger::open(String name, int numColumns)
 
         DEBUG_SERIAL_LN("Loading " + name);
 
-        File tempFile;
-        tempFile = SD.open(name);
+        File _curFile = SD.open(name, FILE_WRITE | FILE_READ);
+        
+        // check if file opened successfully
+        if (_curFile)
+        {
+            _fileValid = true;
+            DEBUG_SERIAL_LN("Creating file successful");
+            // continue with function
+        }
+        else
+        {
+            _fileValid = false;
+            DEBUG_SERIAL_LN("Creating file failed.");
+            return false;
+        }
 
         // some variables to help identify how many columns in the first line
         int commaNum = 0;
@@ -64,9 +90,9 @@ bool DataLogger::open(String name, int numColumns)
 
         int columnsInFile = 0;
 
-        while (tempFile.available())
+        while (_curFile.available())
         {
-            char readChar = tempFile.read(); // char to hold a character that has been read
+            char readChar = _curFile.read(); // char to hold a character that has been read
 
             if (readChar == ',')
             {
@@ -100,7 +126,6 @@ bool DataLogger::open(String name, int numColumns)
         if (columnsInFile == numColumns) {
             // file is good
             _numColumns = numColumns;
-            _curFilePtr = &tempFile;
             return true;
         }
         // check if it is an empty file
@@ -108,15 +133,15 @@ bool DataLogger::open(String name, int numColumns)
         {
             // file is empty
             _numColumns = numColumns;
-            _curFilePtr = &tempFile;
             return true;
         }
         else
         {
             // file is not empty, and does not have the correct number of columns
-            DEBUG_SERIAL_LN("Incorrect column number. Creating in file copyof_" + name);
-            tempFile.close();
-
+            DEBUG_SERIAL_LN("Incorrect column number in file: " + name + ". Creating file with new name.");
+            _curFile.close();
+            _fileValid = false;
+            
             // create new name for file
 
             // find extension (example: myFile.csv)
@@ -162,9 +187,9 @@ bool DataLogger::open(String name, int numColumns)
 }
 
 bool DataLogger::saveToDisk() {
-    if (_curFilePtr != nullptr)
+    if (_fileValid)
     {
-        (*_curFilePtr).print(_buffer);
+        _curFile.print(_buffer);
         _buffer = "";
         DEBUG_SERIAL_LN("Write to file successful.");
         return true;
@@ -178,12 +203,10 @@ bool DataLogger::saveToDisk() {
 
 bool DataLogger::close()
 {
-    if (_curFilePtr != nullptr)
+    if (_fileValid)
     {
-        (*_curFilePtr).close();
-
-        // sets _curFile to null so saveToDisk() doesnt try writing to a closed file
-        _curFilePtr = nullptr;
+        _curFile.close();
+        _fileValid = false;
 
         DEBUG_SERIAL_LN("Closed loaded file.");
         return true;
@@ -200,7 +223,7 @@ void DataLogger::setHeader(String header)
     _buffer += header + "\r\n";
     DEBUG_SERIAL_LN("Added header " + header + " to buffer.");
 
-    if (_O_SYNC)
+    if (_osync)
         saveToDisk();
 }
 
@@ -222,7 +245,7 @@ void DataLogger::addEntry(String data)
     DEBUG_SERIAL_LN("Added " + data + " to buffer.");
     _curColumn = 0;
 
-    if (_O_SYNC)
+    if (_osync)
         saveToDisk();
 }
 
@@ -232,7 +255,7 @@ void DataLogger::addRow(String data)
     _curColumn = 0;
     DEBUG_SERIAL_LN("Added " + data + " to buffer.");
 
-    if (_O_SYNC)
+    if (_osync)
         saveToDisk();
 }
 
