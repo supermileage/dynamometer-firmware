@@ -10,40 +10,60 @@ using namespace std;
 class DataLogger {
     public:
 
-        //Constructs a DataLogger object and begins access to the SDcard.
-        DataLogger(int pinNumber, bool O_SYNC_FLAG = false);
+        /**
+         * @brief Constructs a DataLogger object and begins access to the SDcard.
+        */
+        DataLogger(int pinNumber, bool osync = false);
 
         ~DataLogger();
 
-        //Creates a new CSV file with a given number of columns with the specified name and loads it.
-        //Returns true on success, false otherwise.
+        /**
+         * @brief Creates a new CSV file with a given number of columns with the specified name and loads it. 
+         * @return True on success, false otherwise.
+        */
         bool create(String name, int numColumns);
 
-        //Allows a user to load a CSV file located with the specified name.
-        //Returns true on success, false otherwise.
+        /**
+         * @brief Allows a user to load a CSV file located with the specified name.
+         * @return True on success, false otherwise.
+        */
         bool open(String name, int numColumns);
 
-        //Saves any csv data for current file to disk.
+        /**
+         * @brief Saves any csv data for current file to disk.
+         * @return True on success, false otherwise.
+        */
         bool saveToDisk();
 
-        //Close currently loaded file.
-        //Returns true on success, false otherwise.
+        /**
+         * @brief Close currently loaded file.
+         * @return True on success, false otherwise.
+        */
         bool close();
 
-        //Writes header provided by String header to a blank CSV file.
+        /**
+         * @brief Writes header provided by String header to a blank CSV file.
+        */
         void setHeader(String header);
 
-        //Writes entry provided by String data to the loaded CSV file.
-        //If its the last entry of the row, start a new line.
+        /**
+         * @brief Writes entry provided by String data to the loaded CSV file. If its the last entry of the row, start a new line.
+        */
         void addEntry(String data);
 
-        //Writes row provided by String data to the loaded CSV file.
+        /**
+         * @brief Writes row provided by String data to the loaded CSV file.
+        */
         void addRow(String data);
 
-        //Returns number of columns in the currently loaded CSV file.
+        /**
+         * @brief Returns number of columns in the currently loaded CSV file.
+        */
         int getNumColumns();
 
-        //Returns number of bytes in buffer.
+        /**
+         * @brief Returns number of bytes in buffer.
+        */
         int getBufferLength();
 
         private:
@@ -52,7 +72,7 @@ class DataLogger {
         File* _curFilePtr;
         String _buffer;
 
-        bool _O_SYNC;
+        bool _osync;
 };
 
 #endif

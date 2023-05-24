@@ -6,7 +6,7 @@ using namespace std;
 
 //public methods:
 
-DataLogger::DataLogger(int pinNumber, bool O_SYNC_FLAG /*= false*/)
+DataLogger::DataLogger(int pinNumber, bool osync /*= false*/)
 {
     if (SD.begin(pinNumber, SPI1))
     {
@@ -17,7 +17,7 @@ DataLogger::DataLogger(int pinNumber, bool O_SYNC_FLAG /*= false*/)
         DEBUG_SERIAL_LN("SD card missing or failed");
     }
 
-    _O_SYNC = O_SYNC_FLAG;
+    _osync = osync;
 }
 
 DataLogger::~DataLogger(){};
@@ -115,7 +115,7 @@ bool DataLogger::open(String name, int numColumns)
         else 
         {
             // file is not empty, and does not have the correct number of columns
-            DEBUG_SERIAL_LN("Incorrect column number. Creating in file copyof_" + name);
+            DEBUG_SERIAL_LN("Incorrect column number in file: " + name + ". Creating file with new name.");
             tempFile.close();
 
             // create new name for file
@@ -201,7 +201,7 @@ void DataLogger::setHeader(String header)
     _buffer += header + "\r\n";
     DEBUG_SERIAL_LN("Added header " + header + " to buffer.");
 
-    if (_O_SYNC)
+    if (_osync)
         saveToDisk();
 }
 
@@ -223,7 +223,7 @@ void DataLogger::addEntry(String data)
     DEBUG_SERIAL_LN("Added " + data + " to buffer.");
     _curColumn = 0;
 
-    if (_O_SYNC)
+    if (_osync)
         saveToDisk();
 }
 
@@ -233,7 +233,7 @@ void DataLogger::addRow(String data)
     _curColumn = 0;
     DEBUG_SERIAL_LN("Added " + data + " to buffer.");
 
-    if (_O_SYNC)
+    if (_osync)
         saveToDisk();
 }
 
