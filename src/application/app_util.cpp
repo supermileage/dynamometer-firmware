@@ -46,3 +46,23 @@ void app_util::configureSelectButton(UIButton* button) {
     button->setFocusColour(SELECT_FOCUS_COLOUR).setBackgroundColour(SELECT_COLOUR);
     configureNavButton(button, SELECT_STRING);
 }
+
+const String app_util::stateToString(ApplicationState state) {
+    switch (state) {
+        case MainMenu:
+            return "Main Menu";
+            break;
+        case ManualControlMenu:
+            return "Manual Control";
+            break;
+        case CalibrationMenu:
+            return "Calibration";
+            break;
+        case SettingsMenu:
+            return "Settings";
+            break;
+        default:
+            return "Does not exist";
+            break;
+    }
+}

@@ -6,41 +6,60 @@
 #include "Adafruit_GFX.h"
 #include "System/Handleable.h"
 #include "System/InputManager.h"
-#include "application/MenuControllerExample.h"
 
-class MenuControllerExample;
+#include "ControllerFactory.h"
+#include "ControllerBase.h"
+#include "application.h"
+#include "app_util.h"
+
+class ControllerBase;
+class ControllerFactory;
+
+using namespace application;
+
+// application always starts from main menu
+#define APPLICATION_INITIAL_STATE MainMenu
 
 /**
  * @brief maintains state and state transitions of application
  */
 class ApplicationContext : public Handleable {
     public:
-		// represents different application states
-		// ok to modify if states are added / removed
-        enum ApplicationState { MainMenu, ManualControlMenu, CalibrationMenu, SettingsMenu };
+        ApplicationContext(InputManager& manager, Adafruit_GFX& display, ControllerFactory& factory);
+        ~ApplicationContext();
 
-		struct StateData {
-			ApplicationState state;
-			uint8_t inFocus;
-		};
-
-        ApplicationContext(InputManager& manager, Adafruit_GFX& display, ApplicationState state = MainMenu);
-
-        ~ApplicationContext() { }
+        /**
+         * @brief initialize application context
+        */
         void begin() override;
         void handle() override { }
+
+        /**
+         * @brief trigger state change to new state
+         * @param state the state to transition to
+         * 
+         * @note current state (before transition) will be added to previous states stack
+        */
         void changeState(ApplicationState state);
-        void navigateBack();
+
+        /**
+         * @brief trigger state change to previous state (from previous states stack)
+         * @note does nothing if _previousStates is empty
+        */        
+        void revertState();
     
     private:
-        MenuControllerExample* _controller;
         InputManager& _inputManager;
         Adafruit_GFX& _display;
-        ApplicationState _currentState;
+        ControllerFactory& _factory;
+        ControllerBase* _controller;
+        ApplicationState _currentState = APPLICATION_INITIAL_STATE;
         std::stack<StateData> _previousStates;
 
+        /**
+         * @brief changes state to state represented by state param
+        */
         void _changeStateInternal(StateData state);
-        static const String stateToString(ApplicationState state);
 };
 
 #endif

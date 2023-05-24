@@ -12,14 +12,30 @@
 /**
  * Example menu with button focus animation
 */
-class MenuViewExample {
+class MenuView {
     public:
-        MenuViewExample(Adafruit_GFX& display);
-        ~MenuViewExample();
+        MenuView(Adafruit_GFX& display);
+        ~MenuView();
         void init();
+
+        /**
+         * @brief sets string header for this view
+        */
         void setHeader(const String& str);
+
+        /**
+         * @brief adds menu button and styles it with app_util::configureMenuButton
+        */
         void addMenuButton(UIButton* button, const String& str);
+
+        /**
+         * @brief triggers select nav button
+        */
         void select();
+
+        /**
+         * @brief triggers back nav button
+        */
         void back();
 
     private:

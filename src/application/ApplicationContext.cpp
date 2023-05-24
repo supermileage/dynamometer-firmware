@@ -1,12 +1,17 @@
 #include "ApplicationContext.h"
 
+ApplicationContext::ApplicationContext(InputManager& manager, Adafruit_GFX& display, ControllerFactory& factory) :
+    _inputManager(manager), _display(display), _factory(factory) { }
 
-ApplicationContext::ApplicationContext(InputManager& manager, Adafruit_GFX& display, ApplicationState state) :
-    _inputManager(manager), _display(display), _currentState(MainMenu) {
-    _controller = new MenuControllerExample(*this, _display);
+ApplicationContext::~ApplicationContext() {
+    if (_controller) {
+        delete _controller;
+    }
 }
 
 void ApplicationContext::begin() {
+    _factory.setContext(this);
+    _controller = _factory.create(APPLICATION_INITIAL_STATE);
     _controller->init(_inputManager);
 }
 
@@ -23,7 +28,7 @@ void ApplicationContext::changeState(ApplicationState state) {
     _changeStateInternal(data);
 }
 
-void ApplicationContext::navigateBack() {
+void ApplicationContext::revertState() {
     if (_previousStates.empty()) {
         // error !
     } else {
@@ -36,26 +41,9 @@ void ApplicationContext::navigateBack() {
 void ApplicationContext::_changeStateInternal(StateData data) {
     _currentState = data.state;
     
-    DEBUG_SERIAL("Changing state to: " + stateToString(data.state));
+    DEBUG_SERIAL("Changing state to: " + app_util::stateToString(data.state));
 	DEBUG_SERIAL_LN(" -- with menu item in focus: " + String(data.inFocus));
-}
 
-const String ApplicationContext::stateToString(ApplicationState state) {
-    switch (state) {
-        case MainMenu:
-            return "Main Menu";
-            break;
-        case ManualControlMenu:
-            return "Manual Control";
-            break;
-        case CalibrationMenu:
-            return "Calibration";
-            break;
-        case SettingsMenu:
-            return "Settings";
-            break;
-        default:
-            return "Does not exist";
-            break;
-    }
+    delete _controller;
+    _controller = _factory.create(data);
 }

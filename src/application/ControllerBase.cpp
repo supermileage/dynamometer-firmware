@@ -1,5 +1,8 @@
 #include "ControllerBase.h"
 
+ControllerBase::ControllerBase(ApplicationContext& context, Adafruit_GFX& display, uint8_t inFocus) :
+    _context(context), _display(display), _inFocus(inFocus) { }
+
 ControllerBase::~ControllerBase() { }
 
 void ControllerBase::init(InputManager& manager) {

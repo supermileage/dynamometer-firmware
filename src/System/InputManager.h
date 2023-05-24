@@ -33,8 +33,7 @@ class InputManager : public Handleable {
 
         /**
          * @brief bind input with id to callback action
-         * 
-         * @note para
+         * @note action will replace currently assigned input callback for id
         */
         void registerAction(uint8_t id, InputCallback action);
         

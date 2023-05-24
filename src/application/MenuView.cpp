@@ -1,11 +1,11 @@
-#include "MenuViewExample.h"
+#include "MenuView.h"
 
 #include "settings.h"
 #include "graphics/colour.h"
 #include "graphics/fonts.h"
 #include "application/app_util.h"
 
-MenuViewExample::MenuViewExample(Adafruit_GFX& display) : _display(display) {
+MenuView::MenuView(Adafruit_GFX& display) : _display(display) {
     _window = new Container(_display);
     _header = new TextElement(_display);
     _menuContainer = new Container(_display);
@@ -14,7 +14,7 @@ MenuViewExample::MenuViewExample(Adafruit_GFX& display) : _display(display) {
     _navButtonBack = new UIButton(_display);
 }
 
-MenuViewExample::~MenuViewExample() {
+MenuView::~MenuView() {
     delete _window;
     delete _header;
     delete _menuContainer;
@@ -23,7 +23,7 @@ MenuViewExample::~MenuViewExample() {
     delete _navButtonBack;
 }
 
-void MenuViewExample::init() {
+void MenuView::init() {
     _window->addVisualElement(_header).addVisualElement(_menuContainer);
     _menuContainer->addVisualElement(_navButtonContainer);
     _navButtonContainer->addVisualElement(_navButtonBack).addVisualElement(_navButtonSelect);
@@ -44,16 +44,16 @@ void MenuViewExample::init() {
     _window->draw();
 }
 
-void MenuViewExample::addMenuButton(UIButton* button, const String& str) {
+void MenuView::addMenuButton(UIButton* button, const String& str) {
     app_util::configureMenuButton(button, str);
     _menuContainer->addVisualElement(button);
 }
 
-void MenuViewExample::select() {
+void MenuView::select() {
     _navButtonSelect->select();
 }
 
-void MenuViewExample::back() {
+void MenuView::back() {
     _navButtonBack->select();
 }
 

@@ -7,6 +7,7 @@
 #include "Sensor/SensorOptical.h"
 
 #include "application/ApplicationContext.h"
+#include "application/ControllerFactory.h"
 #include "graphics/colour.h"
 #include "ui/UIEventHandler.h"
 #include "System/HardwareInputSerial.h"
@@ -25,7 +26,8 @@ InputManager inputManager;
 HardwareInputSerial inputSerial;
 
 /* ui */
-ApplicationContext context(inputManager, tft, ApplicationContext::MainMenu);
+ControllerFactory factory(tft, inputManager);
+ApplicationContext context(inputManager, tft, factory);
 
 /* global variables */
 uint64_t c0_lastUpdateTime = 0;

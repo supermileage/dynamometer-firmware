@@ -1,12 +1,20 @@
 #ifndef _CONTROLLER_BASE_H_
 #define _CONTROLLER_BASE_H_
 
+#include <stdint.h>
 #include <functional>
 #include <map>
 
+#include "Adafruit_GFX.h"
 #include "System/InputManager.h"
 #include "System/HardwareInput.h"
 #include "ui/UIElement.h"
+#include "ApplicationContext.h"
+#include "application.h"
+
+class ApplicationContext;
+
+using namespace application;
 
 /**
  * @brief provides means of hooking up inputs to ui views: all menu and ui-behavior classes will implement this class
@@ -15,9 +23,7 @@
 */
 class ControllerBase {
     public:
-        /**
-         * @brief base destructor
-        */
+        ControllerBase(ApplicationContext& context, Adafruit_GFX& display, uint8_t inFocus = 0);
         virtual ~ControllerBase();
 
         /**
@@ -32,8 +38,12 @@ class ControllerBase {
 		uint8_t getInFocus();
 
     protected:
+        ApplicationContext& _context;
+        Adafruit_GFX& _display;
         std::map<uint8_t, std::pair<UIElement*, std::function<void()>>> _buttonCallbackMap;
         uint8_t _inFocus = 0;
+
+        void _invokeStateChange(ApplicationState state);
 
         /* hardware input handlers (assigned as InputCallback in init) */
 
