@@ -1,7 +1,6 @@
-#include "settings.h"
 #include "DataLogger.h"
-#include <SD.h>
-#include <iostream>
+#include "settings.h"
+
 using namespace std;
 
 //public methods:
@@ -112,7 +111,7 @@ bool DataLogger::open(String name, int numColumns)
             _curFilePtr = &tempFile;
             return true;
         }
-        else 
+        else
         {
             // file is not empty, and does not have the correct number of columns
             DEBUG_SERIAL_LN("Incorrect column number. Creating in file copyof_" + name);
