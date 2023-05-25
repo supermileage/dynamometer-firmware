@@ -22,8 +22,8 @@ class ControllerMenu : public ControllerBase {
          * @brief menu button configuration data with display text and state which button transitions to
         */
         struct MenuButtonData {
-            const String& text;
             application::ApplicationState state;
+            const String text;
         };
 
         ControllerMenu(ApplicationContext& context, Adafruit_GFX& display, uint8_t inFocus = 0);
@@ -35,6 +35,11 @@ class ControllerMenu : public ControllerBase {
          * @param buttonConfigs ui button data to configure the interactive buttons of this menu
         */
         void init(InputManager& manager, const std::vector<MenuButtonData>& buttonConfigs);
+
+        /**
+         * @brief returns view associated with this controller
+        */
+        MenuView& getView();
 
     private:
         MenuView* _menu;

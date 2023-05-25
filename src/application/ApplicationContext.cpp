@@ -12,37 +12,76 @@ ApplicationContext::~ApplicationContext() {
 void ApplicationContext::begin() {
     _factory.setContext(this);
     _controller = _factory.create(APPLICATION_INITIAL_STATE);
-    _controller->init(_inputManager);
+    mutex_init(&_stateChangeMutex);
 }
 
-void ApplicationContext::changeState(ApplicationState state) {
+void ApplicationContext::handle() {
+    if (_nextState.state != NullState) {
+        bool changeNow = false;
+        
+        if (_changeState) {
+            mutex_enter_blocking(&_stateChangeMutex);
+            DEBUG_STATE_TRANSITION_LN("_changeState is true -- setting local bool");
+            _changeState = false;
+            mutex_exit(&_stateChangeMutex);
+            changeNow = true;
+        }
+
+        if (changeNow) {
+            DEBUG_STATE_TRANSITION_LN("local bool is set -- calling _changeStateInternal");
+            _changeStateInternal(_nextState);
+            _nextState.reset();
+        }
+    }
+}
+
+void ApplicationContext::setNextState(ApplicationState state) {
 	// push current state to _previousStates
+    if (_nextState.state != NullState) {
+        DEBUG_STATE_TRANSITION_LN("Already in state transition -- Aborting");
+        return;
+    }
+
 	StateData data;
 	data.state = _currentState;
 	data.inFocus = _controller->getInFocus();
     _previousStates.push(data);
     
     // transition to new state
-	data.state = state;
-	data.inFocus = 0;
-    _changeStateInternal(data);
+	_nextState.state = state;
+	_nextState.inFocus = 0;
 }
 
 void ApplicationContext::revertState() {
+    if (_nextState.state != NullState) {
+        DEBUG_STATE_TRANSITION_LN("Already in state transition -- Aborting");
+        return;
+    }
+
     if (_previousStates.empty()) {
         // error !
     } else {
-        StateData state = _previousStates.top();
+        _nextState = _previousStates.top();
         _previousStates.pop();
-        _changeStateInternal(state);
     }
+}
+
+void ApplicationContext::setChangeState() {
+    if (_changeState) {
+        DEBUG_STATE_TRANSITION_LN("Change state field already set to true");
+        return;
+    }
+    DEBUG_STATE_TRANSITION_LN("Setting _changeState field to true");
+    mutex_enter_blocking(&_stateChangeMutex);
+    _changeState = true;
+    mutex_exit(&_stateChangeMutex);
 }
 
 void ApplicationContext::_changeStateInternal(StateData data) {
     _currentState = data.state;
     
     DEBUG_SERIAL("Changing state to: " + app_util::stateToString(data.state));
-	DEBUG_SERIAL_LN(" -- with menu item in focus: " + String(data.inFocus));
+	DEBUG_STATE_TRANSITION_LN(" -- with menu item in focus: " + String(data.inFocus));
 
     delete _controller;
     _controller = _factory.create(data);

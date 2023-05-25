@@ -37,4 +37,7 @@
 #define DEBUG_SERIAL(x) { }
 #endif
 
+#define DEBUG_STATE_TRANSITION_LN(x) Serial.println(x)
+// #define DEBUG_STATE_TRANSITION_LN(x) { }
+
 #endif

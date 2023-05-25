@@ -4,9 +4,14 @@
 #include "ControllerMenu.h"
 
 const std::vector<ControllerMenu::MenuButtonData> mainMenuConfig = {
-    { ControllerMenu::MenuButtonData { .text = "Run Calibration", .state = CalibrationMenu } },
-    { ControllerMenu::MenuButtonData { .text = "Manual Control", .state = ManualControlMenu } },
-    { ControllerMenu::MenuButtonData { .text = "Settings", .state = SettingsMenu } }
+    { ControllerMenu::MenuButtonData { .state = CalibrationMenu, .text = "Run Calibration" } },
+    { ControllerMenu::MenuButtonData { .state = ManualControlMenu, .text = "Manual Control" } },
+    { ControllerMenu::MenuButtonData { .state = SettingsMenu, .text = "Settings" } }
+};
+
+const std::vector<ControllerMenu::MenuButtonData> calibrationMenuConfig = {
+    { ControllerMenu::MenuButtonData { .state = CalibrationMode, .text = "Begin Calibration" } },
+    { ControllerMenu::MenuButtonData { .state = CalibrationSettings, .text = "Calibration Settings" } }
 };
 
 ControllerFactory::ControllerFactory(Adafruit_GFX& display, InputManager& manager) :
@@ -30,13 +35,16 @@ ControllerBase* ControllerFactory::_createInternal(StateData data) {
     switch (data.state) {
         case MainMenu:
             ret = new ControllerMenu(*_context, _display, data.inFocus);
+            static_cast<ControllerMenu*>(ret)->getView().setHeader("main menu");
             static_cast<ControllerMenu*>(ret)->init(_inputManager, mainMenuConfig);
             break;
         case ManualControlMenu:
             // TODO: add ManualControlMenu implementation
             break;
         case CalibrationMenu:
-            // TODO: add CalibrationMenu implementation
+            ret = new ControllerMenu(*_context, _display, data.inFocus);
+            static_cast<ControllerMenu*>(ret)->getView().setHeader("calibration setup");
+            static_cast<ControllerMenu*>(ret)->init(_inputManager, calibrationMenuConfig);
             break;
         case SettingsMenu:
             // TODO: add SettingsMenu implementation

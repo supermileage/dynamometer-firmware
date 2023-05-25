@@ -38,6 +38,11 @@ class MenuView {
         */
         void back();
 
+        /**
+         * @brief reverts back/select buttons to default state
+        */
+        void revert();
+
     private:
         Adafruit_GFX& _display;
         Container* _window;

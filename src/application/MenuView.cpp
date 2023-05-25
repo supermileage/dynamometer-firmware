@@ -15,6 +15,7 @@ MenuView::MenuView(Adafruit_GFX& display) : _display(display) {
 }
 
 MenuView::~MenuView() {
+    DEBUG_STATE_TRANSITION_LN("~MenuView");
     delete _window;
     delete _header;
     delete _menuContainer;
@@ -28,7 +29,7 @@ void MenuView::init() {
     _menuContainer->addVisualElement(_navButtonContainer);
     _navButtonContainer->addVisualElement(_navButtonBack).addVisualElement(_navButtonSelect);
 
-    app_util::configureHeader(_header, "main menu");
+    DEBUG_STATE_TRANSITION_LN("Configuring Buttons");
     app_util::configureSelectButton(_navButtonSelect);
     app_util::configureBackButton(_navButtonBack);
     app_util::configureMainWindow(_window);
@@ -41,8 +42,15 @@ void MenuView::init() {
     _navButtonContainer->align();
 
     // call to principal container draws all elements
+    DEBUG_STATE_TRANSITION_LN("Drawing window");
     _window->draw();
 }
+
+void MenuView::setHeader(const String& str) {
+    DEBUG_STATE_TRANSITION_LN("Setting header: " + str);
+    app_util::configureHeader(_header, str);
+}
+
 
 void MenuView::addMenuButton(UIButton* button, const String& str) {
     app_util::configureMenuButton(button, str);
@@ -50,10 +58,17 @@ void MenuView::addMenuButton(UIButton* button, const String& str) {
 }
 
 void MenuView::select() {
+    DEBUG_STATE_TRANSITION_LN("MenuView::select");
     _navButtonSelect->select();
 }
 
 void MenuView::back() {
+    DEBUG_STATE_TRANSITION_LN("MenuView::back");
     _navButtonBack->select();
 }
 
+void MenuView::revert() {
+    DEBUG_STATE_TRANSITION_LN("MenuView::revert");
+    _navButtonBack->revert();
+    _navButtonSelect->revert();
+}

@@ -3,7 +3,9 @@
 ControllerBase::ControllerBase(ApplicationContext& context, Adafruit_GFX& display, uint8_t inFocus) :
     _context(context), _display(display), _inFocus(inFocus) { }
 
-ControllerBase::~ControllerBase() { }
+ControllerBase::~ControllerBase() {
+    DEBUG_SERIAL_LN("~ControllerBase");
+}
 
 void ControllerBase::init(InputManager& manager) {
     manager.registerAction(ID_SERIAL, [this](input_data_t d) { this->_handleInputSerial(d); });

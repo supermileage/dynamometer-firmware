@@ -30,39 +30,47 @@ void app_util::configureNavButtonContainer(Container* container) {
         .setBackgroundColour(NC_COLOUR).addBorder(NC_BORDER_COLOUR);
 }
 
-void app_util::configureNavButton(UIButton* button, const String& displayString) {
-    button->getTextComponent().setDisplayString(displayString).setFont(NB_FONT)
-        .setFontSize(NB_FONT_WIDTH, NB_FONT_HEIGHT).setFontColour(NB_FONT_COLOUR);
+void app_util::configureNavButton(UIButton* button) {
+    button->getTextComponent().setFont(NB_FONT).setFontSize(NB_FONT_WIDTH, NB_FONT_HEIGHT)
+        .setFontColour(NB_FONT_COLOUR);
     button->setFontFocusColour(NB_FONT_FOCUS_COLOUR).setWidth(NB_WIDTH)
         .setHeight(NB_HEIGHT).addBorder(COLOUR_BLACK);
 }
 
 void app_util::configureBackButton(UIButton* button) {
     button->setFocusColour(BACK_FOCUS_COLOUR).setBackgroundColour(BACK_COLOUR);
-    configureNavButton(button, BACK_STRING);
+
+    if (button->getTextComponent().getDisplayString().equals("")) {
+        // if display string hasn't been modified, set to default
+        button->getTextComponent().setDisplayString(BACK_STRING);
+    }
+    configureNavButton(button);
 }
 
 void app_util::configureSelectButton(UIButton* button) {
     button->setFocusColour(SELECT_FOCUS_COLOUR).setBackgroundColour(SELECT_COLOUR);
-    configureNavButton(button, SELECT_STRING);
+
+    if (button->getTextComponent().getDisplayString().equals("")) {
+        button->getTextComponent().setDisplayString(SELECT_STRING);
+    }
+    configureNavButton(button);
 }
 
 const String app_util::stateToString(ApplicationState state) {
     switch (state) {
         case MainMenu:
             return "Main Menu";
-            break;
         case ManualControlMenu:
             return "Manual Control";
-            break;
         case CalibrationMenu:
             return "Calibration";
-            break;
         case SettingsMenu:
             return "Settings";
-            break;
+        case CalibrationMode:
+            return "Calibration Mode";
+        case CalibrationSettings:
+            return "Calibration Settings";
         default:
             return "Does not exist";
-            break;
     }
 }

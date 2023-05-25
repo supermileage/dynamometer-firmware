@@ -2,6 +2,8 @@
 
 #include <algorithm>
 
+#include "settings.h"
+
 UIEventHandler* UIEventHandler::_instance = nullptr;
 
 UIEventHandler::UIEventHandler() { }
@@ -21,33 +23,32 @@ void UIEventHandler::init() {
 
 void UIEventHandler::run() {
     mutex_enter_blocking(&_eventQueueMtx);
-    bool queueEmpty = _eventQueue.empty();
-    mutex_exit(&_eventQueueMtx);
 
-    while (!queueEmpty) {
-        mutex_enter_blocking(&_eventQueueMtx);
+    if (!_eventQueue.empty()) {
+        DEBUG_STATE_TRANSITION_LN("Event queue not empty");
         std::function<void()> event = _eventQueue.front();
         _eventQueue.pop();
         mutex_exit(&_eventQueueMtx);
 
-        // must run event outside of mutex lock so other core doesn't stall
+        // run event outside of mutex
+        DEBUG_STATE_TRANSITION_LN("Invoking event from UIEventHandler");
         (event)();
-
-        mutex_enter_blocking(&_eventQueueMtx);
-        queueEmpty = _eventQueue.empty();
+    } else {
         mutex_exit(&_eventQueueMtx);
     }
 
-    uint32_t currentTime = millis();
     for (ui_util::Animation* animation : _animations) {
-        animation->run(currentTime);
+        animation->run(millis());
     }
 }
 
 void UIEventHandler::addEvent(std::function<void(void)> action) {
+    DEBUG_STATE_TRANSITION_LN("adding action to event queue");
     mutex_enter_blocking(&_eventQueueMtx);
+    DEBUG_STATE_TRANSITION_LN("pushing action to event queue");
     _eventQueue.push(action);
     mutex_exit(&_eventQueueMtx);
+    DEBUG_STATE_TRANSITION_LN("exiting addEvent()");
 }
 
 void UIEventHandler::addAnimation(ui_util::Animation* animation) {

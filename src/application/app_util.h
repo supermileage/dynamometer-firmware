@@ -17,7 +17,7 @@ namespace app_util {
     void configureMenuContainer(Container* container);
     void configureMenuButton(UIButton* button, const String& displayString);
     void configureNavButtonContainer(Container* container);
-    void configureNavButton(UIButton* button, const String& displayString);
+    void configureNavButton(UIButton* button);
     void configureBackButton(UIButton* button);
     void configureSelectButton(UIButton* button);
 

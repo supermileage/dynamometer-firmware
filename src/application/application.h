@@ -7,10 +7,13 @@ namespace application {
      * @note add state here when adding new state to application
     */
     enum ApplicationState {
+        NullState = -1,
         MainMenu = 0,
         ManualControlMenu = 1,
         CalibrationMenu = 2,
-        SettingsMenu = 3
+        SettingsMenu = 3,
+        CalibrationMode = 4,
+        CalibrationSettings = 5
     };
 
     /**
@@ -19,6 +22,14 @@ namespace application {
     struct StateData {
         ApplicationState state;
         uint8_t inFocus;
+
+        /**
+         * @brief reset to null state
+        */
+        void reset() {
+            state = NullState;
+            inFocus = 0;
+        }
     };
 }
 

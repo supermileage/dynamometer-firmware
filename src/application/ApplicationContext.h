@@ -32,21 +32,30 @@ class ApplicationContext : public Handleable {
          * @brief initialize application context
         */
         void begin() override;
-        void handle() override { }
 
         /**
-         * @brief trigger state change to new state
-         * @param state the state to transition to
-         * 
+         * @brief handle state transitions
+        */
+        void handle() override;
+
+        /**
+         * @brief set next state which this context will transition to
          * @note current state (before transition) will be added to previous states stack
         */
-        void changeState(ApplicationState state);
+        void setNextState(ApplicationState state);
 
         /**
          * @brief trigger state change to previous state (from previous states stack)
          * @note does nothing if _previousStates is empty
         */        
         void revertState();
+
+        /**
+         * @brief sets changeState bool, indicating that context can safely transition to next state
+         * @note this is to prevent race conditions between visual element deletion and rendering when we
+         * transition between states
+        */
+        void setChangeState();
     
     private:
         InputManager& _inputManager;
@@ -54,7 +63,10 @@ class ApplicationContext : public Handleable {
         ControllerFactory& _factory;
         ControllerBase* _controller;
         ApplicationState _currentState = APPLICATION_INITIAL_STATE;
+        StateData _nextState = StateData { .state = NullState, .inFocus = 0 };
         std::stack<StateData> _previousStates;
+        mutex_t _stateChangeMutex;
+        bool _changeState = false;
 
         /**
          * @brief changes state to state represented by state param
