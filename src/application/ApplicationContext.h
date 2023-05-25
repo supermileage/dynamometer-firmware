@@ -51,11 +51,11 @@ class ApplicationContext : public Handleable {
         void revertState();
 
         /**
-         * @brief sets changeState bool, indicating that context can safely transition to next state
+         * @brief sets state transition flag, indicating that context can safely transition to next state
          * @note this is to prevent race conditions between visual element deletion and rendering when we
          * transition between states
         */
-        void setChangeState();
+        void setStateTransitionFlag();
     
     private:
         InputManager& _inputManager;
@@ -65,8 +65,8 @@ class ApplicationContext : public Handleable {
         ApplicationState _currentState = APPLICATION_INITIAL_STATE;
         StateData _nextState = StateData { .state = NullState, .inFocus = 0 };
         std::stack<StateData> _previousStates;
-        mutex_t _stateChangeMutex;
-        bool _changeState = false;
+        mutex_t _stateTransitionMutex;
+        bool _stateTransitionFlag = false;
 
         /**
          * @brief changes state to state represented by state param

@@ -69,7 +69,7 @@ void ControllerMenu::_handleInputSerial(input_data_t d) {
                     DEBUG_STATE_TRANSITION_LN("Final state change render event invoked");
                     cur->revert();
                     _menu->revert();
-                    _context.setChangeState();
+                    _context.setStateTransitionFlag();
                     DEBUG_STATE_TRANSITION_LN("Final state change render event complete");
                 });
             (_buttonCallbackMap[_inFocus].second)();
@@ -87,7 +87,7 @@ void ControllerMenu::_handleInputSerial(input_data_t d) {
             _context.revertState();
             UIEventHandler::instance().addEvent([this, cur]() {
                 _menu->back();
-                _context.setChangeState();
+                _context.setStateTransitionFlag();
             });
             break;
         default:
