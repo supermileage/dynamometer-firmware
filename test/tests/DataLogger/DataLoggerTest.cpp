@@ -69,14 +69,12 @@ void initializeOutputFolder() {
             if (!strcmp(p->d_name, ".") || !strcmp(p->d_name, "..")) {
                 continue;
             }
-
             std::string cur = path + std::string(p->d_name);
             if (remove(cur.c_str()) == -1) {
                 std::cout << "unable to remove file " << cur.c_str() << " from directory: " <<
                     strerror(errno) << std::endl;
             }
         }
-
         closedir(d);
 
         if (rmdir(path.c_str()) != 0) {
