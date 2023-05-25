@@ -8,7 +8,7 @@
 MockSDClass SD;
 HardwareSPI SPI1;
 
-int FctrlHelper::fileOpen(const char* pathname, int flags) {
+int FctrlHelper::fileOpen(const char* pathname, int flags, int mode) {
     return open(pathname, flags);
 }
 
@@ -33,12 +33,12 @@ File MockSDClass::open(const String& fileName, int mode) {
     if (mode == FILE_READ) {
         flag = O_RDONLY;
     } else if (mode == FILE_WRITE) {
-        flag = O_RDWR;
+        flag = O_RDWR | O_CREAT;
     }
 
     int fd;
-    if ((fd = FctrlHelper::fileOpen(fileName.c_str(), flag)) < 0) {
-        std::cout << "error opening file: " << strerror(errno) << std::endl;
+    if ((fd = FctrlHelper::fileOpen(fileName.c_str(), flag, 0666)) < 0) {
+        std::cout << "error opening file " << fileName.c_str() << ": " << strerror(errno) << std::endl;
     }
 
     File file(fd);
@@ -71,6 +71,16 @@ int File::read() {
     return _nextChar;
 }
 
+String File::readLine() {
+    String ret = "";
+    char cur = '\0';
+    while (available() && cur != '\n') {
+        cur = (char)read();
+        ret += cur;
+    }
+    return ret;
+}
+
 void File::close() {
     if ((_status = FctrlHelper::fileClose(_fd)) < 0) {
         std::cout << "error closing file: " << strerror(errno) << std::endl;
@@ -82,5 +92,5 @@ size_t File::print(String buf) {
 }
 
 File::operator bool() const {
-    return _status >= 0;
+    return _status >= 0 && _fd > 0;
 }

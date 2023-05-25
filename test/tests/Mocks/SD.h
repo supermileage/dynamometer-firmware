@@ -14,7 +14,7 @@
 class File;
 
 namespace FctrlHelper {
-    int fileOpen(const char* pathname, int flags);
+    int fileOpen(const char* pathname, int flags, int mode);
     int fileClose(int fd);
     ssize_t fileRead(int fd, char* buf, size_t count);
     int fileWrite(int fd, const char* buf, size_t count);
@@ -48,6 +48,7 @@ class File {
         File(int fd);
         int available();
         int read();
+        String readLine();
         void close();
         size_t print(String buf);
         operator bool() const;
