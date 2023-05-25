@@ -1,6 +1,7 @@
 #ifndef _MOCK_SD_H_
 #define _MOCK_SD_H_
 
+#include <fcntl.h>
 #include "Arduino.h"
 
 #undef FILE_READ
@@ -8,7 +9,16 @@
 #undef FILE_WRITE
 #define FILE_WRITE 1
 
+#define NULL_CHAR -129
+
 class File;
+
+namespace FctrlHelper {
+    int fileOpen(const char* pathname, int flags);
+    int fileClose(int fd);
+    ssize_t fileRead(int fd, char* buf, size_t count);
+    int fileWrite(int fd, const char* buf, size_t count);
+};
 
 /**
  * @brief Dummy SPI class for testing
@@ -34,6 +44,8 @@ extern MockSDClass SD;
  */
 class File {
     public:
+        File();
+        File(int fd);
         int available();
         int read();
         void close();
@@ -41,8 +53,9 @@ class File {
         operator bool() const;
 
     private:
-        int _fd;
-        int _status = -1;
+        int _fd = -1;
+        int _status = 0;
+        int _nextChar = NULL_CHAR;
 };
 
 #endif
