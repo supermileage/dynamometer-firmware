@@ -7,7 +7,7 @@ BIN_DIR = $(TEST_DIR)bin/
 
 # SRC TEST FILES -- Only these files will be compiled for tests
 SENSOR := Sensor/SensorOptical.cpp System/Handleable.cpp
-DATA_LOGGER := DataLogger/DataLogger.cpp
+DATA_LOGGER := System/DataLogger.cpp
 
 # All files to compile for tests
 TEST_DIRS := $(dir $(wildcard $(TEST_DIR)tests/*/))
