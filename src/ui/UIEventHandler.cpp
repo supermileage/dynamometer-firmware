@@ -22,8 +22,8 @@ void UIEventHandler::init() {
 }
 
 void UIEventHandler::run() {
-
     mutex_enter_blocking(&_eventQueueMtx);
+
     if (!_eventQueue.empty()) {
         DEBUG_STATE_TRANSITION_LN("Event queue not empty");
         std::function<void()> event = _eventQueue.front();
@@ -45,6 +45,7 @@ void UIEventHandler::run() {
 void UIEventHandler::addEvent(std::function<void(void)> action) {
     DEBUG_STATE_TRANSITION_LN("adding action to event queue");
     mutex_enter_blocking(&_eventQueueMtx);
+    DEBUG_STATE_TRANSITION_LN("pushing action to event queue");
     _eventQueue.push(action);
     mutex_exit(&_eventQueueMtx);
     DEBUG_STATE_TRANSITION_LN("exiting addEvent()");

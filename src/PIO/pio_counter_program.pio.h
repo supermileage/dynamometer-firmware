@@ -55,7 +55,7 @@ static inline pio_sm_config pio_counter_program_get_default_config(uint offset) 
 }
 
 static inline void pio_counter_init(PIO pio, uint sm, uint offset, uint pin, float div) {
-    gpio_pull_down(pin);
+    gpio_pull_up(pin);
     pio_sm_config c = pio_counter_program_get_default_config(offset);
     sm_config_set_in_pins(&c, pin);
     sm_config_set_jmp_pin(&c, pin);

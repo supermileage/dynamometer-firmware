@@ -79,7 +79,6 @@ void ApplicationContext::_changeStateInternal(StateData data) {
     DEBUG_STATE_TRANSITION_LN("Changing state to: " + app_util::stateToString(data.state));
 	DEBUG_STATE_TRANSITION_LN("\t- with menu item in focus: " + String(data.inFocus));
 
-    ControllerBase* temp = _factory.create(data);
     delete _controller;
-    _controller = temp;
+    _controller = _factory.create(data);
 }
