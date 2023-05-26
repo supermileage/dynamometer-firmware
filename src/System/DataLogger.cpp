@@ -1,7 +1,6 @@
-#include "settings.h"
 #include "DataLogger.h"
-#include <SD.h>
-#include <iostream>
+#include "settings.h"
+
 using namespace std;
 
 //public methods:
@@ -58,7 +57,7 @@ bool DataLogger::open(String name, int numColumns) {
 
         DEBUG_SERIAL_LN("Loading " + name);
 
-        File _curFile = SD.open(name, FILE_WRITE | FILE_READ);
+        File _curFile = SD.open(name, FILE_WRITE);
         
         // check if file opened successfully
         if (_curFile) {

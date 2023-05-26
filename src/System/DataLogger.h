@@ -2,8 +2,8 @@
 #define _DATA_LOGGER_H_
 
 #include "Arduino.h"
-#include "SPI.h"
-#include <SD.h>
+#include "SD.h"
+
 using namespace std;
 
 //Class to log data to a file on an SD Card in the CSV format.
@@ -70,7 +70,7 @@ class DataLogger {
         int _numColumns;
         int _curColumn;
         File _curFile;
-        bool _fileValid;
+        bool _fileValid = false;
         String _buffer;
 
         bool _osync;
