@@ -78,6 +78,7 @@
 #define ID_SELECT_BUTTON    4
 #define ID_BRAKE_BUTTON     5
 #define ID_BRAKE_POT        6
+
 #define DEBUG_STATE_TRANSITION_LN(x) Serial.println(x)
 // #define DEBUG_STATE_TRANSITION_LN(x) { }
 

@@ -43,6 +43,7 @@ class ControllerMenu : public ControllerBase {
 
     private:
         MenuView* _menu;
+        bool _buttonHeld = false;
 
         // ControllerBase already provides default input handler implementations, so you only
         // need to override the inputs you want to use

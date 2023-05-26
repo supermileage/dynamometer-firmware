@@ -48,18 +48,18 @@ void ApplicationContext::setNextState(ApplicationState state) {
 	_nextState.inFocus = 0;
 }
 
-void ApplicationContext::revertState() {
+bool ApplicationContext::tryRevertState() {
     if (_nextState.state != NullState) {
         DEBUG_STATE_TRANSITION_LN("Already in state transition -- Aborting");
-        return;
+        return false;
+    } else if (_previousStates.empty()) {
+        DEBUG_STATE_TRANSITION_LN("_previousStates empty: No state to revert to");
+        return false;
     }
 
-    if (_previousStates.empty()) {
-        // error !
-    } else {
-        _nextState = _previousStates.top();
-        _previousStates.pop();
-    }
+    _nextState = _previousStates.top();
+    _previousStates.pop();
+    return true;
 }
 
 void ApplicationContext::setStateTransitionFlag() {
@@ -79,6 +79,7 @@ void ApplicationContext::_changeStateInternal(StateData data) {
     DEBUG_STATE_TRANSITION_LN("Changing state to: " + app_util::stateToString(data.state));
 	DEBUG_STATE_TRANSITION_LN("\t- with menu item in focus: " + String(data.inFocus));
 
+    ControllerBase* temp = _factory.create(data);
     delete _controller;
-    _controller = _factory.create(data);
+    _controller = temp;
 }
