@@ -6,14 +6,10 @@ using namespace std;
 
 //public methods:
 
-DataLogger::DataLogger(int pinNumber, bool osync /*= false*/)
-{
-    if (SD.begin(pinNumber, SPI1))
-    {
+DataLogger::DataLogger(int pinNumber, bool osync /*= false*/) {
+    if (SD.begin(pinNumber, SPI1)) {
         DEBUG_SERIAL_LN("SD card is present & ready");
-    }
-    else
-    {
+    } else {
         DEBUG_SERIAL_LN("SD card missing or failed");
     }
 
@@ -22,8 +18,7 @@ DataLogger::DataLogger(int pinNumber, bool osync /*= false*/)
 
 DataLogger::~DataLogger(){};
 
-bool DataLogger::create(String name, int numColumns)
-{
+bool DataLogger::create(String name, int numColumns) {
     // if file is already open, close that file
     if(_fileValid == true) {
         _curFile.close();
@@ -35,22 +30,18 @@ bool DataLogger::create(String name, int numColumns)
     _curColumn = 0;
     _buffer = "";
     
-    if (_curFile)
-    {
+    if (_curFile) {
         _fileValid = true;
         DEBUG_SERIAL_LN("Creating file successful");
         return true;
-    }
-    else
-    {
+    } else {
         _fileValid = false;
         DEBUG_SERIAL_LN("Creating file failed.");
         return false;
     }
 }
 
-bool DataLogger::open(String name, int numColumns)
-{
+bool DataLogger::open(String name, int numColumns) {
     // if file is already open, close that file
     if(_fileValid == true) {
         _curFile.close();
@@ -61,8 +52,7 @@ bool DataLogger::open(String name, int numColumns)
     _buffer = "";
 
     // check if file exists
-    if (SD.exists(name))
-    {
+    if (SD.exists(name)) {
         // file already exists
         // open the file and see how many columns are in the csv file
 
@@ -71,14 +61,11 @@ bool DataLogger::open(String name, int numColumns)
         File _curFile = SD.open(name, FILE_WRITE | FILE_READ);
         
         // check if file opened successfully
-        if (_curFile)
-        {
+        if (_curFile) {
             _fileValid = true;
             DEBUG_SERIAL_LN("Creating file successful");
             // continue with function
-        }
-        else
-        {
+        } else {
             _fileValid = false;
             DEBUG_SERIAL_LN("Creating file failed.");
             return false;
@@ -91,21 +78,15 @@ bool DataLogger::open(String name, int numColumns)
 
         int columnsInFile = 0;
 
-        while (_curFile.available())
-        {
+        while (_curFile.available()) {
             char readChar = _curFile.read(); // char to hold a character that has been read
 
-            if (readChar == ',')
-            {
+            if (readChar == ',') {
                 commaNum++;
-            }
-            else if (readChar == '\n' || readChar == '\r')
-            {
+            } else if (readChar == '\n' || readChar == '\r') {
                 escaped = true;
                 break;
-            }
-            else
-            {
+            } else {
                 charactersPresent = true;
             }
         }
@@ -113,11 +94,9 @@ bool DataLogger::open(String name, int numColumns)
         // determine the number of columns
         if (commaNum > 0) {
             columnsInFile = commaNum + 1;
-        }
-        else if (charactersPresent) {
+        } else if (charactersPresent) {
             columnsInFile = 1;
-        }
-        else {
+        } else {
             columnsInFile = 0;
         }
 
@@ -130,14 +109,11 @@ bool DataLogger::open(String name, int numColumns)
             return true;
         }
         // check if it is an empty file
-        else if (_numColumns == 0 && escaped == false)
-        {
+        else if (_numColumns == 0 && escaped == false) {
             // file is empty
             _numColumns = numColumns;
             return true;
-        }
-        else 
-        {
+        } else {
             // file is not empty, and does not have the correct number of columns
             DEBUG_SERIAL_LN("Incorrect column number in file: " + name + ". Creating file with new name.");
             _curFile.close();
@@ -177,9 +153,7 @@ bool DataLogger::open(String name, int numColumns)
             String newFileName = base + " (" + (count + 1) + ")" + (extension != "" ? "." + extension : "");
             return open(newFileName, numColumns);
         }
-    }
-    else
-    {
+    } else {
         // file doesnt exist. create new file
 
         DEBUG_SERIAL_LN(name + " doesn't exist. Creating new file");
@@ -188,39 +162,31 @@ bool DataLogger::open(String name, int numColumns)
 }
 
 bool DataLogger::saveToDisk() {
-    if (_fileValid)
-    {
+    if (_fileValid) {
         _curFile.print(_buffer);
         _buffer = "";
         DEBUG_SERIAL_LN("Write to file successful.");
         return true;
-    }
-    else
-    {
+    } else {
         DEBUG_SERIAL_LN("Write to file failed.");
         return false;
     }
 }
 
-bool DataLogger::close()
-{
-    if (_fileValid)
-    {
+bool DataLogger::close() {
+    if (_fileValid) {
         _curFile.close();
         _fileValid = false;
 
         DEBUG_SERIAL_LN("Closed loaded file.");
         return true;
-    }
-    else
-    {
+    } else {
         DEBUG_SERIAL_LN("Failed to close loaded file.");
         return false;
     }
 }
 
-void DataLogger::setHeader(String header)
-{
+void DataLogger::setHeader(String header) {
     _buffer += header + "\r\n";
     DEBUG_SERIAL_LN("Added header " + header + " to buffer.");
 
@@ -228,8 +194,7 @@ void DataLogger::setHeader(String header)
         saveToDisk();
 }
 
-void DataLogger::addEntry(String data)
-{
+void DataLogger::addEntry(String data) {
     if (_curColumn == 0)
         _buffer += data;
     else
@@ -250,8 +215,7 @@ void DataLogger::addEntry(String data)
         saveToDisk();
 }
 
-void DataLogger::addRow(String data)
-{
+void DataLogger::addRow(String data) {
     _buffer += data + "\r\n";
     _curColumn = 0;
     DEBUG_SERIAL_LN("Added " + data + " to buffer.");
@@ -260,12 +224,10 @@ void DataLogger::addRow(String data)
         saveToDisk();
 }
 
-int DataLogger::getNumColumns()
-{
+int DataLogger::getNumColumns() {
     return _numColumns;
 }
 
-int DataLogger::getBufferLength() 
-{
+int DataLogger::getBufferLength() {
     return _buffer.length();
 }
