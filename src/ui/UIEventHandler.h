@@ -14,8 +14,9 @@
 */
 class UIEventHandler {
     public:
-        UIEventHandler();
         ~UIEventHandler();
+
+        static UIEventHandler& instance();
 
         /**
          * @brief initializes mutexes
@@ -24,6 +25,7 @@ class UIEventHandler {
 
         /**
          * @brief handles event queue and animations
+         * @note only executes one event per call to loop
         */
         void run();
 
@@ -57,9 +59,12 @@ class UIEventHandler {
         void clearAnimations();
 
     private:
+        static UIEventHandler* _instance;
         mutex_t _eventQueueMtx;
         std::queue<std::function<void(void)>> _eventQueue;
         std::vector<ui_util::Animation*> _animations;
+
+        UIEventHandler();
 
 };
 
