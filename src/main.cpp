@@ -6,6 +6,7 @@
 #include "Sensor/SensorOptical.h"
 
 #include "application/ApplicationContext.h"
+#include "application/ControllerFactory.h"
 #include "graphics/colour.h"
 #include "ui/UIEventHandler.h"
 
@@ -37,10 +38,12 @@ HardwarePotentiometer pot(POT_IN);
 HardwareRotaryEncoder rot(ROT_EN_A, ROT_EN_B);
 
 /* ui */
-ApplicationContext context(inputManager, tft, ApplicationContext::MainMenu);
+ControllerFactory factory(tft, inputManager);
+ApplicationContext context(inputManager, tft, factory);
 
 /* global variables */
-uint64_t c0_lastUpdateTime = 0;
+uint c0_lastUpdateTime = 0;
+uint c1_lastUpdateTime = 0;
 int c0_lastCount = 0;
 
 /* Core0 */
@@ -84,4 +87,9 @@ void setup1() {
 
 void loop1() {
 	UIEventHandler::instance().run();
+
+	if (millis() > c1_lastUpdateTime + 2000) {
+		DEBUG_SERIAL_LN("Core 2 Heartbeat");
+		c1_lastUpdateTime = millis();
+	}
 }

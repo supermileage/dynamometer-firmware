@@ -6,42 +6,72 @@
 #include "Adafruit_GFX.h"
 #include "System/Handleable.h"
 #include "System/InputManager.h"
-#include "application/MenuControllerExample.h"
 
-class MenuControllerExample;
+#include "ControllerFactory.h"
+#include "ControllerBase.h"
+#include "application.h"
+#include "app_util.h"
+
+class ControllerBase;
+class ControllerFactory;
+
+using namespace application;
+
+// application always starts from main menu
+#define APPLICATION_INITIAL_STATE MainMenu
 
 /**
  * @brief maintains state and state transitions of application
- * 
  */
 class ApplicationContext : public Handleable {
     public:
-		// represents different application states
-		// ok to modify if states are added / removed
-        enum ApplicationState { MainMenu, ManualControlMenu, CalibrationMenu, SettingsMenu };
+        ApplicationContext(InputManager& manager, Adafruit_GFX& display, ControllerFactory& factory);
+        ~ApplicationContext();
 
-		struct StateData {
-			ApplicationState state;
-			uint8_t inFocus;
-		};
-
-        ApplicationContext(InputManager& manager, Adafruit_GFX& display, ApplicationState state = MainMenu);
-
-        ~ApplicationContext() { }
+        /**
+         * @brief initialize application context
+        */
         void begin() override;
-        void handle() override { }
-        void changeState(ApplicationState state);
-        void navigateBack();
+
+        /**
+         * @brief handle state transitions
+        */
+        void handle() override;
+
+        /**
+         * @brief set next state which this context will transition to
+         * @note current state (before transition) will be added to previous states stack
+        */
+        void setNextState(ApplicationState state);
+
+        /**
+         * @brief trigger state change to previous state (from previous states stack)
+         * @note does nothing if _previousStates is empty
+        */        
+        void revertState();
+
+        /**
+         * @brief sets state transition flag, indicating that context can safely transition to next state
+         * @note this is to prevent race conditions between visual element deletion and rendering when we
+         * transition between states
+        */
+        void setStateTransitionFlag();
     
     private:
-        MenuControllerExample* _controller;
         InputManager& _inputManager;
         Adafruit_GFX& _display;
-        ApplicationState _currentState;
+        ControllerFactory& _factory;
+        ControllerBase* _controller;
+        ApplicationState _currentState = APPLICATION_INITIAL_STATE;
+        StateData _nextState = StateData { .state = NullState, .inFocus = 0 };
         std::stack<StateData> _previousStates;
+        mutex_t _stateTransitionMutex;
+        bool _stateTransitionFlag = false;
 
+        /**
+         * @brief changes state to state represented by state param
+        */
         void _changeStateInternal(StateData state);
-        static const String stateToString(ApplicationState state);
 };
 
 #endif

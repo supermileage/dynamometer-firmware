@@ -25,6 +25,7 @@ class UIEventHandler {
 
         /**
          * @brief handles event queue and animations
+         * @note only executes one event per call to loop
         */
         void run();
 

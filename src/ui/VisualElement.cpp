@@ -68,7 +68,7 @@ void VisualElement::clear() {
 }
 
 void VisualElement::_drawInternal(uint16_t colour) {
-    if (_parent && _parent->getBackgroundColour() != colour) {
+    if (!_parent || (_parent && _parent->getBackgroundColour() != colour)) {
         _display.fillRect(_position.x, _position.y, _width, _height, colour);
     }
 

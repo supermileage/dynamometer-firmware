@@ -4,6 +4,12 @@
 #include "Arduino.h"
 #include "HardwareInput.h"
 
+/**
+ * @brief serial input class which reads user input from serial monitor
+ * 
+ * @note only passes individual characters to input callback: ui controller must decide what
+ * to do with the information
+*/
 class HardwareInputSerial : public HardwareInput {
     public:
         ~HardwareInputSerial() { }
