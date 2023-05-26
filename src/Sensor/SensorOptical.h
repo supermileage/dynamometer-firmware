@@ -5,7 +5,7 @@
 #include "Sensor.h"
 #include "pio_counter_program.pio.h"
 
-#define DEBUG_OPTICAL_ENABLED
+// #define DEBUG_OPTICAL_ENABLED
 
 #define SENSOR_OPTICAL_DEFAULT_READ_INTERVAL 1000
 
