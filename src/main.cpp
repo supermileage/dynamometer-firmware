@@ -6,9 +6,12 @@
 #include "XPT2046_Touchscreen.h"
 #include "Sensor/SensorOptical.h"
 
-#include "application/MenuViewExample.h"
+#include "application/ApplicationContext.h"
+#include "application/ControllerFactory.h"
 #include "graphics/colour.h"
 #include "ui/UIEventHandler.h"
+#include "System/HardwareInputSerial.h"
+#include "System/InputManager.h"
 #include "settings.h"
 
 /* system resources */
@@ -18,12 +21,17 @@ XPT2046_Touchscreen ts(TOUCH_CS);
 /* sensors */
 SensorOptical optical(pio0, 0);
 
+/* io */
+InputManager inputManager;
+HardwareInputSerial inputSerial;
+
 /* ui */
-MenuViewExample menu(tft);
-UIEventHandler uiCore;
+ControllerFactory factory(tft, inputManager);
+ApplicationContext context(inputManager, tft, factory);
 
 /* global variables */
-uint64_t c0_lastUpdateTime = 0;
+uint c0_lastUpdateTime = 0;
+uint c1_lastUpdateTime = 0;
 int c0_lastCount = 0;
 
 /* Core0 */
@@ -34,25 +42,26 @@ void setup() {
 	tft.setRotation(3);
 	tft.fillScreen(COLOUR_BLACK);
 
+	inputManager.registerInput(ID_SERIAL, &inputSerial);
+
 	delay(1000);
-	uiCore.addEvent([]() { menu.init(); });
 	Handleable::beginAll();
 }
 
 void loop() {
-	if (millis() > c0_lastUpdateTime + 100) {
-		c0_lastUpdateTime = millis();
-		uiCore.addEvent([]() { menu.run(); });
-	}
-
 	Handleable::handleAll();
 }
 
 /* Core1 */
 void setup1() {
-	uiCore.init();
+	UIEventHandler::instance().init();
 }
 
 void loop1() {
-	uiCore.run();
+	UIEventHandler::instance().run();
+
+	if (millis() > c1_lastUpdateTime + 2000) {
+		DEBUG_SERIAL_LN("Core 2 Heartbeat");
+		c1_lastUpdateTime = millis();
+	}
 }

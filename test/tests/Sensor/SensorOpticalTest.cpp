@@ -1,5 +1,6 @@
 #include "test_config.h"
 #include "SensorOptical.h"
+#include "Arduino.h"
 
 /* Helpers */
 void simulateAperturePasses(SensorOptical& optical, uint32_t numPasses);

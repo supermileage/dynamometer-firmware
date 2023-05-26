@@ -1,21 +1,34 @@
 #ifndef _HARDWARE_BUTTON_H_
 #define _HARDWARE_BUTTON_H_
 
-#include <Arduino.h>
-#include <stdint.h>
+#include "Arduino.h"
+#include "HardwareInput.h"
 
-class HardwareButton {
+/**
+ * @brief class which represents hardware button ui input to system
+*/
+class HardwareButton : public HardwareInput {
 	public:
-		HardwareButton(int32_t pin, PinMode pinMode, void (*action)(void));
-		~HardwareButton();
-		void init();
-		void run();
+		/**
+		 * @brief constructs HardwareButton instance with pin and pinMode
+		*/
+		HardwareButton(pin_size_t pin, PinMode pinMode);
+
+		/**
+		 * @brief initialize pin
+		*/
+		void init() override;
+
+		/**
+		 * @brief read button pin and invoke callback if pin status has changed
+		*/
+		void run() override;
 
 	private:
-		int32_t _pin;
+		pin_size_t _pin;
 		PinMode _pinMode;
-		void (*_action)(void) = NULL;
-		uint64_t _lastReadHigh = 0;
+		PinStatus _lastRead = LOW;
+		uint32_t _lastReadMillis = 0;
 };
 
 #endif
