@@ -127,7 +127,7 @@ bool DataLogger::open(String name, int numColumns) {
             String extension = extensionIndex == -1 ? "" : name.substring(extensionIndex + 1);
             base.trim();
 
-            // find current file count (example: myFile (2).csv)
+            // find current file count (example: myFile(2).csv)
             int fileCountStart = base.lastIndexOf('(');
             int fileCountEnd = base.lastIndexOf(')');
             int count = 0;
@@ -150,7 +150,7 @@ bool DataLogger::open(String name, int numColumns) {
                     base.trim();
                 }
             }
-            String newFileName = base + " (" + (count + 1) + ")" + (extension != "" ? "." + extension : "");
+            String newFileName = base + "(" + (count + 1) + ")" + (extension != "" ? "." + extension : "");
             return open(newFileName, numColumns);
         }
     } else {
