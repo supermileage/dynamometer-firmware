@@ -7,4 +7,3 @@ test/bin/
 test/dep/
 test/obj/
 test/output/
-test/input/append-test-data*
