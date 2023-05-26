@@ -1,21 +1,29 @@
+#include <fcntl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <dirent.h>
 #include <iostream>
 #include <string>
+#include <array>
 
 #include "test_config.h"
 #include "Arduino.h"
 #include "DataLogger.h"
 
+/* Generated Test Data (for test cases where you append to existing file) */
+extern const char* appendTestData1;
+extern const char* appendTestData2;
+
 /* Helpers */
+void initializeInputFolder();
 void initializeOutputFolder();
 String getTestInputPath();
 String getTestOutputPath();
 
 TEST_CASE( "DataLogger tests", "[DataLogger]" ) {
 	DataLogger logger(0, true);
+    initializeInputFolder();
     initializeOutputFolder();
     String input = getTestInputPath();
     String output = getTestOutputPath();
@@ -50,11 +58,58 @@ TEST_CASE( "DataLogger tests", "[DataLogger]" ) {
     }
 }
 
-/* Helpers */
-bool g_foldersInitialized = false;
+/* Generated Test Data */
+const std::array<const char*,2> testFileNames = { "append-test-data1.csv", "append-test-data2.csv" };
+const std::array<const char*,2> testFileContents = { appendTestData1, appendTestData2 };
 
+// ends with CRLF
+const char* appendTestData1 =
+    "property1,property2,property3\r\n"
+    "11.11,22.22,33.33\r\n"
+    "44.44,55.55,66.66\r\n";
+// does not end with CRLF
+const char* appendTestData2 =
+    "property1,property2,property3\r\n"
+    "11.11,22.22,33.33\r\n"
+    "44.44,55.55,66.66";
+
+/* Helpers */
+bool g_inputFolderInitialized = false;
+bool g_outputFolderInitialized = false;
+
+// resets generated test cases in input folder
+void initializeInputFolder() {
+    if (g_inputFolderInitialized) {
+        return;
+    }
+
+    std::string path(getTestInputPath().c_str());
+    // check if entry's name is the same as generated test cases
+    for (int i = 0; i < testFileNames.size(); i++) {
+        const char* testFileName = testFileNames[i];
+        std::string testFilePath = path + std::string(testFileName);
+
+        int fd;
+        if ((fd = open(testFilePath.c_str(), O_RDWR | O_CREAT | O_TRUNC, 0666)) < 0) {
+            std::cout << "unable to open input file " << testFileName << ": " <<
+                strerror(errno) << std::endl;
+            continue;
+        }
+        const char* testFileData = testFileContents[i];
+        if (write(fd, testFileData, strlen(testFileData)) < strlen(testFileData)) {
+            std::cout << "could not write test data to test file " << testFileName << ": " << strerror(errno) << std::endl;
+        }
+
+        if (close(fd) < 0) {
+            std::cout << "failed to close test file " << testFileName << ": " << strerror(errno) << std::endl;
+        }
+    }
+    g_inputFolderInitialized = true;
+}
+
+// remove and remake output folder
 void initializeOutputFolder() {
-    if (g_foldersInitialized) {
+    if (g_outputFolderInitialized) {
         return;
     }
 
@@ -82,11 +137,11 @@ void initializeOutputFolder() {
         }
     }
 
-    if (mkdir(path.c_str(),  S_IRWXU | S_IRWXG | S_IRWXO)) {
-        std::cout << "failed to delete output directory: " << strerror(errno) << std::endl;
+    if (mkdir(path.c_str(),  S_IRWXU | S_IRWXG | S_IRWXO) < 0) {
+        std::cout << "failed to create output directory: " << strerror(errno) << std::endl;
     }
 
-    g_foldersInitialized = true;
+    g_outputFolderInitialized = true;
 }
 
 std::string getTestDirectoryPath() {

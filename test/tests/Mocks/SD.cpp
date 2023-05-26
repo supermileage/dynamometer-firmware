@@ -9,7 +9,7 @@ MockSDClass SD;
 HardwareSPI SPI1;
 
 int FctrlHelper::fileOpen(const char* pathname, int flags, int mode) {
-    return open(pathname, flags);
+    return open(pathname, flags, mode);
 }
 
 ssize_t FctrlHelper::fileRead(int fd, char* buf, size_t count) {
