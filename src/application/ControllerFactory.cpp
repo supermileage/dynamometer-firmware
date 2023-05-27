@@ -2,6 +2,7 @@
 
 #include "ControllerFactory.h"
 #include "ControllerMenu.h"
+#include "TextDialogController.h"
 
 const std::vector<ControllerMenu::MenuButtonData> mainMenuConfig = {
     { ControllerMenu::MenuButtonData { .state = CalibrationMenu, .text = "Run Calibration" } },
@@ -49,6 +50,10 @@ ControllerBase* ControllerFactory::_createInternal(StateData data) {
         case SettingsMenu:
             // TODO: add SettingsMenu implementation
             break;
+        case TextDialog:
+            ret = new TextDialogController(*_context, _display, data.inFocus);
+            static_cast<TextDialogController*>(ret)->getView().setHeader("text dialog");
+            static_cast<TextDialogController*>(ret)->init(_inputManager, String("file.csv"));
         default:
             // do nothing
             break;

@@ -43,6 +43,7 @@ class ControllerMenu : public ControllerBase {
 
     private:
         MenuView* _menu;
+        std::map<uint8_t, std::pair<UIElement*, std::function<void()>>> _buttonCallbackMap;
         bool _buttonHeld = false;
 
         // ControllerBase already provides default input handler implementations, so you only

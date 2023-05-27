@@ -41,8 +41,7 @@ class UIEventHandler {
 
         /**
          * @brief remove animation
-         * 
-         * @note this will not call delete on the animation ptr: freeing data is the user's responsibility
+         * @note this will call delete on animation only if Animation::deleteOnTermination() returns true
         */
         void removeAnimation(ui_util::Animation* animation);
 

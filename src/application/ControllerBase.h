@@ -40,7 +40,6 @@ class ControllerBase {
     protected:
         ApplicationContext& _context;
         Adafruit_GFX& _display;
-        std::map<uint8_t, std::pair<UIElement*, std::function<void()>>> _buttonCallbackMap;
         uint8_t _inFocus = 0;
 
         /* hardware input handlers (assigned as InputCallback in init) */
@@ -52,6 +51,10 @@ class ControllerBase {
         virtual void _handleInputSelect(input_data_t d);
         virtual void _handleInputBrakeButton(input_data_t d);
         virtual void _handleInputBrakePot(input_data_t d);
+
+        inline int32_t _computeIndexOffset(int32_t index, int32_t offset, int32_t modVal) {
+            return ((index + offset) % modVal + modVal) % modVal;
+        }
 };
 
 #endif

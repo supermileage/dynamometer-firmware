@@ -18,7 +18,7 @@ class ControllerFactory;
 using namespace application;
 
 // application always starts from main menu
-#define APPLICATION_INITIAL_STATE MainMenu
+#define APPLICATION_INITIAL_STATE TextDialog
 
 /**
  * @brief maintains state and state transitions of application

@@ -48,13 +48,16 @@ namespace ui_util {
     */
     class Animation {
         public:
-            Animation(uint32_t interval) : _interval(interval) { }
+            Animation(uint32_t interval, bool deleteOnTermination) :
+                _interval(interval), _deleteOnTermination(deleteOnTermination) { }
             virtual ~Animation() { }
             virtual void run(uint32_t time) = 0;
+            bool deleteOnTermination() { return _deleteOnTermination; }
 
         protected:
             uint32_t _interval;
             uint32_t _lastTime = 0;
+            bool _deleteOnTermination = false;
     };
 
     /**
