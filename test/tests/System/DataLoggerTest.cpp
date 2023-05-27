@@ -85,7 +85,7 @@ void initializeInputFolder() {
 
     std::string path(getTestInputPath().c_str());
     // check if entry's name is the same as generated test cases
-    for (int i = 0; i < testFileNames.size(); i++) {
+    for (uint32_t i = 0; i < testFileNames.size(); i++) {
         const char* testFileName = testFileNames[i];
         std::string testFilePath = path + std::string(testFileName);
 
@@ -96,7 +96,7 @@ void initializeInputFolder() {
             continue;
         }
         const char* testFileData = testFileContents[i];
-        if (write(fd, testFileData, strlen(testFileData)) < strlen(testFileData)) {
+        if (write(fd, testFileData, strlen(testFileData)) < 0) {
             std::cout << "could not write test data to test file " << testFileName << ": " << strerror(errno) << std::endl;
         }
 
