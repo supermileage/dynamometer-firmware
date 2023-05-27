@@ -38,7 +38,8 @@ void TextDialogController::init(InputManager& manager, const String& start) {
     DEBUG_STATE_TRANSITION_LN("Initializing view");
     UIButton* cur = _characterElements[_inFocus];
     UIEventHandler::instance().addEvent( [this]() { _view->init(); } );
-    UIEventHandler::instance().addAnimation(new TextFocusAnimation(cur));
+    _currentAnimation = new TextFocusAnimation(cur);
+    UIEventHandler::instance().addAnimation(_currentAnimation);
 }
 
 TextDialogView& TextDialogController::getView() {
