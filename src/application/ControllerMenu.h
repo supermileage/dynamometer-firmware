@@ -14,7 +14,7 @@
 #include "ControllerBase.h"
 
 /**
- * @brief represents configurable default menu for dyno with customizable buttons
+ * @brief represents configurable default menu for dyno with customizable navigation buttons
 */
 class ControllerMenu : public ControllerBase {
     public:
@@ -43,11 +43,22 @@ class ControllerMenu : public ControllerBase {
 
     private:
         MenuView* _menu;
+        bool _buttonHeld = false;
 
         // ControllerBase already provides default input handler implementations, so you only
         // need to override the inputs you want to use
 
         void _handleInputSerial(input_data_t d) override;
+        void _handleInputEncoder(input_data_t d) override;
+        void _handleInputEncoderSelect(input_data_t d) override;
+        void _handleInputBack(input_data_t d) override;
+        void _handleInputSelect(input_data_t d) override;
+
+        /* actions */
+        void _navigateBack();
+        void _shiftFocus(int32_t offset);
+        void _selectCurrent();
+        void _triggerStateChange();
 };
 
 #endif

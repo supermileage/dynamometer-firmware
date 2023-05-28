@@ -43,43 +43,14 @@ class ControllerBase {
         std::map<uint8_t, std::pair<UIElement*, std::function<void()>>> _buttonCallbackMap;
         uint8_t _inFocus = 0;
 
-        void _invokeStateChange(ApplicationState state);
-
         /* hardware input handlers (assigned as InputCallback in init) */
 
-        /**
-         * @brief serial input handler
-        */
         virtual void _handleInputSerial(input_data_t d);
-
-        /**
-         * @brief rotary encoder input handler
-        */
         virtual void _handleInputEncoder(input_data_t d);
-
-        /**
-         * @brief rotary encoder switch input handler
-        */
         virtual void _handleInputEncoderSelect(input_data_t d);
-
-        /**
-         * @brief back button input handler
-        */
         virtual void _handleInputBack(input_data_t d);
-
-        /**
-         * @brief select button input handler
-        */
         virtual void _handleInputSelect(input_data_t d);
-
-        /**
-         * @brief brake button input handler
-        */
         virtual void _handleInputBrakeButton(input_data_t d);
-
-        /**
-         * @brief brake potentiometer input handler
-        */
         virtual void _handleInputBrakePot(input_data_t d);
 };
 

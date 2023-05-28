@@ -46,9 +46,11 @@ class ApplicationContext : public Handleable {
 
         /**
          * @brief trigger state change to previous state (from previous states stack)
+         * @returns true if state change has been triggered, false otherwise
+         * 
          * @note does nothing if _previousStates is empty
         */        
-        void revertState();
+        bool tryRevertState();
 
         /**
          * @brief sets state transition flag, indicating that context can safely transition to next state

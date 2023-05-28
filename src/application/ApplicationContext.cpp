@@ -21,14 +21,10 @@ void ApplicationContext::handle() {
         
         if (_stateTransitionFlag) {
             mutex_enter_blocking(&_stateTransitionMutex);
-            DEBUG_STATE_TRANSITION_LN("_stateTransitionFlag is true -- setting local bool");
             _stateTransitionFlag = false;
             mutex_exit(&_stateTransitionMutex);
-            changeNow = true;
-        }
 
-        if (changeNow) {
-            DEBUG_STATE_TRANSITION_LN("local bool is set -- calling _changeStateInternal");
+            DEBUG_STATE_TRANSITION_LN("_stateTransitionFlag is true -- calling _changeStateInternal");
             _changeStateInternal(_nextState);
             _nextState.reset();
         }
@@ -52,18 +48,18 @@ void ApplicationContext::setNextState(ApplicationState state) {
 	_nextState.inFocus = 0;
 }
 
-void ApplicationContext::revertState() {
+bool ApplicationContext::tryRevertState() {
     if (_nextState.state != NullState) {
         DEBUG_STATE_TRANSITION_LN("Already in state transition -- Aborting");
-        return;
+        return false;
+    } else if (_previousStates.empty()) {
+        DEBUG_STATE_TRANSITION_LN("_previousStates empty: No state to revert to");
+        return false;
     }
 
-    if (_previousStates.empty()) {
-        // error !
-    } else {
-        _nextState = _previousStates.top();
-        _previousStates.pop();
-    }
+    _nextState = _previousStates.top();
+    _previousStates.pop();
+    return true;
 }
 
 void ApplicationContext::setStateTransitionFlag() {

@@ -45,53 +45,108 @@ MenuView& ControllerMenu::getView() {
 
 void ControllerMenu::_handleInputSerial(input_data_t d) {
     DEBUG_STATE_TRANSITION_LN("Serial input received: " + String(d));
-    UIElement* cur;
-
     switch (d) {
-        case 65:
-            cur = _buttonCallbackMap[_inFocus].first;
-            UIEventHandler::instance().addEvent( [cur]() { cur->revert(); } );
-            _inFocus = _inFocus == 0 ? _buttonCallbackMap.size() - 1 : _inFocus - 1;
-            cur = _buttonCallbackMap[_inFocus].first;
-            UIEventHandler::instance().addEvent([cur]() { cur->focus(); });
+        case 65:    // up
+            _shiftFocus(-1);
             break;
-        case 66:
-            cur = _buttonCallbackMap[_inFocus].first;
-            UIEventHandler::instance().addEvent( [cur]() { cur->revert(); } );
-            _inFocus = (_inFocus + 1) % _buttonCallbackMap.size();
-            cur = _buttonCallbackMap[_inFocus].first;
-            UIEventHandler::instance().addEvent([cur]() { cur->focus(); });
+        case 66:    // down 
+            _shiftFocus(1);
             break;
-        case 10:
-            cur = _buttonCallbackMap[_inFocus].first;
-            UIEventHandler::instance().addEvent(
-                [this, cur]() {
-                    DEBUG_STATE_TRANSITION_LN("Final state change render event invoked");
-                    cur->revert();
-                    _menu->revert();
-                    _context.setStateTransitionFlag();
-                    DEBUG_STATE_TRANSITION_LN("Final state change render event complete");
-                });
-            (_buttonCallbackMap[_inFocus].second)();
+        case 8:     // backspace
+            _navigateBack();
             break;
-        case 13:
-            cur = _buttonCallbackMap[_inFocus].first;
-            UIEventHandler::instance().addEvent([this, cur]() {
-                DEBUG_STATE_TRANSITION_LN("Prelim state change render event invoked");
-                cur->select();
-                _menu->select();
-                DEBUG_STATE_TRANSITION_LN("Prelim state change render event complete");
-            });
+        case 10:    // enter '\n'
+            _triggerStateChange();
             break;
-        case 8:
-            _context.revertState();
-            UIEventHandler::instance().addEvent([this, cur]() {
-                _menu->back();
-                _context.setStateTransitionFlag();
-            });
+        case 13:    // enter '\r'
+            _selectCurrent();
             break;
-        default:
-            // do nothing
+        default:    // do nothing
             break;
     }
 }
+
+void ControllerMenu::_handleInputEncoder(input_data_t d) {
+    _shiftFocus(d);
+}
+
+void ControllerMenu::_handleInputEncoderSelect(input_data_t d) {
+    if (d && !_buttonHeld) {
+        DEBUG_STATE_TRANSITION_LN("Encoder Select High");
+        _buttonHeld = true;
+        _selectCurrent();
+    } else {
+        DEBUG_STATE_TRANSITION_LN("Encoder Select Low");
+        if (_buttonHeld) {
+            _buttonHeld = false;
+            _triggerStateChange();
+        }
+    }
+}
+
+void ControllerMenu::_handleInputBack(input_data_t d) {
+    // if (d) {
+    //     UIElement* cur = _buttonCallbackMap[_inFocus].first;
+    //     UIEventHandler::instance().addEvent([this,cur]() { cur->focus(); _menu->back(); });
+    // } else {
+    //     _navigateBack();
+    // }
+}
+
+void ControllerMenu::_handleInputSelect(input_data_t d) {
+    // if (d) {
+    //     _selectCurrent();
+    // } else {
+    //     _triggerStateChange();
+    // }
+}
+
+void ControllerMenu::_navigateBack() {
+    if (!_context.tryRevertState()) {
+        return;
+    }
+
+    DEBUG_STATE_TRANSITION_LN("Navigate Back");
+    UIEventHandler::instance().addEvent([this]() {
+        _menu->back();
+        _context.setStateTransitionFlag();
+    });
+}
+
+void ControllerMenu::_shiftFocus(int32_t offset) {
+    DEBUG_STATE_TRANSITION_LN("Shift Focus");
+    UIElement* cur = _buttonCallbackMap[_inFocus].first;
+    UIEventHandler::instance().addEvent( [cur]() { cur->revert(); } );
+
+    // compute index of new focussed element
+    int32_t modVal = _buttonCallbackMap.size();
+    input_data_t val = ((_inFocus + offset) % modVal + modVal) % modVal;
+    _inFocus = static_cast<uint8_t>(val);
+
+    // focus new element
+    cur = _buttonCallbackMap[_inFocus].first;
+    UIEventHandler::instance().addEvent([cur]() { cur->focus(); });
+}
+
+void ControllerMenu::_selectCurrent() {
+    DEBUG_STATE_TRANSITION_LN("Select Current");
+    UIElement* cur = _buttonCallbackMap[_inFocus].first;
+    UIEventHandler::instance().addEvent([this, cur]() {
+            cur->select();
+            _menu->select();
+        });
+}
+
+void ControllerMenu::_triggerStateChange() {
+    DEBUG_STATE_TRANSITION_LN("Trigger State Changed");
+    UIElement* cur = _buttonCallbackMap[_inFocus].first;
+    UIEventHandler::instance().addEvent(
+        [this, cur]() {
+            cur->revert();
+            _menu->revert();
+            _context.setStateTransitionFlag(); // set flag after render actions are complete
+        });
+    (_buttonCallbackMap[_inFocus].second)();
+}
+
+
