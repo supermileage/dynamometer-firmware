@@ -13,7 +13,6 @@
 #define DEMUX_SELECT0 8
 #define DEMUX_SELECT1 9
 
-
 #define BUTTON_DEBOUNCE_MILLIS 50
 
 // UI Input IDs (must be sequential)
