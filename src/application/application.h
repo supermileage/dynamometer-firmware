@@ -14,7 +14,7 @@ namespace application {
         SettingsMenu = 3,
         CalibrationMode = 4,
         CalibrationSettings = 5,
-        TextDialog = 6
+        TextDialog = 6,
     };
 
     /**

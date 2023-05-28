@@ -1,6 +1,8 @@
 #ifndef _APP_UTIL_H_
 #define _APP_UTIL_H_
 
+#include <memory>
+
 #include "Arduino.h"
 #include "ui/UIButton.h"
 #include "ui/Container.h"
@@ -12,14 +14,14 @@ using namespace application;
 namespace app_util {
     /* configure different visual elements as defined by macros in style.h */
 
-    void configureMainWindow(Container* window);
-    void configureHeader(TextElement* header, const String& displayString);
-    void configureMenuContainer(Container* container);
-    void configureMenuButton(UIButton* button, const String& displayString);
-    void configureNavButtonContainer(Container* container);
-    void configureNavButton(UIButton* button);
-    void configureBackButton(UIButton* button);
-    void configureSelectButton(UIButton* button);
+    void configureMainWindow(std::shared_ptr<Container> window);
+    void configureHeader(std::shared_ptr<TextElement> header, const String& displayString);
+    void configureMenuContainer(std::shared_ptr<Container> container);
+    void configureMenuButton(std::shared_ptr<UIButton> button, const String& displayString);
+    void configureNavButtonContainer(std::shared_ptr<Container> container);
+    void configureNavButton(std::shared_ptr<UIButton> button);
+    void configureBackButton(std::shared_ptr<UIButton> button);
+    void configureSelectButton(std::shared_ptr<UIButton> button);
 
     /**
      * @brief get string name for state

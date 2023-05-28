@@ -57,7 +57,7 @@ namespace ui_util {
         protected:
             uint32_t _interval;
             uint32_t _lastTime = 0;
-            bool _deleteOnTermination = false;
+            bool _deleteOnTermination;
     };
 
     /**

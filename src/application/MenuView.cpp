@@ -6,12 +6,11 @@
 #include "app_util.h"
 
 MenuView::MenuView(Adafruit_GFX& display) : ViewBase(display) {
-    _menuContainer = new Container(_display);
+    _menuContainer = std::make_unique<Container>(_display);
 }
 
 MenuView::~MenuView() {
     DEBUG_STATE_TRANSITION_LN("~MenuView");
-    delete _menuContainer;
 }
 
 void MenuView::init() {
@@ -36,7 +35,7 @@ void MenuView::init() {
     _window->draw();
 }
 
-void MenuView::addMenuButton(UIButton* button, const String& str) {
+void MenuView::addMenuButton(std::shared_ptr<UIButton> button, const String& str) {
     app_util::configureMenuButton(button, str);
     _menuContainer->addVisualElement(button);
 }

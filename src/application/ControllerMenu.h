@@ -2,6 +2,7 @@
 #define _CONTROLLER_MENU_H_
 
 #include <vector>
+#include <memory>
 
 #include "settings.h"
 #include "System/InputManager.h"
@@ -42,8 +43,8 @@ class ControllerMenu : public ControllerBase {
         MenuView& getView();
 
     private:
-        MenuView* _menu;
-        std::map<uint8_t, std::pair<UIElement*, std::function<void()>>> _buttonCallbackMap;
+        std::shared_ptr<MenuView> _menu;
+        std::map<uint8_t, std::pair<std::shared_ptr<UIElement>, std::function<void()>>> _buttonCallbackMap;
         bool _buttonHeld = false;
 
         // ControllerBase already provides default input handler implementations, so you only

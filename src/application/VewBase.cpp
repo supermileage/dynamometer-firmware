@@ -3,20 +3,14 @@
 #include "app_util.h"
 
 ViewBase::ViewBase(Adafruit_GFX& display) : _display(display) {
-    _window = new Container(_display);
-    _header = new TextElement(_display);
-    _navButtonContainer = new Container(_display);
-    _navButtonSelect = new UIButton(_display);
-    _navButtonBack = new UIButton(_display);
+    _window = std::make_shared<Container>(_display);
+    _header = std::make_shared<TextElement>(_display);
+    _navButtonContainer = std::make_shared<Container>(_display);
+    _navButtonSelect = std::make_shared<UIButton>(_display);
+    _navButtonBack = std::make_shared<UIButton>(_display);
 }
 
-ViewBase::~ViewBase() {
-    delete _window;
-    delete _header;
-    delete _navButtonContainer;
-    delete _navButtonSelect;
-    delete _navButtonBack;
-}
+ViewBase::~ViewBase() { }
 
 void ViewBase::setHeader(const String& str) {
     DEBUG_STATE_TRANSITION_LN("Setting header: " + str);

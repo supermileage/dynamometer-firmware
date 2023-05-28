@@ -3,11 +3,7 @@
 ApplicationContext::ApplicationContext(InputManager& manager, Adafruit_GFX& display, ControllerFactory& factory) :
     _inputManager(manager), _display(display), _factory(factory) { }
 
-ApplicationContext::~ApplicationContext() {
-    if (_controller) {
-        delete _controller;
-    }
-}
+ApplicationContext::~ApplicationContext() { }
 
 void ApplicationContext::begin() {
     _factory.setContext(this);
@@ -18,7 +14,6 @@ void ApplicationContext::begin() {
 void ApplicationContext::handle() {
     if (_nextState.state != NullState) {
         bool changeNow = false;
-        
         if (_stateTransitionFlag) {
             mutex_enter_blocking(&_stateTransitionMutex);
             _stateTransitionFlag = false;
@@ -32,20 +27,20 @@ void ApplicationContext::handle() {
 }
 
 void ApplicationContext::setNextState(ApplicationState state) {
-	// push current state to _previousStates
+    // push current state to _previousStates
     if (_nextState.state != NullState) {
         DEBUG_STATE_TRANSITION_LN("Already in state transition -- Aborting");
         return;
     }
 
-	StateData data;
-	data.state = _currentState;
-	data.inFocus = _controller->getInFocus();
+    StateData data;
+    data.state = _currentState;
+    data.inFocus = _controller->getInFocus();
     _previousStates.push(data);
     
     // transition to new state
-	_nextState.state = state;
-	_nextState.inFocus = 0;
+    _nextState.state = state;
+    _nextState.inFocus = 0;
 }
 
 bool ApplicationContext::tryRevertState() {
@@ -77,8 +72,8 @@ void ApplicationContext::_changeStateInternal(StateData data) {
     _currentState = data.state;
     
     DEBUG_STATE_TRANSITION_LN("Changing state to: " + app_util::stateToString(data.state));
-	DEBUG_STATE_TRANSITION_LN("\t- with menu item in focus: " + String(data.inFocus));
+    DEBUG_STATE_TRANSITION_LN("\t- with menu item in focus: " + String(data.inFocus));
+    DEBUG_STATE_TRANSITION_LN("_controller.use_count() = " + String(_controller.use_count()));
 
-    delete _controller;
     _controller = _factory.create(data);
 }

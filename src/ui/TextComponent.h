@@ -65,6 +65,7 @@ class TextComponent {
         uint8_t _textSizeX = 1;
         uint8_t _textSizeY = 1;
         bool _textChanged = false;
+        bool _heightComputed = false;
 
         void _drawInternal(Adafruit_GFX& display, uint16_t colour);
 

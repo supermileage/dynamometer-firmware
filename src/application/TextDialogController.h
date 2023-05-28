@@ -6,11 +6,12 @@
 #include "TextDialogView.h"
 #include "ui/ui_util.h"
 
-#define TEXT_FOCUS_ANIMATION_INTERVAL 750
+#define TEXT_FOCUS_ANIMATION_INTERVAL   750
+#define MAX_TEXT_LENGTH                 20
 
 class TextDialogController : public ControllerBase {
     public:
-        TextDialogController(ApplicationContext context, Adafruit_GFX& display, uint8_t inFocus);
+        TextDialogController(ApplicationContext& context, Adafruit_GFX& display, uint8_t inFocus);
         ~TextDialogController();
 
         /**
@@ -28,25 +29,33 @@ class TextDialogController : public ControllerBase {
     private:
         class TextFocusAnimation : public Animation {
             public:
-                TextFocusAnimation(UIElement* element) :
+                TextFocusAnimation(std::shared_ptr<UIElement> element) :
                     Animation(TEXT_FOCUS_ANIMATION_INTERVAL, true), _element(element) { }
+                ~TextFocusAnimation() {
+                    DEBUG_STATE_TRANSITION_LN("~TextFocusAnimation");
+                }
                 void run(uint32_t time) override;
             private:
-                UIElement* _element;
+                std::shared_ptr<UIElement> _element;
                 bool _focussed = false;
         };
 
-        TextDialogView* _view;
+        std::shared_ptr<TextDialogView> _view;
         TextFocusAnimation* _currentAnimation = nullptr;
-        int16_t _maxTextLength = 20;
-        std::vector<UIButton*> _characterElements;
-        bool _selectHeld = false;
+        std::vector<std::shared_ptr<UIButton>> _characterElements;
+        String _text;
+        String _extension = "";
+        bool _buttonHeld = false;
 
         void _handleInputSerial(input_data_t d) override;
         void _handleInputEncoder(input_data_t d) override;
         void _handleInputEncoderSelect(input_data_t d) override;
         void _handleInputBack(input_data_t d) override;
         void _handleInputSelect(input_data_t d) override;
+        void _handleInputBrakeButton(input_data_t d) override;
+
+        void _navigateBack();
+        String _removeWhitespace(const String& str);
 };
 
 #endif

@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <functional>
 #include <map>
+#include <memory>
 
 #include "Adafruit_GFX.h"
 #include "System/InputManager.h"
@@ -21,7 +22,7 @@ using namespace application;
  * @note input handlers do nothing by default: this means that derived classes only have to implement methods for the inputs
  * which they actually use
 */
-class ControllerBase {
+class ControllerBase : public std::enable_shared_from_this<ControllerBase> {
     public:
         ControllerBase(ApplicationContext& context, Adafruit_GFX& display, uint8_t inFocus = 0);
         virtual ~ControllerBase();

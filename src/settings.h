@@ -31,9 +31,11 @@
 
 #if DEBUG_SERIAL_EN
 #define DEBUG_SERIAL_LN(x) Serial.println(x)
+#define DEBUG_SERIAL_F(x, ...) Serial.printf(x, __VA_ARGS__)
 #define DEBUG_SERIAL(x) Serial.print(x)
 #else
 #define DEBUG_SERIAL_LN(x) { }
+#define DEBUG_SERIAL_F(x, ...) { }
 #define DEBUG_SERIAL(x) { }
 #endif
 

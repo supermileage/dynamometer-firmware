@@ -9,12 +9,15 @@ class TextDialogView : public ViewBase {
         TextDialogView(Adafruit_GFX& display);
         ~TextDialogView();
         void init();
-        void addCharacterElement(UIButton* element);
+        void setTextDisplay(const String& str);
+        void redrawTextDisplay();
+        void addCharacterElement(std::shared_ptr<UIButton> element);
 
     private:
-        Container* _textContainer;
+        std::shared_ptr<TextElement> _textDisplay;
+        std::shared_ptr<Container> _textContainer;
 
-        void _configureCharacterElement(UIButton* element);
+        void _configureCharacterElement(std::shared_ptr<UIButton> element);
 
 };
 

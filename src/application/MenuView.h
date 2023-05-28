@@ -1,5 +1,5 @@
-#ifndef _MENU_EXAMPLE_H_
-#define _MENU_EXAMPLE_H_
+#ifndef _MENU_VIEW_H_
+#define _MENU_VIEW_H_
 
 #include "ViewBase.h"
 #include "ui/Container.h"
@@ -22,10 +22,10 @@ class MenuView : public ViewBase {
         /**
          * @brief adds menu button and styles it with app_util::configureMenuButton
         */
-        void addMenuButton(UIButton* button, const String& str);
+        void addMenuButton(std::shared_ptr<UIButton> button, const String& str);
 
     private:
-        Container* _menuContainer;
+        std::shared_ptr<Container> _menuContainer;
 
 };
 

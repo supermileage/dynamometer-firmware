@@ -1,8 +1,9 @@
 #ifndef _CONTROLLER_FACTORY_H_
 #define _CONTROLLER_FACTORY_H_
 
-#include "System/InputManager.h"
+#include <memory>
 
+#include "System/InputManager.h"
 #include "Adafruit_GFX.h"
 #include "ApplicationContext.h"
 #include "ControllerBase.h"
@@ -26,14 +27,14 @@ class ControllerFactory {
          * @return pointer to new ControllerBase
          * @note delete must be called on returned object when it is disposed of
         */
-        ControllerBase* create(ApplicationState state);
+        std::shared_ptr<ControllerBase> create(ApplicationState state);
 
         /**
          * @brief create new controller base class for state data
          * @return pointer to new ControllerBase
          * @note delete must be called on returned object when it is disposed of
         */
-        ControllerBase* create(StateData state);
+        std::shared_ptr<ControllerBase> create(StateData state);
         void setContext(ApplicationContext* context);
 
     private:
@@ -46,7 +47,7 @@ class ControllerFactory {
          * @return pointer to new ControllerBase
          * @note delete must be called on returned object when it is disposed of
         */
-        ControllerBase* _createInternal(StateData data);
+        std::shared_ptr<ControllerBase> _createInternal(StateData data);
 };
 
 #endif

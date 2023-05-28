@@ -1,6 +1,8 @@
 #ifndef _VIEW_BASE_H_
 #define _VIEW_BASE_H_
 
+#include <memory>
+
 #include "ui/Container.h"
 #include "ui/TextElement.h"
 #include "ui/UIButton.h"
@@ -32,11 +34,11 @@ class ViewBase {
     
     protected:
         Adafruit_GFX& _display;
-        Container* _window;
-        TextElement* _header;
-        Container* _navButtonContainer;
-        UIButton* _navButtonSelect;
-        UIButton* _navButtonBack;
+        std::shared_ptr<Container> _window;
+        std::shared_ptr<TextElement> _header;
+        std::shared_ptr<Container> _navButtonContainer;
+        std::shared_ptr<UIButton> _navButtonSelect;
+        std::shared_ptr<UIButton> _navButtonBack;
 };
 
 #endif

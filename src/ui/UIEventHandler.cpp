@@ -65,8 +65,8 @@ void UIEventHandler::addAnimation(ui_util::Animation* animation) {
 void UIEventHandler::removeAnimation(ui_util::Animation* animation) {
     mutex_enter_blocking(&_eventQueueMtx);
     _eventQueue.push([this, animation]() {
-        auto it = _animations.erase(std::remove(_animations.begin(), _animations.end(), animation), _animations.end());
-        if (it != _animations.end() && animation->deleteOnTermination()) {
+        _animations.erase(std::remove(_animations.begin(), _animations.end(), animation), _animations.end());
+        if (animation->deleteOnTermination()) {
             delete animation;
         }
     });
