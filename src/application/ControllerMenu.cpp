@@ -4,18 +4,11 @@ using namespace application;
 
 ControllerMenu::ControllerMenu(ApplicationContext& context, Adafruit_GFX& display, uint8_t inFocus) :
     ControllerBase(context, display, inFocus) {
-        _menu = new MenuView(display);
+        _menu = std::make_shared<MenuView>(display);
 }
 
 ControllerMenu::~ControllerMenu() {
-    DEBUG_STATE_TRANSITION_LN("Clearing event queue");
     DEBUG_STATE_TRANSITION_LN("~ControllerMenu");
-    delete _menu;
-
-    // delete all UIButtons generated from call to init
-    for (const auto& pair : _buttonCallbackMap) {
-        delete pair.second.first;
-    }
 }
 
 void ControllerMenu::init(InputManager& manager, const std::vector<MenuButtonData>& buttonConfigs) {
@@ -29,14 +22,15 @@ void ControllerMenu::init(InputManager& manager, const std::vector<MenuButtonDat
 
         DEBUG_STATE_TRANSITION_LN("ButtonData:");
         DEBUG_STATE_TRANSITION_LN("state: " + app_util::stateToString(data.state) + " -- text: " + data.text);
-        UIButton* cur = new UIButton(_display);
+        std::shared_ptr<UIButton> cur = std::make_shared<UIButton>(_display);
         _menu->addMenuButton(cur, data.text);
         _buttonCallbackMap[i] = std::make_pair(cur, [this, data]() { _context.setNextState(data.state); });
     }
 
-    DEBUG_STATE_TRANSITION_LN("Initializing view");
-    UIEventHandler::instance().addEvent( [this]() { _menu->init(); } );
-    UIEventHandler::instance().addEvent( [this]() { _buttonCallbackMap[_inFocus].first->focus(); } );
+    auto self = shared_from_this();
+    auto cur = _buttonCallbackMap[_inFocus].first;
+    UIEventHandler::instance().addEvent( [this, self]() { _menu->init(); } );
+    UIEventHandler::instance().addEvent( [cur, self]() { cur->focus(); } );
 }
 
 MenuView& ControllerMenu::getView() {
@@ -107,6 +101,7 @@ void ControllerMenu::_navigateBack() {
     }
 
     DEBUG_STATE_TRANSITION_LN("Navigate Back");
+    // auto self = shared_from_this();
     UIEventHandler::instance().addEvent([this]() {
         _menu->back();
         _context.setStateTransitionFlag();
@@ -114,9 +109,10 @@ void ControllerMenu::_navigateBack() {
 }
 
 void ControllerMenu::_shiftFocus(int32_t offset) {
-    DEBUG_STATE_TRANSITION_LN("Shift Focus");
-    UIElement* cur = _buttonCallbackMap[_inFocus].first;
-    UIEventHandler::instance().addEvent( [cur]() { cur->revert(); } );
+    DEBUG_SERIAL_LN("Shift Focus");
+    auto cur = _buttonCallbackMap[_inFocus].first;
+    auto self = shared_from_this();
+    UIEventHandler::instance().addEvent( [cur, self]() { cur->revert(); } );
 
     // compute index of new focussed element
     int32_t modVal = _buttonCallbackMap.size();
@@ -125,13 +121,14 @@ void ControllerMenu::_shiftFocus(int32_t offset) {
 
     // focus new element
     cur = _buttonCallbackMap[_inFocus].first;
-    UIEventHandler::instance().addEvent([cur]() { cur->focus(); });
+    UIEventHandler::instance().addEvent([cur, self]() { cur->focus(); });
 }
 
 void ControllerMenu::_selectCurrent() {
     DEBUG_STATE_TRANSITION_LN("Select Current");
-    UIElement* cur = _buttonCallbackMap[_inFocus].first;
-    UIEventHandler::instance().addEvent([this, cur]() {
+    auto cur = _buttonCallbackMap[_inFocus].first;
+    auto self = shared_from_this();
+    UIEventHandler::instance().addEvent([this, cur, self]() {
             cur->select();
             _menu->select();
         });
@@ -139,9 +136,10 @@ void ControllerMenu::_selectCurrent() {
 
 void ControllerMenu::_triggerStateChange() {
     DEBUG_STATE_TRANSITION_LN("Trigger State Changed");
-    UIElement* cur = _buttonCallbackMap[_inFocus].first;
+    auto cur = _buttonCallbackMap[_inFocus].first;
+    auto self = shared_from_this();
     UIEventHandler::instance().addEvent(
-        [this, cur]() {
+        [this, cur, self]() {
             cur->revert();
             _menu->revert();
             _context.setStateTransitionFlag(); // set flag after render actions are complete

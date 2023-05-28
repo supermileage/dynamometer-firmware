@@ -2,6 +2,7 @@
 #define _APPLICATION_CONTEXT_H_
 
 #include <stack>
+#include <memory>
 
 #include "Adafruit_GFX.h"
 #include "System/Handleable.h"
@@ -63,7 +64,7 @@ class ApplicationContext : public Handleable {
         InputManager& _inputManager;
         Adafruit_GFX& _display;
         ControllerFactory& _factory;
-        ControllerBase* _controller;
+        std::shared_ptr<ControllerBase> _controller = nullptr;
         ApplicationState _currentState = APPLICATION_INITIAL_STATE;
         StateData _nextState = StateData { .state = NullState, .inFocus = 0 };
         std::stack<StateData> _previousStates;

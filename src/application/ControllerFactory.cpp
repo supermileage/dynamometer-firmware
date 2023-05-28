@@ -17,12 +17,12 @@ const std::vector<ControllerMenu::MenuButtonData> calibrationMenuConfig = {
 ControllerFactory::ControllerFactory(Adafruit_GFX& display, InputManager& manager) :
     _display(display), _inputManager(manager) { }
 
-ControllerBase* ControllerFactory::create(ApplicationState state) {
+std::shared_ptr<ControllerBase> ControllerFactory::create(ApplicationState state) {
     StateData data { .state = state, .inFocus = 0 };
     return _createInternal(data);
 }
 
-ControllerBase* ControllerFactory::create(StateData data) {
+std::shared_ptr<ControllerBase> ControllerFactory::create(StateData data) {
     return _createInternal(data);
 }
 
@@ -30,21 +30,21 @@ void ControllerFactory::setContext(ApplicationContext* context) {
     _context = context;
 }
 
-ControllerBase* ControllerFactory::_createInternal(StateData data) {
-    ControllerBase* ret;
+std::shared_ptr<ControllerBase> ControllerFactory::_createInternal(StateData data) {
+    std::shared_ptr<ControllerBase> ret = nullptr;
     switch (data.state) {
         case MainMenu:
-            ret = new ControllerMenu(*_context, _display, data.inFocus);
-            static_cast<ControllerMenu*>(ret)->getView().setHeader("main menu");
-            static_cast<ControllerMenu*>(ret)->init(_inputManager, mainMenuConfig);
+            ret = std::make_shared<ControllerMenu>(*_context, _display, data.inFocus);
+            static_cast<ControllerMenu*>(ret.get())->getView().setHeader("main menu");
+            static_cast<ControllerMenu*>(ret.get())->init(_inputManager, mainMenuConfig);
             break;
         case ManualControlMenu:
             // TODO: add ManualControlMenu implementation
             break;
         case CalibrationMenu:
-            ret = new ControllerMenu(*_context, _display, data.inFocus);
-            static_cast<ControllerMenu*>(ret)->getView().setHeader("calibration setup");
-            static_cast<ControllerMenu*>(ret)->init(_inputManager, calibrationMenuConfig);
+            ret = std::make_shared<ControllerMenu>(*_context, _display, data.inFocus);
+            static_cast<ControllerMenu*>(ret.get())->getView().setHeader("calibration setup");
+            static_cast<ControllerMenu*>(ret.get())->init(_inputManager, calibrationMenuConfig);
             break;
         case SettingsMenu:
             // TODO: add SettingsMenu implementation

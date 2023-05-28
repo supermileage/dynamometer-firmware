@@ -4,7 +4,7 @@ ControllerBase::ControllerBase(ApplicationContext& context, Adafruit_GFX& displa
     _context(context), _display(display), _inFocus(inFocus) { }
 
 ControllerBase::~ControllerBase() {
-    DEBUG_SERIAL_LN("~ControllerBase");
+    DEBUG_STATE_TRANSITION_LN("~ControllerBase");
 }
 
 void ControllerBase::init(InputManager& manager) {
