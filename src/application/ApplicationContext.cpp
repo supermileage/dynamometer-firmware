@@ -11,6 +11,8 @@ void ApplicationContext::begin() {
     mutex_init(&_stateTransitionMutex);
 }
 
+uint t = 0;
+
 void ApplicationContext::handle() {
     if (_nextState.state != NullState) {
         bool changeNow = false;
@@ -23,6 +25,11 @@ void ApplicationContext::handle() {
             _changeStateInternal(_nextState);
             _nextState.reset();
         }
+    }
+
+    if (millis() >= t + 500) {
+        Serial.println(_controller.use_count());
+        t = millis();
     }
 }
 

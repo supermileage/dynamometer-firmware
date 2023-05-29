@@ -34,7 +34,7 @@ class ViewBase {
     
     protected:
         Adafruit_GFX& _display;
-        std::shared_ptr<Container> _window;
+        std::unique_ptr<Container> _window;
         std::shared_ptr<TextElement> _header;
         std::shared_ptr<Container> _navButtonContainer;
         std::shared_ptr<UIButton> _navButtonSelect;

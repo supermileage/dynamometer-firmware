@@ -14,16 +14,18 @@ MenuView::~MenuView() {
 }
 
 void MenuView::init() {
-    _window->addVisualElement(_header).addVisualElement(_menuContainer);
+    _window->addVisualElement(_header)
+        .addVisualElement(_menuContainer);
     _menuContainer->addVisualElement(_navButtonContainer);
-    _navButtonContainer->addVisualElement(_navButtonBack).addVisualElement(_navButtonSelect);
+    _navButtonContainer->addVisualElement(_navButtonBack)
+        .addVisualElement(_navButtonSelect);
 
-    DEBUG_STATE_TRANSITION_LN("Configuring Buttons");
-    app_util::configureSelectButton(_navButtonSelect);
-    app_util::configureBackButton(_navButtonBack);
-    app_util::configureMainWindow(_window);
-    app_util::configureMenuContainer(_menuContainer);
-    app_util::configureNavButtonContainer(_navButtonContainer);
+    app_util::configureSelectButton(_navButtonSelect.get());
+    app_util::configureBackButton(_navButtonBack.get());
+    
+    app_util::configureMainWindow(_window.get());
+    app_util::configureMenuContainer(_menuContainer.get());
+    app_util::configureNavButtonContainer(_navButtonContainer.get());
     
     // order matters for alignment: align top-level container first, then down
     _window->align();
@@ -36,6 +38,6 @@ void MenuView::init() {
 }
 
 void MenuView::addMenuButton(std::shared_ptr<UIButton> button, const String& str) {
-    app_util::configureMenuButton(button, str);
+    app_util::configureMenuButton(button.get(), str);
     _menuContainer->addVisualElement(button);
 }
