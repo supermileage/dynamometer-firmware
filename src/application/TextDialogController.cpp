@@ -17,6 +17,7 @@ TextDialogController::~TextDialogController() {
 void TextDialogController::init(InputManager& manager, const String& start) {
     ControllerBase::init(manager);
 
+    // get extension and initialize text
     _text = start;
     int i = _text.lastIndexOf('.');
     if (i != -1) {
@@ -29,6 +30,7 @@ void TextDialogController::init(InputManager& manager, const String& start) {
         }
     }
 
+    // initialize character selector buttons
     for (i = 0; i < MAX_TEXT_LENGTH; i++) {
         char cur = _text[i];
         std::shared_ptr<UIButton> button = std::make_shared<UIButton>(_display);
@@ -40,8 +42,7 @@ void TextDialogController::init(InputManager& manager, const String& start) {
     // initialize view and animation
     String displayText = _removeWhitespace(_text) + _extension;
     auto self = shared_from_this();
-    UIEventHandler::instance().addEvent( [this, displayText]() { _view->setTextDisplay(displayText); _view->init(); } );
-
+    UIEventHandler::instance().addEvent( [this, displayText, self]() { _view->setTextDisplay(displayText); _view->init(); } );
     _currentAnimation = new TextFocusAnimation(_characterElements[_inFocus]);
     UIEventHandler::instance().addAnimation(_currentAnimation);
 }
@@ -73,19 +74,6 @@ void TextDialogController::_handleInputSerial(input_data_t d) {
     }
 }
 
-void TextDialogController::_navigateBack() {
-    if (!_context.tryRevertState()) {
-        return;
-    }
-
-    auto self = shared_from_this();
-    UIEventHandler::instance().addEvent([this, self]() {
-        _view->back();
-        _context.setStateTransitionFlag();
-    });
-    UIEventHandler::instance().removeAnimation(_currentAnimation);
-}
-
 void TextDialogController::_handleInputEncoder(input_data_t d) {
     if (_buttonHeld) {
         std::shared_ptr<UIButton> cur = _characterElements[_inFocus];
@@ -101,13 +89,15 @@ void TextDialogController::_handleInputEncoder(input_data_t d) {
         String displayText = _removeWhitespace(_text) + _extension;
         _view->setTextDisplay(displayText);
         auto self = shared_from_this();
-        UIEventHandler::instance().addEvent([cur, this]() { cur->draw(); _view->redrawTextDisplay(); });
+        UIEventHandler::instance().addEvent([cur, this, self]() {
+                cur->select();
+                _view->redrawTextDisplay();
+            });
     } else {
         uint8_t next = static_cast<uint8_t>(_computeIndexOffset(_inFocus, d, _characterElements.size()));
 
         if (next != _inFocus) {
             std::shared_ptr<UIElement> cur = _characterElements[_inFocus];
-            auto self = shared_from_this();
             UIEventHandler::instance().addEvent([cur]() { cur->revert(); });
             UIEventHandler::instance().removeAnimation(_currentAnimation);
 
@@ -120,11 +110,21 @@ void TextDialogController::_handleInputEncoder(input_data_t d) {
 }
 
 void TextDialogController::_handleInputEncoderSelect(input_data_t d) {
-
+    if (d) {
+        if (!_rotarySwitchHeld && !_brakeButtonHeld) {
+            _buttonChanged(d);
+        }
+        _rotarySwitchHeld = true;
+    } else {
+        if (_rotarySwitchHeld && !_brakeButtonHeld) {
+            _buttonChanged(d);
+        }
+        _rotarySwitchHeld = false;
+    }
 }
 
 void TextDialogController::_handleInputBack(input_data_t d) {
-
+    // pop-up confirmation dialog
 }
 
 void TextDialogController::_handleInputSelect(input_data_t d) {
@@ -133,29 +133,43 @@ void TextDialogController::_handleInputSelect(input_data_t d) {
 
 void TextDialogController::_handleInputBrakeButton(input_data_t d) {
     if (d) {
+        if (!_rotarySwitchHeld && !_brakeButtonHeld) {
+            _buttonChanged(d);
+        }
+        _brakeButtonHeld = true;
+    } else {
+        if (_brakeButtonHeld && !_rotarySwitchHeld) {
+            _buttonChanged(d);
+        }
+        _brakeButtonHeld = false;
+    }
+}
+
+void TextDialogController::_navigateBack() {
+    if (!_context.tryRevertState()) {
+        return;
+    }
+
+    auto self = shared_from_this();
+    UIEventHandler::instance().addEvent([this, self]() {
+        _view->back();
+        _context.setStateTransitionFlag();
+    });
+    UIEventHandler::instance().removeAnimation(_currentAnimation);
+}
+
+void TextDialogController::_buttonChanged(input_data_t d) {
+    if (d) {
         _buttonHeld = true;
         UIEventHandler::instance().removeAnimation(_currentAnimation);
         _currentAnimation = nullptr;
         std::shared_ptr<UIButton> cur = _characterElements[_inFocus];
-        // auto self = shared_from_this();
         UIEventHandler::instance().addEvent([cur]() { cur->select(); });
     } else {
         _buttonHeld = false;
         std::shared_ptr<UIButton> cur = _characterElements[_inFocus];
         _currentAnimation = new TextFocusAnimation(cur);
         UIEventHandler::instance().addAnimation(_currentAnimation);
-    }
-}
-
-void TextDialogController::TextFocusAnimation::run(uint32_t time) {
-    if (time >= _interval + _lastTime) {
-        if (_focussed) {
-            _element->revert();
-        } else {
-            _element->focus();
-        }
-        _focussed = !_focussed;
-        _lastTime = time;
     }
 }
 
@@ -167,4 +181,18 @@ String TextDialogController::_removeWhitespace(const String& str) {
         }
     }
     return ret;
+}
+
+/* text focus animation */
+
+void TextDialogController::TextFocusAnimation::run(uint32_t time) {
+    if (time >= _interval + _lastTime) {
+        if (_focussed) {
+            _element->revert();
+        } else {
+            _element->focus();
+        }
+        _focussed = !_focussed;
+        _lastTime = time;
+    }
 }

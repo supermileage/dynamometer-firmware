@@ -45,6 +45,8 @@ class TextDialogController : public ControllerBase {
         std::vector<std::shared_ptr<UIButton>> _characterElements;
         String _text;
         String _extension = "";
+        bool _rotarySwitchHeld = false;
+        bool _brakeButtonHeld = false;
         bool _buttonHeld = false;
 
         void _handleInputSerial(input_data_t d) override;
@@ -55,7 +57,9 @@ class TextDialogController : public ControllerBase {
         void _handleInputBrakeButton(input_data_t d) override;
 
         void _navigateBack();
+        void _buttonChanged(input_data_t d);
         String _removeWhitespace(const String& str);
+
 };
 
 #endif
