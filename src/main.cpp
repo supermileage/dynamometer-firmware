@@ -16,7 +16,7 @@
 double getProtoRpm();
 
 /* system resources */
-Adafruit_ILI9341 tft = Adafruit_ILI9341(&SPI, TFT_DC, TFT_CS, TFT_RST);
+Adafruit_ILI9341 tft = Adafruit_ILI9341(&SPI, LCD_DC, LCD_CS, LCD_RST);
 XPT2046_Touchscreen ts(TOUCH_CS);
 
 /* sensors */

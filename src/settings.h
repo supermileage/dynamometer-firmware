@@ -1,36 +1,88 @@
-#ifndef SETTINGS_H_
-#define SETTINGS_H_
+#ifndef _SETTINGS_H_
+#define _SETTINGS_H_
 
 #include "Arduino.h"
 
+/* Constants */
+#define _PI 3.14159
+#define _TWO_PI 6.28318
+
 /* Display */
-#define TFT_DC 20
-#define TFT_CS 17
-#define TFT_RST 21
+#define LCD_CS 17
+#define LCD_DC 21
+#define LCD_RST 20
 #define TOUCH_CS 13
 
-/* IO */
-#define GPIO_ADC0 26
-#define GPIO_ADC1 27
-#define GPIO_ADC2 28
-
-#define BRAKE_CONTROL_PIN 6
-#define BUTTON_PIN 1
-#define POT_PIN GPIO_ADC0
-#define FORCE_SENSOR GPIO_ADC1
 #define OPTICAL_SENSOR_PIN 2
+#define DEMUX_SELECT0 8
+#define DEMUX_SELECT1 9
+
+#define BUTTON_DEBOUNCE_MILLIS 50
+
+// UI Input IDs (must be sequential)
+#define ID_SERIAL               0
+#define ID_ROT_ENCODER          1
+#define ID_ROTARY_EN_SELECT     2
+#define ID_BACK                 3
+#define ID_SELECT               4
+#define ID_BRAKE_BUTTON         5
+#define ID_BRAKE_POT            6
+#define NUM_INPUT_IDS           7
 
 /* Debugging */
 #define DEBUG_SERIAL_EN 1
 
 #if DEBUG_SERIAL_EN
 #define DEBUG_SERIAL_LN(x) Serial.println(x)
+#define DEBUG_SERIAL(x) Serial.print(x)
 #else
 #define DEBUG_SERIAL_LN(x) { }
+#define DEBUG_SERIAL(x) { }
 #endif
 
-/* Constants */
-#define _PI 3.14159
-#define _TWO_PI 6.28318
+/* IO */
+
+/* General */
+
+/* Screen */
+#define LCD_RST     20
+#define LCD_DC      21
+#define LCD_CS      17
+#define TOUCH_CS    13
+
+/* Sensor */
+#define OPTICAL_SENSOR_PIN  2
+
+/* Demux (Buttons) */
+#define BUTTON_DEBOUNCE_MILLIS      50
+#define DEMUX_SELECT0               8
+#define DEMUX_SELECT1               9
+#define DEMUX_OUT                   10
+#define DEMUX_SELECT_SELECT         0x0
+#define DEMUX_SELECT_BACK           0x1
+#define DEMUX_SELECT_BRAKE          0x2
+#define DEMUX_SELECT_ROT_EN_SW      0x3
+
+/* Led */
+#define LED_BACK    5
+#define LED_SELECT  6
+#define LED_BRAKE   7
+
+/* Knobs */
+#define POT_IN      27  // ADC1
+#define ROT_EN_A    22
+#define ROT_EN_B    28
+
+// Input IDs
+#define ID_SERIAL           0
+#define ID_ROT_EN           1
+#define ID_ROT_EN_SW        2
+#define ID_BACK_BUTTON      3
+#define ID_SELECT_BUTTON    4
+#define ID_BRAKE_BUTTON     5
+#define ID_BRAKE_POT        6
+
+#define DEBUG_STATE_TRANSITION_LN(x) Serial.println(x)
+// #define DEBUG_STATE_TRANSITION_LN(x) { }
 
 #endif
