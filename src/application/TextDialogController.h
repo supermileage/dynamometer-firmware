@@ -1,6 +1,8 @@
 #ifndef _TEXT_DIALOG_CONTROLLER_H_
 #define _TEXT_DIALOG_CONTROLLER_H_
 
+#include <memory>
+
 #include "ControllerBase.h"
 #include "ApplicationContext.h"
 #include "TextDialogView.h"
@@ -41,7 +43,7 @@ class TextDialogController : public ControllerBase {
         };
 
         std::shared_ptr<TextDialogView> _view;
-        TextFocusAnimation* _currentAnimation = nullptr;
+        std::shared_ptr<TextFocusAnimation> _currentAnimation = nullptr;
         std::vector<std::shared_ptr<UIButton>> _characterElements;
         String _text;
         String _extension = "";

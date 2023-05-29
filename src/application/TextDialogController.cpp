@@ -43,7 +43,7 @@ void TextDialogController::init(InputManager& manager, const String& start) {
     String displayText = _removeWhitespace(_text) + _extension;
     auto self = shared_from_this();
     UIEventHandler::instance().addEvent( [this, displayText, self]() { _view->setTextDisplay(displayText); _view->init(); } );
-    _currentAnimation = new TextFocusAnimation(_characterElements[_inFocus]);
+    _currentAnimation = std::make_shared<TextFocusAnimation>(_characterElements[_inFocus]);
     UIEventHandler::instance().addAnimation(_currentAnimation);
 }
 
@@ -103,7 +103,7 @@ void TextDialogController::_handleInputEncoder(input_data_t d) {
 
             _inFocus = next;
             cur = _characterElements[_inFocus];
-            _currentAnimation = new TextFocusAnimation(cur);
+            _currentAnimation = std::make_shared<TextFocusAnimation>(cur);
             UIEventHandler::instance().addAnimation(_currentAnimation);
         }
     }
@@ -168,7 +168,7 @@ void TextDialogController::_buttonChanged(input_data_t d) {
     } else {
         _buttonHeld = false;
         std::shared_ptr<UIButton> cur = _characterElements[_inFocus];
-        _currentAnimation = new TextFocusAnimation(cur);
+        _currentAnimation = std::make_shared<TextFocusAnimation>(cur);
         UIEventHandler::instance().addAnimation(_currentAnimation);
     }
 }

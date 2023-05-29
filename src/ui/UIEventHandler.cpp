@@ -22,11 +22,12 @@ UIEventHandler& UIEventHandler::instance() {
 
 void UIEventHandler::init() {
     mutex_init(&_eventQueueMtx);
+    mutex_init(&_animationMutex);
 }
 
 void UIEventHandler::run() {
+    // execute events
     mutex_enter_blocking(&_eventQueueMtx);
-
     if (!_eventQueue.empty()) {
         DEBUG_STATE_TRANSITION_LN("Event queue not empty");
         std::function<void()> event = _eventQueue.front();
@@ -40,9 +41,12 @@ void UIEventHandler::run() {
         mutex_exit(&_eventQueueMtx);
     }
 
+    // run animations
+    mutex_enter_blocking(&_animationMutex);
     for (std::shared_ptr<ui_util::Animation> animation : _animations) {
         animation->run(millis());
     }
+    mutex_exit(&_animationMutex);
 }
 
 void UIEventHandler::addEvent(std::function<void(void)> action) {
@@ -66,9 +70,6 @@ void UIEventHandler::removeAnimation(std::shared_ptr<ui_util::Animation> animati
     mutex_enter_blocking(&_eventQueueMtx);
     _eventQueue.push([this, animation]() {
         _animations.erase(std::remove(_animations.begin(), _animations.end(), animation), _animations.end());
-        if (animation->deleteOnTermination()) {
-            delete animation;
-        }
     });
     mutex_exit(&_eventQueueMtx);
 }
@@ -82,12 +83,7 @@ void UIEventHandler::clearEventQueue() {
 }
 
 void UIEventHandler::clearAnimations() {
-    mutex_enter_blocking(&_eventQueueMtx);
-    for (ui_util::Animation* animation : _animations) {
-        if (animation->deleteOnTermination()) {
-            delete animation;
-        }
-    }
+    mutex_enter_blocking(&_animationMutex);
     _animations.clear();
-    mutex_exit(&_eventQueueMtx);
+    mutex_exit(&_animationMutex);
 }

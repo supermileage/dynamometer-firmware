@@ -61,6 +61,7 @@ class UIEventHandler {
     private:
         static UIEventHandler* _instance;
         mutex_t _eventQueueMtx;
+        mutex_t _animationMutex;
         std::queue<std::function<void(void)>> _eventQueue;
         std::vector<std::shared_ptr<ui_util::Animation>> _animations;
 
