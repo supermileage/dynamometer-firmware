@@ -1,7 +1,7 @@
 #include "TextDialogController.h"
 #include "ui/UIEventHandler.h"
 
-#define FIRST_CHAR  '0' // 48
+#define FIRST_CHAR  '/' // 47 (not that '/' has been co-opted to represent ' ')
 #define LAST_CHAR   'z' // 122
 #define CHAR_RANGE  (LAST_CHAR - FIRST_CHAR)
 
@@ -82,6 +82,7 @@ void TextDialogController::_handleInputEncoder(input_data_t d) {
             c = FIRST_CHAR;
         }
         c = static_cast<char>(_computeIndexOffset(c - FIRST_CHAR, d, CHAR_RANGE) + FIRST_CHAR);
+        c = c == FIRST_CHAR ? ' ' : c;
         TextComponent& text = cur->getTextComponent().setDisplayString(String(c));
         text.setDisplayString(String(c));
         _text[_inFocus] = c;
@@ -129,6 +130,7 @@ void TextDialogController::_handleInputBack(input_data_t d) {
 
 void TextDialogController::_handleInputSelect(input_data_t d) {
     // pop-up confirmation dialog
+    
 }
 
 void TextDialogController::_handleInputBrakeButton(input_data_t d) {
