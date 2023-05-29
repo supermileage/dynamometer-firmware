@@ -142,7 +142,6 @@ void TextDialogController::_handleInputBrakeButton(input_data_t d) {
     } else {
         _buttonHeld = false;
         std::shared_ptr<UIButton> cur = _characterElements[_inFocus];
-        UIEventHandler::instance().removeAnimation(_currentAnimation);
         _currentAnimation = new TextFocusAnimation(cur);
         UIEventHandler::instance().addAnimation(_currentAnimation);
     }

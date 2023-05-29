@@ -28,7 +28,7 @@ void ApplicationContext::handle() {
     }
 
     if (millis() >= t + 500) {
-        Serial.println(_controller.use_count());
+        Serial.println("Controller use count: " + String(_controller.use_count()));
         t = millis();
     }
 }
