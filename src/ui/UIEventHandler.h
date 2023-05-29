@@ -4,6 +4,7 @@
 #include "pico/mutex.h"
 #include <queue>
 #include <functional>
+#include <memory>
 
 #include "ui_util.h"
 
@@ -37,14 +38,13 @@ class UIEventHandler {
         /**
          * @brief add animation
         */
-        void addAnimation(ui_util::Animation* animation);
+        void addAnimation(std::shared_ptr<ui_util::Animation> animation);
 
         /**
          * @brief remove animation
-         * 
-         * @note this will not call delete on the animation ptr: freeing data is the user's responsibility
+         * @note this will call delete on animation only if Animation::deleteOnTermination() returns true
         */
-        void removeAnimation(ui_util::Animation* animation);
+        void removeAnimation(std::shared_ptr<ui_util::Animation> animation);
 
         /**
          * @brief clears all events from queue
@@ -62,7 +62,7 @@ class UIEventHandler {
         static UIEventHandler* _instance;
         mutex_t _eventQueueMtx;
         std::queue<std::function<void(void)>> _eventQueue;
-        std::vector<ui_util::Animation*> _animations;
+        std::vector<std::shared_ptr<ui_util::Animation>> _animations;
 
         UIEventHandler();
 

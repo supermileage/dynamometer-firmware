@@ -8,7 +8,10 @@ UIEventHandler* UIEventHandler::_instance = nullptr;
 
 UIEventHandler::UIEventHandler() { }
 
-UIEventHandler::~UIEventHandler() { }
+UIEventHandler::~UIEventHandler() {
+    clearAnimations();
+    clearEventQueue();
+}
 
 UIEventHandler& UIEventHandler::instance() {
     if (_instance == nullptr) {
@@ -37,7 +40,7 @@ void UIEventHandler::run() {
         mutex_exit(&_eventQueueMtx);
     }
 
-    for (ui_util::Animation* animation : _animations) {
+    for (std::shared_ptr<ui_util::Animation> animation : _animations) {
         animation->run(millis());
     }
 }
@@ -51,7 +54,7 @@ void UIEventHandler::addEvent(std::function<void(void)> action) {
     DEBUG_STATE_TRANSITION_LN("exiting addEvent()");
 }
 
-void UIEventHandler::addAnimation(ui_util::Animation* animation) {
+void UIEventHandler::addAnimation(std::shared_ptr<ui_util::Animation> animation) {
     mutex_enter_blocking(&_eventQueueMtx);
     _eventQueue.push([this, animation]() {
         _animations.push_back(animation);
@@ -59,7 +62,7 @@ void UIEventHandler::addAnimation(ui_util::Animation* animation) {
     mutex_exit(&_eventQueueMtx);
 }
 
-void UIEventHandler::removeAnimation(ui_util::Animation* animation) {
+void UIEventHandler::removeAnimation(std::shared_ptr<ui_util::Animation> animation) {
     mutex_enter_blocking(&_eventQueueMtx);
     _eventQueue.push([this, animation]() {
         _animations.erase(std::remove(_animations.begin(), _animations.end(), animation), _animations.end());
