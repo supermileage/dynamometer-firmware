@@ -23,7 +23,7 @@ class ControllerMenu : public ControllerBase {
         /**
          * @brief menu button configuration data with display text and state which button transitions to
         */
-        struct MenuButtonData {
+        struct MenuButtonInfo {
             application::ApplicationState state;
             const String text;
         };
@@ -36,7 +36,7 @@ class ControllerMenu : public ControllerBase {
          * @param manager input manager which will be set to update this controller with UI events
          * @param buttonConfigs ui button data to configure the interactive buttons of this menu
         */
-        void init(InputManager& manager, StateData& state, const std::vector<MenuButtonData>& buttonConfigs);
+        void init(InputManager& manager, StateInfo& state, const std::vector<MenuButtonInfo>& buttonConfigs);
 
         /**
          * @brief returns view associated with this controller
@@ -45,7 +45,7 @@ class ControllerMenu : public ControllerBase {
 
     private:
         std::shared_ptr<MenuView> _menu;
-        std::vector<std::pair<std::shared_ptr<UIButton>, StateData>> _buttonStatePairs;
+        std::vector<std::pair<std::shared_ptr<UIButton>, MenuButtonInfo>> _buttonInfoPairs;
         bool _buttonHeld = false;
 
         // ControllerBase already provides default input handler implementations, so you only

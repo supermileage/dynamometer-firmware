@@ -41,10 +41,10 @@ class ApplicationContext : public Handleable {
         void handle() override;
 
         /**
-         * @brief set next state which this context will transition to
-         * @note current state (before transition) will be added to previous states stack
+         * @brief set info for next state which this context will transition to
+         * @note current state info (before transition) will be added to previous states stack
         */
-        void setNextState(StateData& state);
+        void setNextState(StateInfo& state);
 
         /**
          * @brief trigger state change to previous state (from previous states stack)
@@ -66,16 +66,16 @@ class ApplicationContext : public Handleable {
         Adafruit_GFX& _display;
         ControllerFactory& _factory;
         std::shared_ptr<ControllerBase> _controller = nullptr;
-        StateData _currentState;
-        StateData _nextState = StateData { .state = NullState, .inFocus = 0 };
-        std::stack<StateData> _previousStates;
+        StateInfo _currentStateInfo;
+        StateInfo _nextStateInfo = StateInfo { .state = NullState, .inFocus = 0 };
+        std::stack<StateInfo> _previousStates;
         mutex_t _stateTransitionMutex;
         bool _stateTransitionFlag = false;
 
         /**
          * @brief changes state to state represented by state param
         */
-        void _changeStateInternal(StateData& state);
+        void _changeStateInternal(StateInfo& state);
 };
 
 #endif

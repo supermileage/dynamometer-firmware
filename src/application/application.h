@@ -24,7 +24,7 @@ namespace application {
      * @note you can think of this data structure as a json settings object, as the config map is a
      * dictionary which can be used to store arbitrary state information
     */
-    struct StateData {
+    struct StateInfo {
         ApplicationState state;
         std::unordered_map<uint8_t, String> config;
         uint8_t inFocus;

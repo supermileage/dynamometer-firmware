@@ -11,38 +11,34 @@ ControllerMenu::~ControllerMenu() {
     DEBUG_STATE_TRANSITION_LN("~ControllerMenu");
 }
 
-void ControllerMenu::init(InputManager& manager, StateData& data, const std::vector<MenuButtonData>& buttonConfigs) {
+void ControllerMenu::init(InputManager& manager, StateInfo& info, const std::vector<MenuButtonInfo>& buttonConfigs) {
     // register all input callbacks with input manager
     ControllerBase::init(manager);
 
     DEBUG_STATE_TRANSITION_LN("Initializing new ControllerMenu");
     DEBUG_STATE_TRANSITION_LN("buttonConfigs.size() = " + String(buttonConfigs.size()));
 
-    if (data.config.find(CONFIG_ID_MENU_HEADER) != data.config.end()) {
-        DEBUG_STATE_TRANSITION_LN("Setting header to: " + data.config[CONFIG_ID_MENU_HEADER]);
-        _menu->setHeader(data.config[CONFIG_ID_MENU_HEADER]);
+    if (info.config.find(CONFIG_ID_MENU_HEADER) != info.config.end()) {
+        DEBUG_STATE_TRANSITION_LN("Setting header to: " + info.config[CONFIG_ID_MENU_HEADER]);
+        _menu->setHeader(info.config[CONFIG_ID_MENU_HEADER]);
     }
-    _inFocus = data.inFocus;
+    _info = info; // cache state info (we need to pass config to next state)
+    _inFocus = info.inFocus;
 
     for (uint8_t i = 0; i < buttonConfigs.size(); i++) {
-        const MenuButtonData& buttonConfig = buttonConfigs[i];
+        const MenuButtonInfo& buttonInfo = buttonConfigs[i];
 
         DEBUG_STATE_TRANSITION_LN("ButtonData:");
-        DEBUG_STATE_TRANSITION_LN("state: " + app_util::stateToString(buttonConfig.state) + " -- text: " + buttonConfig.text);
-
-        // copy state data and create transition state data for button
-        StateData buttonData = data;
-        buttonData.state = buttonConfig.state;
-        buttonData.config[CONFIG_ID_MENU_HEADER] = buttonConfig.text;
+        DEBUG_STATE_TRANSITION_LN("state: " + app_util::stateToString(buttonInfo.state) + " -- text: " + buttonInfo.text);
 
         // create menu button with associated capture lambda
         std::shared_ptr<UIButton> button = std::make_shared<UIButton>(_display);
-        _menu->addMenuButton(button, buttonConfig.text);
-        _buttonStatePairs.push_back(std::make_pair(button, buttonData));
+        _menu->addMenuButton(button, buttonInfo.text);
+        _buttonInfoPairs.push_back(std::make_pair(button, buttonInfo));
     }
 
     auto self = shared_from_this();
-    auto cur = _buttonStatePairs[_inFocus].first;
+    auto cur = _buttonInfoPairs[_inFocus].first;
     UIEventHandler::instance().addEvent( [this, self, cur]() {
             _menu->init();
             cur->focus();
@@ -96,7 +92,7 @@ void ControllerMenu::_handleInputEncoderSelect(input_data_t d) {
 
 void ControllerMenu::_handleInputBack(input_data_t d) {
     // if (d) {
-    //     UIElement* cur = _buttonStatePairs[_inFocus].first;
+    //     UIElement* cur = _buttonInfoPairs[_inFocus].first;
     //     UIEventHandler::instance().addEvent([this,cur]() { cur->focus(); _menu->back(); });
     // } else {
     //     _navigateBack();
@@ -126,21 +122,21 @@ void ControllerMenu::_navigateBack() {
 
 void ControllerMenu::_shiftFocus(int32_t offset) {
     DEBUG_SERIAL_LN("Shift Focus");
-    auto cur = _buttonStatePairs[_inFocus].first;
+    auto cur = _buttonInfoPairs[_inFocus].first;
     auto self = shared_from_this();
     UIEventHandler::instance().addEvent( [cur, self]() { cur->revert(); } );
 
     // compute index of new focussed element
-    _inFocus = static_cast<uint8_t>(_computeIndexOffset(_inFocus, offset, _buttonStatePairs.size()));
+    _inFocus = static_cast<uint8_t>(_computeIndexOffset(_inFocus, offset, _buttonInfoPairs.size()));
 
     // focus new element
-    cur = _buttonStatePairs[_inFocus].first;
+    cur = _buttonInfoPairs[_inFocus].first;
     UIEventHandler::instance().addEvent([cur, self]() { cur->focus(); });
 }
 
 void ControllerMenu::_selectCurrent() {
     DEBUG_STATE_TRANSITION_LN("Select Current");
-    auto cur = _buttonStatePairs[_inFocus].first;
+    auto cur = _buttonInfoPairs[_inFocus].first;
     auto self = shared_from_this();
     UIEventHandler::instance().addEvent([this, cur, self]() {
             cur->select();
@@ -150,7 +146,7 @@ void ControllerMenu::_selectCurrent() {
 
 void ControllerMenu::_triggerStateChange() {
     DEBUG_STATE_TRANSITION_LN("Trigger State Changed");
-    auto button = _buttonStatePairs[_inFocus].first;
+    auto button = _buttonInfoPairs[_inFocus].first;
     auto self = shared_from_this();
     UIEventHandler::instance().addEvent(
         [this, button, self]() {
@@ -158,7 +154,12 @@ void ControllerMenu::_triggerStateChange() {
             _menu->revert();
             _context.setStateTransitionFlag(); // set flag after render actions are complete
         });
-    _context.setNextState(_buttonStatePairs[_inFocus].second);
+
+    MenuButtonInfo buttonInfo = _buttonInfoPairs[_inFocus].second;
+    _info.state = buttonInfo.state;
+    _info.config[CONFIG_ID_MENU_HEADER] = buttonInfo.text;
+    _info.inFocus = 0;
+    _context.setNextState(_info);
 }
 
 

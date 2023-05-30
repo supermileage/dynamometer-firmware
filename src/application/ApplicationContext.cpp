@@ -9,16 +9,16 @@ void ApplicationContext::begin() {
     mutex_init(&_stateTransitionMutex);
     _factory.setContext(this);
 
-    _currentState.state = APPLICATION_INITIAL_STATE;
-    _currentState.config[CONFIG_ID_MENU_HEADER] = String(APPLICATION_INITIAL_HEADER);
-    _currentState.inFocus = 0;
-    _controller = _factory.create(_currentState);
+    _currentStateInfo.state = APPLICATION_INITIAL_STATE;
+    _currentStateInfo.config[CONFIG_ID_MENU_HEADER] = String(APPLICATION_INITIAL_HEADER);
+    _currentStateInfo.inFocus = 0;
+    _controller = _factory.create(_currentStateInfo);
 }
 
 uint t = 0;
 
 void ApplicationContext::handle() {
-    if (_nextState.state != NullState) {
+    if (_nextStateInfo.state != NullState) {
         bool changeNow = false;
         if (_stateTransitionFlag) {
             mutex_enter_blocking(&_stateTransitionMutex);
@@ -26,33 +26,32 @@ void ApplicationContext::handle() {
             mutex_exit(&_stateTransitionMutex);
 
             DEBUG_STATE_TRANSITION_LN("_stateTransitionFlag is true -- calling _changeStateInternal");
-            _changeStateInternal(_nextState);
-            _nextState.reset();
+            _changeStateInternal(_nextStateInfo);
+            _nextStateInfo.reset();
         }
     }
 
-    if (millis() >= t + 500) {
-        Serial.println(_controller.use_count());
+    if (millis() >= t + 1000) {
+        Serial.println("Current controller ref count: " + String(_controller.use_count()));
         t = millis();
     }
 }
 
-void ApplicationContext::setNextState(StateData& state) {
+void ApplicationContext::setNextState(StateInfo& info) {
     // push current state to _previousStates
-    if (_nextState.state != NullState) {
+    if (_nextStateInfo.state != NullState) {
         DEBUG_STATE_TRANSITION_LN("Already in state transition -- Aborting");
         return;
     }
 
-    _currentState.inFocus = _controller->getInFocus();
-    _previousStates.push(_currentState);
-    
-    // transition to new state
-    _nextState = state;
+    _nextStateInfo = info;
+
+    _currentStateInfo.inFocus = _controller->getInFocus();
+    _previousStates.push(_currentStateInfo);
 }
 
 bool ApplicationContext::tryRevertState() {
-    if (_nextState.state != NullState) {
+    if (_nextStateInfo.state != NullState) {
         DEBUG_STATE_TRANSITION_LN("Already in state transition -- Aborting");
         return false;
     } else if (_previousStates.empty()) {
@@ -60,7 +59,7 @@ bool ApplicationContext::tryRevertState() {
         return false;
     }
 
-    _nextState = _previousStates.top();
+    _nextStateInfo = _previousStates.top();
     _previousStates.pop();
     return true;
 }
@@ -76,12 +75,12 @@ void ApplicationContext::setStateTransitionFlag() {
     mutex_exit(&_stateTransitionMutex);
 }
 
-void ApplicationContext::_changeStateInternal(StateData& data) {
-    _currentState = data;
+void ApplicationContext::_changeStateInternal(StateInfo& info) {
+    _currentStateInfo = info;
     
-    DEBUG_STATE_TRANSITION_LN("Changing state to: " + app_util::stateToString(data.state));
-    DEBUG_STATE_TRANSITION_LN("\t- with menu item in focus: " + String(data.inFocus));
+    DEBUG_STATE_TRANSITION_LN("Changing state to: " + app_util::stateToString(info.state));
+    DEBUG_STATE_TRANSITION_LN("\t- with menu item in focus: " + String(info.inFocus));
     DEBUG_STATE_TRANSITION_LN("_controller.use_count() = " + String(_controller.use_count()));
 
-    _controller = _factory.create(data);
+    _controller = _factory.create(info);
 }
