@@ -10,7 +10,7 @@ MenuView::MenuView(Adafruit_GFX& display) : ViewBase(display) {
 }
 
 MenuView::~MenuView() {
-    DEBUG_STATE_TRANSITION_LN("~MenuView");
+    DEBUG_SERIAL_LN("~MenuView");
 }
 
 void MenuView::init() {

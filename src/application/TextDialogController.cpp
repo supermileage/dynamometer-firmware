@@ -24,15 +24,16 @@ TextDialogController::~TextDialogController() {
 void TextDialogController::init(InputManager& manager, StateInfo& info) {
     ControllerBase::init(manager);
 
-    // get extension and initialize text
+    // copy info and grab string id from info.config
     _info = info;
-    _editStringId = static_cast<uint8_t>(info.config[CONFIG_ID_EDIT_STRING_ID].toInt());
+    _editStringId = static_cast<uint8_t>(_info.config[CONFIG_ID_EDIT_STRING_ID].toInt());
 
+    // separate _text (fileName) from _extension -- we don't allow users to edit extensions
     if (application::GlobalSettings.find(_editStringId) != application::GlobalSettings.end()) {
         _text = application::GlobalSettings[_editStringId];
     } else {
         _text = "";
-        DEBUG_SERIAL_LN("No global config entry for text entry: " + String(_editStringId));
+        DEBUG_SERIAL_LN("No global settings entry for text: " + String(_editStringId));
     }
     int i = _text.lastIndexOf('.');
     if (i != -1) {
@@ -40,12 +41,10 @@ void TextDialogController::init(InputManager& manager, StateInfo& info) {
         for (; i < _text.length(); i++) {
             _text[i] = ' ';
         }
-        for (; i < MAX_TEXT_LENGTH; i++) {
-            _text += ' ';
-        }
     }
-
-    DEBUG_SERIAL_LN("Edit String ID: " + String(_editStringId));
+    for (i = _text.length(); i < MAX_TEXT_LENGTH; i++) {
+        _text += ' ';
+    }
 
     // initialize character selector buttons
     for (i = 0; i < MAX_TEXT_LENGTH; i++) {
@@ -61,7 +60,7 @@ void TextDialogController::init(InputManager& manager, StateInfo& info) {
     String displayText = _removeWhitespace(_text) + _extension;
     _view->setTextDisplay(displayText);
 
-    // initialize view and animation
+    // initialize view and text focus animation
     auto self = shared_from_this();
     UIEventHandler::instance().addEvent( [this, self]() {  _view->init(); } );
     _currentAnimation = std::make_shared<TextFocusAnimation>(_characterElements[_inFocus]);
@@ -97,6 +96,7 @@ void TextDialogController::_handleInputSerial(input_data_t d) {
 
 void TextDialogController::_handleInputEncoder(input_data_t d) {
     if (_buttonHeld) {
+        // modify character entry in string
         std::shared_ptr<UIButton> cur = _characterElements[_inFocus];
         char c = _text[_inFocus];
         if (SpecialCharacters.find(c) != SpecialCharacters.end()) {
@@ -120,6 +120,7 @@ void TextDialogController::_handleInputEncoder(input_data_t d) {
                 _view->redrawTextDisplay();
             });
     } else {
+        // shift character focus
         uint8_t next = static_cast<uint8_t>(_computeIndexOffset(_inFocus, d, _characterElements.size()));
 
         if (next != _inFocus) {
@@ -136,6 +137,7 @@ void TextDialogController::_handleInputEncoder(input_data_t d) {
 }
 
 void TextDialogController::_handleInputEncoderSelect(input_data_t d) {
+    // TODO: select confirmation dialog
     if (d) {
         if (!_rotarySwitchHeld && !_brakeButtonHeld) {
             _buttonChanged(d);

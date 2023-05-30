@@ -40,7 +40,7 @@ class TextDialogController : public ControllerBase {
                 TextFocusAnimation(std::shared_ptr<UIElement> element) :
                     Animation(TEXT_FOCUS_ANIMATION_INTERVAL, true), _element(element) { }
                 ~TextFocusAnimation() {
-                    DEBUG_STATE_TRANSITION_LN("~TextFocusAnimation");
+                    DEBUG_SERIAL_LN("~TextFocusAnimation");
                 }
                 void run(uint32_t time) override;
             private:

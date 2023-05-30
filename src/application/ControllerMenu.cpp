@@ -8,7 +8,7 @@ ControllerMenu::ControllerMenu(ApplicationContext& context, Adafruit_GFX& displa
 }
 
 ControllerMenu::~ControllerMenu() {
-    DEBUG_STATE_TRANSITION_LN("~ControllerMenu");
+    DEBUG_SERIAL_LN("~ControllerMenu");
 }
 
 void ControllerMenu::init(InputManager& manager, StateInfo& info, const std::vector<MenuButtonInfo>& buttonConfigs) {
@@ -145,12 +145,10 @@ void ControllerMenu::_triggerStateChange() {
     // update _info object before call
     MenuButtonInfo buttonInfo = _buttonInfoPairs[_inFocus].second;
     _info.state = buttonInfo.info.state;
-    _info.inFocus = buttonInfo.info.inFocus;
+    _info.inFocus = 0;
     _info.header = buttonInfo.text;
     _info.addToConfig(buttonInfo.info);
 
-    DEBUG_SERIAL_LN("FROM CONTROLLER MENU:");
-    _info.print();
     if (!_context.trySetNextState(_info)) {
         return;
     }
@@ -165,5 +163,3 @@ void ControllerMenu::_triggerStateChange() {
             _context.setStateTransitionFlag(); // set flag after render actions are complete
         });
 }
-
-
