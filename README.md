@@ -1,6 +1,6 @@
 # dynamometer-firmware
 
-### Cloning the repo
+## Cloning the repo
 
 This repository uses submodules, so to clone you must enter the command:
 
@@ -14,6 +14,11 @@ If you have already cloned the repo, then you can navigate to your local copy of
 git submodule init
 git submodule update
 ```
+## Building the Project
+If you haven't already, install vscode and the platformIO extension for vscode (through the extension management tool).  Once these are installed, open the project folder.  PlatformIO will automatically start downloading and installing the packages and libraries needed to build this project.  This will take some time, maybe ~20 minutes.
+
+Once the packages are installed, you can click the PlatformIO:build (checkmark) icon in the bottom left of your vscode window.
+
 ### Windows Users
 Before opening the repo in vscode with the platformIO extension, make sure to run the git command:
 ```
@@ -24,7 +29,19 @@ If you have attempted to open the project with platformIO before running the abo
 C:\Users\myuser\.platformio\.cache
 ```
 
-### Unit Tests
+## Unit Tests
+### Running the tests
+The simplest way to run this project's unit tests is to open a terminal in the project's root folder and run:
+```
+make run-tests
+```
+
+### Windows users
+Currently, the tests won't compile natively on windows (because they include ```<unistd.h>``` among other filesystem libraries), so windows users will either have to build and run the tests through wsl, or modify the test source files so they can be compiled and run natively.
+
+Open a wsl terminal instance in the project's root folder and run the above command.
+
+### Testmate Extension
 If you would like to run/manage this projects unit tests with the testmate test extension, add the following entry to your settings.json file:
 
 ```
@@ -40,6 +57,9 @@ If you would like to run/manage this projects unit tests with the testmate test 
         ]
       }
     }
-]
+  ]
+}
 ```
-This repo already includes the "build tests" task.
+This provides a useful interactive display for running tests and viewing test results.
+
+**Unfortunately it is not currently set up for use in windows.**
