@@ -26,7 +26,7 @@
 #define NUM_INPUT_IDS           7
 
 /* Debugging */
-#define DEBUG_SERIAL_EN 0
+#define DEBUG_SERIAL_EN 1
 
 #if DEBUG_SERIAL_EN
 #define DEBUG_SERIAL_LN(x) Serial.println(x)

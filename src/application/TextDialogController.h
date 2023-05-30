@@ -2,6 +2,7 @@
 #define _TEXT_DIALOG_CONTROLLER_H_
 
 #include <memory>
+#include <unordered_map>
 
 #include "ControllerBase.h"
 #include "ApplicationContext.h"
@@ -13,6 +14,11 @@
 
 class TextDialogController : public ControllerBase {
     public:
+        /**
+         * @brief contains set of special characters which aren't in order with other ascii characters
+        */
+        static const std::unordered_map<char,char> SpecialCharacters;
+
         TextDialogController(ApplicationContext& context, Adafruit_GFX& display);
         ~TextDialogController();
 
@@ -47,6 +53,7 @@ class TextDialogController : public ControllerBase {
         std::vector<std::shared_ptr<UIButton>> _characterElements;
         String _text;
         String _extension = "";
+        uint8_t _editStringId;
         bool _rotarySwitchHeld = false;
         bool _brakeButtonHeld = false;
         bool _buttonHeld = false;

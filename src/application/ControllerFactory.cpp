@@ -13,7 +13,8 @@ const std::vector<ControllerMenu::MenuButtonInfo> mainMenuConfig = {
         .info = { .state = ManualControlMenu } } },
     { ControllerMenu::MenuButtonInfo {
             .text = "Text Dialog",
-            .info = { .state = TextDialog, .config = { { CONFIG_ID_FILE_STRING, "default-file.csv" } } } } },
+            .info = { .state = TextDialog, .config = {
+                { CONFIG_ID_EDIT_STRING_ID, String(CONFIG_ID_DEFAULT_OUTPUT_FILENAME) }, } } } }
 };
 
 const std::vector<ControllerMenu::MenuButtonInfo> calibrationMenuConfig = {

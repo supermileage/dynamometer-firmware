@@ -1,9 +1,16 @@
 #include "TextDialogController.h"
 #include "ui/UIEventHandler.h"
 
-#define FIRST_CHAR  '/' // 47 (not that '/' has been co-opted to represent ' ')
+#define FIRST_CHAR  '.' // 46 (not that certain characters have been co-opted to represent others)
 #define LAST_CHAR   'z' // 122
 #define CHAR_RANGE  (LAST_CHAR - FIRST_CHAR)
+
+const std::unordered_map<char,char> TextDialogController::SpecialCharacters = {
+    { '/', ' ' }, // '/' maps to ' '
+    { ' ', '/' }, 
+    { '.', '-' }, // '.' maps to '-'
+    { '-', '.' },
+};
 
 TextDialogController::TextDialogController(ApplicationContext& context, Adafruit_GFX& display)
     : ControllerBase(context, display) {
@@ -18,7 +25,15 @@ void TextDialogController::init(InputManager& manager, StateInfo& info) {
     ControllerBase::init(manager);
 
     // get extension and initialize text
-    _text = info.config[CONFIG_ID_FILE_STRING];
+    _info = info;
+    _editStringId = static_cast<uint8_t>(info.config[CONFIG_ID_EDIT_STRING_ID].toInt());
+
+    if (application::GlobalSettings.find(_editStringId) != application::GlobalSettings.end()) {
+        _text = application::GlobalSettings[_editStringId];
+    } else {
+        _text = "";
+        DEBUG_SERIAL_LN("No global config entry for text entry: " + String(_editStringId));
+    }
     int i = _text.lastIndexOf('.');
     if (i != -1) {
         _extension = _text.substring(i);
@@ -30,6 +45,8 @@ void TextDialogController::init(InputManager& manager, StateInfo& info) {
         }
     }
 
+    DEBUG_SERIAL_LN("Edit String ID: " + String(_editStringId));
+
     // initialize character selector buttons
     for (i = 0; i < MAX_TEXT_LENGTH; i++) {
         char cur = _text[i];
@@ -39,13 +56,8 @@ void TextDialogController::init(InputManager& manager, StateInfo& info) {
         _characterElements.push_back(button);
     }
 
-    // header
-    String header = "";
-    if (info.config.find(CONFIG_ID_MENU_HEADER) != info.config.end())
-        header = info.config[CONFIG_ID_MENU_HEADER];
-    _view->setHeader(header);
-    
-    // display text
+    // header and display text
+    _view->setHeader(info.header);
     String displayText = _removeWhitespace(_text) + _extension;
     _view->setTextDisplay(displayText);
 
@@ -87,11 +99,15 @@ void TextDialogController::_handleInputEncoder(input_data_t d) {
     if (_buttonHeld) {
         std::shared_ptr<UIButton> cur = _characterElements[_inFocus];
         char c = _text[_inFocus];
-        if (c == ' ') {
-            c = FIRST_CHAR;
+        if (SpecialCharacters.find(c) != SpecialCharacters.end()) {
+            c = SpecialCharacters.at(c);
         }
+
         c = static_cast<char>(_computeIndexOffset(c - FIRST_CHAR, d, CHAR_RANGE) + FIRST_CHAR);
-        c = c == FIRST_CHAR ? ' ' : c;
+        if (SpecialCharacters.find(c) != SpecialCharacters.end()) {
+            c = SpecialCharacters.at(c);
+        }
+
         TextComponent& text = cur->getTextComponent().setDisplayString(String(c));
         text.setDisplayString(String(c));
         _text[_inFocus] = c;
@@ -134,12 +150,26 @@ void TextDialogController::_handleInputEncoderSelect(input_data_t d) {
 }
 
 void TextDialogController::_handleInputBack(input_data_t d) {
-    // pop-up confirmation dialog
+    // TODO: back confirmation dialog
 }
 
 void TextDialogController::_handleInputSelect(input_data_t d) {
-    // pop-up confirmation dialog
-    
+    if (d) {
+        application::GlobalSettings[_editStringId] = _removeWhitespace(_text) + _extension;
+        _info.inFocus = _inFocus;
+
+        if (!_context.tryUpdateAndReturn(_info)) {
+            return;
+        }
+
+        UIEventHandler::instance().removeAnimation(_currentAnimation);
+        auto self = shared_from_this();
+        UIEventHandler::instance().addEvent(
+            [this, self]() {
+                _view->select();
+                _context.setStateTransitionFlag(); // set flag after render actions are complete
+            });
+    }
 }
 
 void TextDialogController::_handleInputBrakeButton(input_data_t d) {

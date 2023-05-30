@@ -21,6 +21,10 @@ uint8_t ControllerBase::getInFocus() {
     return _inFocus;
 }
 
+StateInfo ControllerBase::getStateInfo() {
+    return _info;
+}
+
 /* Input handlers (assigned as InputCallback in init) */
 
 void ControllerBase::_handleInputSerial(input_data_t d) {

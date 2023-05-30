@@ -62,12 +62,6 @@ class ControllerMenu : public ControllerBase {
         void _shiftFocus(int32_t offset);
         void _selectCurrent();
         void _triggerStateChange();
-
-        /**
-         * @brief updates member info field to include data from param info object
-         * @note will overwrite config data in info field
-        */
-        void _updateInfoObject(MenuButtonInfo& info);
 };
 
 #endif

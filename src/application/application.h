@@ -3,6 +3,8 @@
 
 #include <unordered_map>
 
+#include "settings.h"
+
 namespace application {
     /**
      * @brief ApplicationState is enum representing all application states
@@ -26,6 +28,7 @@ namespace application {
     */
     struct StateInfo {
         ApplicationState state;
+        String header = "";
         std::unordered_map<uint8_t, String> config;
         uint8_t inFocus = 0;
 
@@ -34,14 +37,39 @@ namespace application {
         */
         void reset() {
             state = NullState;
+            header = "";
             inFocus = 0;
             config.clear();
         }
+
+        /**
+         * @brief add everything in info.config to this StateInfo config
+        */
+        void addToConfig(StateInfo& info) {
+            for (auto const& pair : info.config) {
+                config[pair.first] = pair.second;
+            }
+        }
+
+        void print() {
+            DEBUG_SERIAL_LN(" -- State Info Object -- ");
+            DEBUG_SERIAL_LN("\tstate:\t" + String(state));
+            DEBUG_SERIAL_LN("\theader:\t" + header);
+            DEBUG_SERIAL_LN("\tinFocus:\t" + String((int)inFocus));
+            DEBUG_SERIAL_LN("\tconfig:");
+            for (auto const& pair : config) {
+                DEBUG_SERIAL_LN("\t\t{ " + String((int)pair.first) + ", " + pair.second + " } " );
+            }
+        }
     };
 
+    extern std::unordered_map<uint8_t, String> GlobalSettings;
+
     /* config ids */
-    #define CONFIG_ID_MENU_HEADER       0
-    #define CONFIG_ID_FILE_STRING       1
+    #define CONFIG_ID_EDIT_STRING_ID            0
+    #define CONFIG_ID_DEFAULT_OUTPUT_FILENAME   1
+    #define CONFIG_ID_DEFAULT_INPUT_FILENAME    2
+    #define CONFIG_ID_DIALOG_START_STRING       3
 }
 
 #endif
