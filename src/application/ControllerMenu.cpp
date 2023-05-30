@@ -115,8 +115,8 @@ void ControllerMenu::_navigateBack() {
     }
 
     DEBUG_STATE_TRANSITION_LN("Navigate Back");
-    // auto self = shared_from_this();
-    UIEventHandler::instance().addEvent([this]() {
+    auto self = shared_from_this();
+    UIEventHandler::instance().addEvent([this, self]() {
         _menu->back();
         _context.setStateTransitionFlag();
     });
@@ -129,9 +129,7 @@ void ControllerMenu::_shiftFocus(int32_t offset) {
     UIEventHandler::instance().addEvent( [cur, self]() { cur->revert(); } );
 
     // compute index of new focussed element
-    int32_t modVal = _buttonStatePairs.size();
-    input_data_t val = ((_inFocus + offset) % modVal + modVal) % modVal;
-    _inFocus = static_cast<uint8_t>(val);
+    _inFocus = static_cast<uint8_t>(_computeIndexOffset(_inFocus, offset, _buttonStatePairs.size()));
 
     // focus new element
     cur = _buttonStatePairs[_inFocus].first;
