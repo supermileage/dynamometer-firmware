@@ -11,11 +11,16 @@ class DataLogger {
     public:
 
         /**
-         * @brief Constructs a DataLogger object and begins access to the SDcard.
+         * @brief Constructs a DataLogger object.
         */
-        DataLogger(int pinNumber, bool osync = false);
+        DataLogger(bool osync = false);
 
         ~DataLogger();
+
+        /**
+         * @brief Initializes DataLogger object and begins access to the SDcard.
+        */
+        bool init(int pinNumber);
 
         /**
          * @brief Creates a new CSV file with a given number of columns with the specified name and loads it. 

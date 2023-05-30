@@ -5,12 +5,7 @@ using namespace std;
 
 //public methods:
 
-DataLogger::DataLogger(int pinNumber, bool osync /*= false*/) {
-    if (SD.begin(pinNumber, SPI1)) {
-        DEBUG_SERIAL_LN("SD card is present & ready");
-    } else {
-        DEBUG_SERIAL_LN("SD card missing or failed");
-    }
+DataLogger::DataLogger(bool osync /*= false*/) {
 
     _osync = osync;
 }
@@ -36,6 +31,16 @@ bool DataLogger::create(String name, int numColumns) {
     } else {
         _fileValid = false;
         DEBUG_SERIAL_LN("Creating file failed.");
+        return false;
+    }
+}
+
+bool DataLogger::init(int pinNumber) {
+    if (SD.begin(pinNumber, SPI1)) {
+        DEBUG_SERIAL_LN("SD card is present & ready");
+        return true;
+    } else {
+        DEBUG_SERIAL_LN("SD card missing or failed");
         return false;
     }
 }
