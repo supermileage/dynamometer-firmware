@@ -13,15 +13,15 @@
 
 class TextDialogController : public ControllerBase {
     public:
-        TextDialogController(ApplicationContext& context, Adafruit_GFX& display, uint8_t inFocus);
+        TextDialogController(ApplicationContext& context, Adafruit_GFX& display);
         ~TextDialogController();
 
         /**
          * @brief connects TextDialogController with ui inputs and configures text display
          * @param manager input manager which will be set to update this controller with UI events
-         * @param start starting string which will be displayed in dialog
+         * @param info current state info object
         */
-        void init(InputManager& manager, const String& start);
+        void init(InputManager& manager, StateInfo& info);
 
         /**
          * @brief returns view owned by this controller

@@ -5,8 +5,8 @@
 #define LAST_CHAR   'z' // 122
 #define CHAR_RANGE  (LAST_CHAR - FIRST_CHAR)
 
-TextDialogController::TextDialogController(ApplicationContext& context, Adafruit_GFX& display, uint8_t inFocus)
-    : ControllerBase(context, display, inFocus) {
+TextDialogController::TextDialogController(ApplicationContext& context, Adafruit_GFX& display)
+    : ControllerBase(context, display) {
     _view = std::make_shared<TextDialogView>(_display);
 }
 
@@ -14,11 +14,11 @@ TextDialogController::~TextDialogController() {
     DEBUG_SERIAL_LN("~TextDialogController");
 }
 
-void TextDialogController::init(InputManager& manager, const String& start) {
+void TextDialogController::init(InputManager& manager, StateInfo& info) {
     ControllerBase::init(manager);
 
     // get extension and initialize text
-    _text = start;
+    _text = info.config[CONFIG_ID_FILE_STRING];
     int i = _text.lastIndexOf('.');
     if (i != -1) {
         _extension = _text.substring(i);
@@ -39,10 +39,19 @@ void TextDialogController::init(InputManager& manager, const String& start) {
         _characterElements.push_back(button);
     }
 
-    // initialize view and animation
+    // header
+    String header = "";
+    if (info.config.find(CONFIG_ID_MENU_HEADER) != info.config.end())
+        header = info.config[CONFIG_ID_MENU_HEADER];
+    _view->setHeader(header);
+    
+    // display text
     String displayText = _removeWhitespace(_text) + _extension;
+    _view->setTextDisplay(displayText);
+
+    // initialize view and animation
     auto self = shared_from_this();
-    UIEventHandler::instance().addEvent( [this, displayText, self]() { _view->setTextDisplay(displayText); _view->init(); } );
+    UIEventHandler::instance().addEvent( [this, self]() {  _view->init(); } );
     _currentAnimation = std::make_shared<TextFocusAnimation>(_characterElements[_inFocus]);
     UIEventHandler::instance().addAnimation(_currentAnimation);
 }
