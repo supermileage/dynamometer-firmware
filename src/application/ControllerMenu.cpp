@@ -11,17 +11,18 @@ ControllerMenu::~ControllerMenu() {
     DEBUG_STATE_TRANSITION_LN("~ControllerMenu");
 }
 
-void ControllerMenu::init(InputManager& manager, StateData& state, const std::vector<MenuButtonData>& buttonConfigs) {
+void ControllerMenu::init(InputManager& manager, StateData& data, const std::vector<MenuButtonData>& buttonConfigs) {
     // register all input callbacks with input manager
     ControllerBase::init(manager);
 
     DEBUG_STATE_TRANSITION_LN("Initializing new ControllerMenu");
     DEBUG_STATE_TRANSITION_LN("buttonConfigs.size() = " + String(buttonConfigs.size()));
 
-    if (state.config.find(CONFIG_ID_MENU_HEADER) == state.config.end()) {
-        _menu->setHeader(state.config[CONFIG_ID_MENU_HEADER]);
+    if (data.config.find(CONFIG_ID_MENU_HEADER) != data.config.end()) {
+        DEBUG_STATE_TRANSITION_LN("Setting header to: " + data.config[CONFIG_ID_MENU_HEADER]);
+        _menu->setHeader(data.config[CONFIG_ID_MENU_HEADER]);
     }
-    _inFocus = state.inFocus;
+    _inFocus = data.inFocus;
 
     for (uint8_t i = 0; i < buttonConfigs.size(); i++) {
         const MenuButtonData& buttonConfig = buttonConfigs[i];
@@ -30,13 +31,14 @@ void ControllerMenu::init(InputManager& manager, StateData& state, const std::ve
         DEBUG_STATE_TRANSITION_LN("state: " + app_util::stateToString(buttonConfig.state) + " -- text: " + buttonConfig.text);
 
         // copy state data and create transition state data for button
-        StateData data = state;
-        data.config[CONFIG_ID_MENU_HEADER] = buttonConfig.text;
+        StateData buttonData = data;
+        buttonData.state = buttonConfig.state;
+        buttonData.config[CONFIG_ID_MENU_HEADER] = buttonConfig.text;
 
         // create menu button with associated capture lambda
         std::shared_ptr<UIButton> button = std::make_shared<UIButton>(_display);
         _menu->addMenuButton(button, buttonConfig.text);
-        _buttonStatePairs.push_back(std::make_pair(button, data));
+        _buttonStatePairs.push_back(std::make_pair(button, buttonData));
     }
 
     auto self = shared_from_this();
