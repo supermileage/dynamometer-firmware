@@ -24,7 +24,7 @@ using namespace application;
 */
 class ControllerBase : public std::enable_shared_from_this<ControllerBase> {
     public:
-        ControllerBase(ApplicationContext& context, Adafruit_GFX& display, uint8_t inFocus = 0);
+        ControllerBase(ApplicationContext& context, Adafruit_GFX& display);
         virtual ~ControllerBase();
 
         /**

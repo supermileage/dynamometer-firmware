@@ -19,7 +19,8 @@ class ControllerFactory;
 using namespace application;
 
 // application always starts from main menu
-#define APPLICATION_INITIAL_STATE MainMenu
+#define APPLICATION_INITIAL_STATE       MainMenu
+#define APPLICATION_INITIAL_HEADER      "main menu"
 
 /**
  * @brief maintains state and state transitions of application
@@ -43,7 +44,7 @@ class ApplicationContext : public Handleable {
          * @brief set next state which this context will transition to
          * @note current state (before transition) will be added to previous states stack
         */
-        void setNextState(ApplicationState state);
+        void setNextState(StateData& state);
 
         /**
          * @brief trigger state change to previous state (from previous states stack)
@@ -65,7 +66,7 @@ class ApplicationContext : public Handleable {
         Adafruit_GFX& _display;
         ControllerFactory& _factory;
         std::shared_ptr<ControllerBase> _controller = nullptr;
-        ApplicationState _currentState = APPLICATION_INITIAL_STATE;
+        StateData _currentState;
         StateData _nextState = StateData { .state = NullState, .inFocus = 0 };
         std::stack<StateData> _previousStates;
         mutex_t _stateTransitionMutex;
@@ -74,7 +75,7 @@ class ApplicationContext : public Handleable {
         /**
          * @brief changes state to state represented by state param
         */
-        void _changeStateInternal(StateData state);
+        void _changeStateInternal(StateData& state);
 };
 
 #endif

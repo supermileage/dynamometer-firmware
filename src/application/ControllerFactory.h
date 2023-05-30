@@ -23,18 +23,11 @@ class ControllerFactory {
         ControllerFactory(Adafruit_GFX& display, InputManager& manager);
 
         /**
-         * @brief create new controller base class for state
-         * @return pointer to new ControllerBase
-         * @note delete must be called on returned object when it is disposed of
-        */
-        std::shared_ptr<ControllerBase> create(ApplicationState state);
-
-        /**
          * @brief create new controller base class for state data
          * @return pointer to new ControllerBase
          * @note delete must be called on returned object when it is disposed of
         */
-        std::shared_ptr<ControllerBase> create(StateData state);
+        std::shared_ptr<ControllerBase> create(StateData& state);
         void setContext(ApplicationContext* context);
 
     private:
@@ -47,7 +40,7 @@ class ControllerFactory {
          * @return pointer to new ControllerBase
          * @note delete must be called on returned object when it is disposed of
         */
-        std::shared_ptr<ControllerBase> _createInternal(StateData data);
+        std::shared_ptr<ControllerBase> _createInternal(StateData& data);
 };
 
 #endif

@@ -6,9 +6,13 @@ ApplicationContext::ApplicationContext(InputManager& manager, Adafruit_GFX& disp
 ApplicationContext::~ApplicationContext() { }
 
 void ApplicationContext::begin() {
-    _factory.setContext(this);
-    _controller = _factory.create(APPLICATION_INITIAL_STATE);
     mutex_init(&_stateTransitionMutex);
+    _factory.setContext(this);
+
+    _currentState.state = APPLICATION_INITIAL_STATE;
+    _currentState.config[CONFIG_ID_MENU_HEADER] = String(APPLICATION_INITIAL_HEADER);
+    _currentState.inFocus = 0;
+    _controller = _factory.create(_currentState);
 }
 
 void ApplicationContext::handle() {
@@ -26,21 +30,18 @@ void ApplicationContext::handle() {
     }
 }
 
-void ApplicationContext::setNextState(ApplicationState state) {
+void ApplicationContext::setNextState(StateData& state) {
     // push current state to _previousStates
     if (_nextState.state != NullState) {
         DEBUG_STATE_TRANSITION_LN("Already in state transition -- Aborting");
         return;
     }
 
-    StateData data;
-    data.state = _currentState;
-    data.inFocus = _controller->getInFocus();
-    _previousStates.push(data);
+    _currentState.inFocus = _controller->getInFocus();
+    _previousStates.push(_currentState);
     
     // transition to new state
-    _nextState.state = state;
-    _nextState.inFocus = 0;
+    _nextState = state;
 }
 
 bool ApplicationContext::tryRevertState() {
@@ -68,8 +69,8 @@ void ApplicationContext::setStateTransitionFlag() {
     mutex_exit(&_stateTransitionMutex);
 }
 
-void ApplicationContext::_changeStateInternal(StateData data) {
-    _currentState = data.state;
+void ApplicationContext::_changeStateInternal(StateData& data) {
+    _currentState = data;
     
     DEBUG_STATE_TRANSITION_LN("Changing state to: " + app_util::stateToString(data.state));
     DEBUG_STATE_TRANSITION_LN("\t- with menu item in focus: " + String(data.inFocus));
