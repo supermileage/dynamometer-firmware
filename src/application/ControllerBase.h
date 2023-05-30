@@ -24,7 +24,7 @@ using namespace application;
 */
 class ControllerBase : public std::enable_shared_from_this<ControllerBase> {
     public:
-        ControllerBase(ApplicationContext& context, Adafruit_GFX& display, uint8_t inFocus = 0);
+        ControllerBase(ApplicationContext& context, Adafruit_GFX& display);
         virtual ~ControllerBase();
 
         /**
@@ -38,9 +38,15 @@ class ControllerBase : public std::enable_shared_from_this<ControllerBase> {
         */
 		uint8_t getInFocus();
 
+        /**
+         * @brief returns current state info object
+        */
+       StateInfo getStateInfo();
+
     protected:
         ApplicationContext& _context;
         Adafruit_GFX& _display;
+        StateInfo _info;
         uint8_t _inFocus = 0;
 
         /* hardware input handlers (assigned as InputCallback in init) */

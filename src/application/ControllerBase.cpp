@@ -1,10 +1,10 @@
 #include "ControllerBase.h"
 
-ControllerBase::ControllerBase(ApplicationContext& context, Adafruit_GFX& display, uint8_t inFocus) :
-    _context(context), _display(display), _inFocus(inFocus) { }
+ControllerBase::ControllerBase(ApplicationContext& context, Adafruit_GFX& display) :
+    _context(context), _display(display) { }
 
 ControllerBase::~ControllerBase() {
-    DEBUG_STATE_TRANSITION_LN("~ControllerBase");
+    DEBUG_SERIAL_LN("~ControllerBase");
 }
 
 void ControllerBase::init(InputManager& manager) {
@@ -19,6 +19,10 @@ void ControllerBase::init(InputManager& manager) {
 
 uint8_t ControllerBase::getInFocus() {
     return _inFocus;
+}
+
+StateInfo ControllerBase::getStateInfo() {
+    return _info;
 }
 
 /* Input handlers (assigned as InputCallback in init) */

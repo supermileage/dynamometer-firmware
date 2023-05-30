@@ -3,48 +3,48 @@
 #include "ControllerFactory.h"
 #include "ControllerMenu.h"
 
-const std::vector<ControllerMenu::MenuButtonData> mainMenuConfig = {
-    { ControllerMenu::MenuButtonData { .state = CalibrationMenu, .text = "Run Calibration" } },
-    { ControllerMenu::MenuButtonData { .state = ManualControlMenu, .text = "Manual Control" } },
-    { ControllerMenu::MenuButtonData { .state = SettingsMenu, .text = "Settings" } }
+const std::vector<ControllerMenu::MenuButtonInfo> mainMenuConfig = {
+    { ControllerMenu::MenuButtonInfo {
+        .text = "Run Calibration",
+        .info = { .state = CalibrationMenu } } },
+    { ControllerMenu::MenuButtonInfo {
+        .text = "Manual Control",
+        .info = { .state = ManualControlMenu } } },
+    { ControllerMenu::MenuButtonInfo {
+            .text = "Text Dialog",
+            .info = { .state = TextDialog, .config = {
+                { CONFIG_ID_EDIT_STRING_ID, String(CONFIG_ID_DEFAULT_OUTPUT_FILENAME) }, } } } }
 };
 
-const std::vector<ControllerMenu::MenuButtonData> calibrationMenuConfig = {
-    { ControllerMenu::MenuButtonData { .state = CalibrationMode, .text = "Begin Calibration" } },
-    { ControllerMenu::MenuButtonData { .state = CalibrationSettings, .text = "Calibration Settings" } }
+const std::vector<ControllerMenu::MenuButtonInfo> calibrationMenuConfig = {
+    { ControllerMenu::MenuButtonInfo { .text = "Begin Calibration", .info { .state = CalibrationMode } } },
+    { ControllerMenu::MenuButtonInfo { .text = "Calibration Settings", .info { .state = CalibrationSettings } } },
 };
 
 ControllerFactory::ControllerFactory(Adafruit_GFX& display, InputManager& manager) :
     _display(display), _inputManager(manager) { }
 
-std::shared_ptr<ControllerBase> ControllerFactory::create(ApplicationState state) {
-    StateData data { .state = state, .inFocus = 0 };
-    return _createInternal(data);
-}
-
-std::shared_ptr<ControllerBase> ControllerFactory::create(StateData data) {
-    return _createInternal(data);
+std::shared_ptr<ControllerBase> ControllerFactory::create(StateInfo& info) {
+    return _createInternal(info);
 }
 
 void ControllerFactory::setContext(ApplicationContext* context) {
     _context = context;
 }
 
-std::shared_ptr<ControllerBase> ControllerFactory::_createInternal(StateData data) {
+std::shared_ptr<ControllerBase> ControllerFactory::_createInternal(StateInfo& info) {
     std::shared_ptr<ControllerBase> ret = nullptr;
-    switch (data.state) {
+    switch (info.state) {
         case MainMenu:
-            ret = std::make_shared<ControllerMenu>(*_context, _display, data.inFocus);
-            static_cast<ControllerMenu*>(ret.get())->getView().setHeader("main menu");
-            static_cast<ControllerMenu*>(ret.get())->init(_inputManager, mainMenuConfig);
+            ret = std::make_shared<ControllerMenu>(*_context, _display);
+            static_cast<ControllerMenu*>(ret.get())->init(_inputManager, info, mainMenuConfig);
             break;
         case ManualControlMenu:
             // TODO: add ManualControlMenu implementation
             break;
         case CalibrationMenu:
-            ret = std::make_shared<ControllerMenu>(*_context, _display, data.inFocus);
-            static_cast<ControllerMenu*>(ret.get())->getView().setHeader("calibration setup");
-            static_cast<ControllerMenu*>(ret.get())->init(_inputManager, calibrationMenuConfig);
+            ret = std::make_shared<ControllerMenu>(*_context, _display);
+            static_cast<ControllerMenu*>(ret.get())->init(_inputManager, info, calibrationMenuConfig);
             break;
         case SettingsMenu:
             // TODO: add SettingsMenu implementation

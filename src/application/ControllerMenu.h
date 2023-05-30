@@ -2,6 +2,7 @@
 #define _CONTROLLER_MENU_H_
 
 #include <vector>
+#include <utility>
 #include <memory>
 
 #include "settings.h"
@@ -22,12 +23,12 @@ class ControllerMenu : public ControllerBase {
         /**
          * @brief menu button configuration data with display text and state which button transitions to
         */
-        struct MenuButtonData {
-            application::ApplicationState state;
+        struct MenuButtonInfo {
             const String text;
+            StateInfo info;
         };
 
-        ControllerMenu(ApplicationContext& context, Adafruit_GFX& display, uint8_t inFocus = 0);
+        ControllerMenu(ApplicationContext& context, Adafruit_GFX& display);
         ~ControllerMenu();
 
         /**
@@ -35,7 +36,7 @@ class ControllerMenu : public ControllerBase {
          * @param manager input manager which will be set to update this controller with UI events
          * @param buttonConfigs ui button data to configure the interactive buttons of this menu
         */
-        void init(InputManager& manager, const std::vector<MenuButtonData>& buttonConfigs);
+        void init(InputManager& manager, StateInfo& state, const std::vector<MenuButtonInfo>& buttonConfigs);
 
         /**
          * @brief returns view associated with this controller
@@ -44,7 +45,7 @@ class ControllerMenu : public ControllerBase {
 
     private:
         std::shared_ptr<MenuView> _menu;
-        std::map<uint8_t, std::pair<std::shared_ptr<UIElement>, std::function<void()>>> _buttonCallbackMap;
+        std::vector<std::pair<std::shared_ptr<UIButton>, MenuButtonInfo>> _buttonInfoPairs;
         bool _buttonHeld = false;
 
         // ControllerBase already provides default input handler implementations, so you only
