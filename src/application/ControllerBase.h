@@ -38,6 +38,11 @@ class ControllerBase : public std::enable_shared_from_this<ControllerBase> {
         */
 		uint8_t getInFocus();
 
+        /**
+         * @brief returns current state info object
+        */
+       StateInfo getStateInfo();
+
     protected:
         ApplicationContext& _context;
         Adafruit_GFX& _display;

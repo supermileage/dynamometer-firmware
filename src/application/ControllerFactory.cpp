@@ -3,42 +3,48 @@
 #include "ControllerFactory.h"
 #include "ControllerMenu.h"
 
-
 const std::vector<ControllerMenu::MenuButtonInfo> mainMenuConfig = {
-    { ControllerMenu::MenuButtonInfo { .state = CalibrationMenu, .text = "Run Calibration" } },
-    { ControllerMenu::MenuButtonInfo { .state = ManualControlMenu, .text = "Manual Control" } },
-    { ControllerMenu::MenuButtonInfo { .state = TextDialog, .text = "Text Dialog" } }
+    { ControllerMenu::MenuButtonInfo {
+        .text = "Run Calibration",
+        .info = { .state = CalibrationMenu } } },
+    { ControllerMenu::MenuButtonInfo {
+        .text = "Manual Control",
+        .info = { .state = ManualControlMenu } } },
+    { ControllerMenu::MenuButtonInfo {
+            .text = "Text Dialog",
+            .info = { .state = TextDialog, .config = {
+                { CONFIG_ID_EDIT_STRING_ID, String(CONFIG_ID_DEFAULT_OUTPUT_FILENAME) }, } } } }
 };
 
 const std::vector<ControllerMenu::MenuButtonInfo> calibrationMenuConfig = {
-    { ControllerMenu::MenuButtonInfo { .state = CalibrationMode, .text = "Begin Calibration" } },
-    { ControllerMenu::MenuButtonInfo { .state = CalibrationSettings, .text = "Calibration Settings" } }
+    { ControllerMenu::MenuButtonInfo { .text = "Begin Calibration", .info { .state = CalibrationMode } } },
+    { ControllerMenu::MenuButtonInfo { .text = "Calibration Settings", .info { .state = CalibrationSettings } } },
 };
 
 ControllerFactory::ControllerFactory(Adafruit_GFX& display, InputManager& manager) :
     _display(display), _inputManager(manager) { }
 
-std::shared_ptr<ControllerBase> ControllerFactory::create(StateInfo& data) {
-    return _createInternal(data);
+std::shared_ptr<ControllerBase> ControllerFactory::create(StateInfo& info) {
+    return _createInternal(info);
 }
 
 void ControllerFactory::setContext(ApplicationContext* context) {
     _context = context;
 }
 
-std::shared_ptr<ControllerBase> ControllerFactory::_createInternal(StateInfo& data) {
+std::shared_ptr<ControllerBase> ControllerFactory::_createInternal(StateInfo& info) {
     std::shared_ptr<ControllerBase> ret = nullptr;
-    switch (data.state) {
+    switch (info.state) {
         case MainMenu:
             ret = std::make_shared<ControllerMenu>(*_context, _display);
-            static_cast<ControllerMenu*>(ret.get())->init(_inputManager, data, mainMenuConfig);
+            static_cast<ControllerMenu*>(ret.get())->init(_inputManager, info, mainMenuConfig);
             break;
         case ManualControlMenu:
             // TODO: add ManualControlMenu implementation
             break;
         case CalibrationMenu:
             ret = std::make_shared<ControllerMenu>(*_context, _display);
-            static_cast<ControllerMenu*>(ret.get())->init(_inputManager, data, calibrationMenuConfig);
+            static_cast<ControllerMenu*>(ret.get())->init(_inputManager, info, calibrationMenuConfig);
             break;
         case SettingsMenu:
             // TODO: add SettingsMenu implementation

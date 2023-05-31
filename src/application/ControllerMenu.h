@@ -24,8 +24,8 @@ class ControllerMenu : public ControllerBase {
          * @brief menu button configuration data with display text and state which button transitions to
         */
         struct MenuButtonInfo {
-            application::ApplicationState state;
             const String text;
+            StateInfo info;
         };
 
         ControllerMenu(ApplicationContext& context, Adafruit_GFX& display);

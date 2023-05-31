@@ -41,10 +41,18 @@ class ApplicationContext : public Handleable {
         void handle() override;
 
         /**
-         * @brief set info for next state which this context will transition to
+         * @brief try to set info for next state which this context will transition to
+         * @returns bool indicating whether or not state transition has been triggered
          * @note current state info (before transition) will be added to previous states stack
         */
-        void setNextState(StateInfo& state);
+        bool trySetNextState(StateInfo& state);
+
+        /**
+         * @brief try updating and transitioning to previous state with current info (eg. return from config menu)
+         * @returns bool indicating whether or not state transition has been triggered
+         * @note current state info (before transition) will be added to previous states stack
+        */
+        bool tryUpdateAndReturn(StateInfo& state);
 
         /**
          * @brief trigger state change to previous state (from previous states stack)

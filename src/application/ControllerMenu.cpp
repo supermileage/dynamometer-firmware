@@ -8,28 +8,25 @@ ControllerMenu::ControllerMenu(ApplicationContext& context, Adafruit_GFX& displa
 }
 
 ControllerMenu::~ControllerMenu() {
-    DEBUG_STATE_TRANSITION_LN("~ControllerMenu");
+    DEBUG_SERIAL_LN("~ControllerMenu");
 }
 
 void ControllerMenu::init(InputManager& manager, StateInfo& info, const std::vector<MenuButtonInfo>& buttonConfigs) {
     // register all input callbacks with input manager
     ControllerBase::init(manager);
 
-    DEBUG_STATE_TRANSITION_LN("Initializing new ControllerMenu");
-    DEBUG_STATE_TRANSITION_LN("buttonConfigs.size() = " + String(buttonConfigs.size()));
+    DEBUG_SERIAL_LN("Initializing new ControllerMenu");
+    DEBUG_SERIAL_LN("buttonConfigs.size() = " + String(buttonConfigs.size()));
 
-    if (info.config.find(CONFIG_ID_MENU_HEADER) != info.config.end()) {
-        DEBUG_STATE_TRANSITION_LN("Setting header to: " + info.config[CONFIG_ID_MENU_HEADER]);
-        _menu->setHeader(info.config[CONFIG_ID_MENU_HEADER]);
-    }
+    _menu->setHeader(info.header);
     _info = info; // cache state info (we need to pass config to next state)
     _inFocus = info.inFocus;
 
     for (uint8_t i = 0; i < buttonConfigs.size(); i++) {
         const MenuButtonInfo& buttonInfo = buttonConfigs[i];
 
-        DEBUG_STATE_TRANSITION_LN("ButtonData:");
-        DEBUG_STATE_TRANSITION_LN("state: " + app_util::stateToString(buttonInfo.state) + " -- text: " + buttonInfo.text);
+        DEBUG_SERIAL_LN("ButtonData:");
+        DEBUG_SERIAL_LN("state: " + app_util::stateToString(buttonInfo.info.state) + " -- text: " + buttonInfo.text);
 
         // create menu button with associated capture lambda
         std::shared_ptr<UIButton> button = std::make_shared<UIButton>(_display);
@@ -145,6 +142,17 @@ void ControllerMenu::_selectCurrent() {
 }
 
 void ControllerMenu::_triggerStateChange() {
+    // update _info object before call
+    MenuButtonInfo buttonInfo = _buttonInfoPairs[_inFocus].second;
+    _info.state = buttonInfo.info.state;
+    _info.inFocus = 0;
+    _info.header = buttonInfo.text;
+    _info.addToConfig(buttonInfo.info);
+
+    if (!_context.trySetNextState(_info)) {
+        return;
+    }
+
     DEBUG_STATE_TRANSITION_LN("Trigger State Changed");
     auto button = _buttonInfoPairs[_inFocus].first;
     auto self = shared_from_this();
@@ -154,12 +162,4 @@ void ControllerMenu::_triggerStateChange() {
             _menu->revert();
             _context.setStateTransitionFlag(); // set flag after render actions are complete
         });
-
-    MenuButtonInfo buttonInfo = _buttonInfoPairs[_inFocus].second;
-    _info.state = buttonInfo.state;
-    _info.config[CONFIG_ID_MENU_HEADER] = buttonInfo.text;
-    _info.inFocus = 0;
-    _context.setNextState(_info);
 }
-
-
