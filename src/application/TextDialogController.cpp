@@ -108,9 +108,8 @@ void TextDialogController::_handleInputEncoder(input_data_t d) {
             c = SpecialCharacters.at(c);
         }
 
-        TextComponent& text = cur->getTextComponent().setDisplayString(String(c));
-        text.setDisplayString(String(c));
         _text[_inFocus] = c;
+        cur->getTextComponent().setDisplayString(String(c));
 
         String displayText = _removeWhitespace(_text) + _extension;
         _view->setTextDisplay(displayText);
@@ -157,12 +156,13 @@ void TextDialogController::_handleInputBack(input_data_t d) {
 
 void TextDialogController::_handleInputSelect(input_data_t d) {
     if (d) {
-        application::GlobalSettings[_editStringId] = _removeWhitespace(_text) + _extension;
         _info.inFocus = _inFocus;
 
         if (!_context.tryUpdateAndReturn(_info)) {
             return;
         }
+        // add string to global settings
+        application::GlobalSettings[_editStringId] = _removeWhitespace(_text) + _extension;
 
         UIEventHandler::instance().removeAnimation(_currentAnimation);
         auto self = shared_from_this();
