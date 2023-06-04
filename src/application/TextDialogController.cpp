@@ -26,6 +26,7 @@ void TextDialogController::init(InputManager& manager, StateInfo& info) {
 
     // copy info and grab string id from info.config
     _info = info;
+    _inFocus = info.inFocus;
     _editStringId = static_cast<uint8_t>(_info.config[CONFIG_ID_EDIT_STRING_ID].toInt());
 
     // separate _text (fileName) from _extension -- we don't allow users to edit extensions
@@ -72,7 +73,7 @@ TextDialogView& TextDialogController::getView() {
 }
 
 void TextDialogController::_handleInputSerial(input_data_t d) {
-    DEBUG_STATE_TRANSITION_LN("Serial input received: " + String(d));
+    DEBUG_SERIAL_LN("Serial input received: " + String(d));
     switch (d) {
         case 65:    // up
             // _shiftFocus(-1);
@@ -157,7 +158,6 @@ void TextDialogController::_handleInputBack(input_data_t d) {
 void TextDialogController::_handleInputSelect(input_data_t d) {
     if (d) {
         _info.inFocus = _inFocus;
-
         if (!_context.tryUpdateAndReturn(_info)) {
             return;
         }
@@ -165,6 +165,8 @@ void TextDialogController::_handleInputSelect(input_data_t d) {
         application::GlobalSettings[_editStringId] = _removeWhitespace(_text) + _extension;
 
         UIEventHandler::instance().removeAnimation(_currentAnimation);
+        _currentAnimation = nullptr;
+        
         auto self = shared_from_this();
         UIEventHandler::instance().addEvent(
             [this, self]() {
@@ -199,6 +201,7 @@ void TextDialogController::_navigateBack() {
         _context.setStateTransitionFlag();
     });
     UIEventHandler::instance().removeAnimation(_currentAnimation);
+    _currentAnimation = nullptr;
 }
 
 void TextDialogController::_buttonChanged(input_data_t d) {

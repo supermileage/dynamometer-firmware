@@ -26,7 +26,7 @@
 #define NUM_INPUT_IDS           7
 
 /* Debugging */
-#define DEBUG_SERIAL_EN 1
+#define DEBUG_SERIAL_EN 0
 
 #if DEBUG_SERIAL_EN
 #define DEBUG_SERIAL_LN(x) Serial.println(x)
@@ -79,8 +79,5 @@
 #define ID_SELECT_BUTTON    4
 #define ID_BRAKE_BUTTON     5
 #define ID_BRAKE_POT        6
-
-// #define DEBUG_STATE_TRANSITION_LN(x) Serial.println(x)
-#define DEBUG_STATE_TRANSITION_LN(x) { }
 
 #endif

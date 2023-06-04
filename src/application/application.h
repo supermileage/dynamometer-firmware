@@ -61,6 +61,18 @@ namespace application {
                 DEBUG_SERIAL_LN("\t\t{ " + String((int)pair.first) + ", " + pair.second + " } " );
             }
         }
+
+        String toString() {
+            String ret = " -- State Info Object -- ";
+            ret += "\tstate:\t" + String(state);
+            ret += "\theader:\t" + String(header);
+            ret += "\tinFocus:\t" + String((int)inFocus);
+            ret += "\tconfig:";
+            for (auto const& pair : config) {
+                ret += "\t\t{ " + String((int)pair.first) + ", " + pair.second + " } ";
+            }
+            return ret;
+        }
     };
 
     extern std::unordered_map<uint8_t, String> GlobalSettings;

@@ -33,7 +33,7 @@ void MenuView::init() {
     _navButtonContainer->align();
 
     // call to principal container draws all elements
-    DEBUG_STATE_TRANSITION_LN("Drawing window");
+    DEBUG_SERIAL_LN("Drawing window");
     _window->draw();
 }
 

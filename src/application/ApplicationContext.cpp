@@ -21,43 +21,43 @@ void ApplicationContext::handle() {
     if (_nextStateInfo.state != NullState) {
         bool changeNow = false;
         if (_stateTransitionFlag) {
+            DEBUG_SERIAL_LN("_stateTransitionFlag is true -- calling _changeStateInternal");
+            _changeStateInternal(_nextStateInfo);
+            _nextStateInfo.reset();
+
             mutex_enter_blocking(&_stateTransitionMutex);
             _stateTransitionFlag = false;
             mutex_exit(&_stateTransitionMutex);
-
-            DEBUG_STATE_TRANSITION_LN("_stateTransitionFlag is true -- calling _changeStateInternal");
-            _changeStateInternal(_nextStateInfo);
-            _nextStateInfo.reset();
         }
     }
 
     if (millis() >= t + 1000) {
-        DEBUG_STATE_TRANSITION_LN("Current controller ref count: " + String(_controller.use_count()));
+        DEBUG_SERIAL_LN("Current controller ref count: " + String(_controller.use_count()));
         t = millis();
     }
 }
 
 bool ApplicationContext::trySetNextState(StateInfo& info) {
     if (_nextStateInfo.state != NullState) {
-        DEBUG_STATE_TRANSITION_LN("Already in state transition -- Aborting");
+        DEBUG_SERIAL_LN("Already in state transition -- Aborting");
         return false;
     }
 
-    DEBUG_STATE_TRANSITION_LN("PUSHING STATE TO STACK:");
     _currentStateInfo.inFocus = _controller->getInFocus();
     _currentStateInfo.addToConfig(info);
-    _currentStateInfo.print();
     _previousStates.push(_currentStateInfo);
+    DEBUG_SERIAL_LN("PUSHING STATE TO STACK:");
+    DEBUG_SERIAL_LN(_currentStateInfo.toString());
 
-    DEBUG_STATE_TRANSITION_LN("ATTEMING TO TRANSITION TO STATE:");
     _nextStateInfo = info;
-    _nextStateInfo.print();
+    DEBUG_SERIAL_LN("ATTEMPTING TO TRANSITION TO STATE:");
+    DEBUG_SERIAL_LN(_nextStateInfo.toString());
     return true;
 }
 
 bool ApplicationContext::tryUpdateAndReturn(StateInfo& info) {
     if (_nextStateInfo.state != NullState) {
-        DEBUG_STATE_TRANSITION_LN("Already in state transition -- Aborting");
+        DEBUG_SERIAL_LN("Already in state transition -- Aborting");
         return false;
     }
 
@@ -66,35 +66,34 @@ bool ApplicationContext::tryUpdateAndReturn(StateInfo& info) {
     _nextStateInfo.addToConfig(info);
     _previousStates.push(info);
 
-    DEBUG_STATE_TRANSITION_LN("ATTEMING TO TRANSITION TO STATE:");
-    _nextStateInfo.print();
-    
+    DEBUG_SERIAL_LN("ATTEMPTING TO TRANSITION TO STATE:");
+    DEBUG_SERIAL_LN(_nextStateInfo.toString());
     return true;
 }
 
 bool ApplicationContext::tryRevertState() {
     if (_nextStateInfo.state != NullState) {
-        DEBUG_STATE_TRANSITION_LN("Already in state transition -- Aborting");
+        DEBUG_SERIAL_LN("Already in state transition -- Aborting");
         return false;
     } else if (_previousStates.empty()) {
-        DEBUG_STATE_TRANSITION_LN("No previous state to revert to");
+        DEBUG_SERIAL_LN("No previous state to revert to");
         return false;
     }
 
     _nextStateInfo = _previousStates.top();
     _previousStates.pop();
 
-    DEBUG_STATE_TRANSITION_LN("ATTEMING TO REVERT TO STATE:");
-    _nextStateInfo.print();
+    DEBUG_SERIAL_LN("ATTEMPTING TO REVERT TO STATE:");
+    DEBUG_SERIAL_LN(_nextStateInfo.toString());
     return true;
 }
 
 void ApplicationContext::setStateTransitionFlag() {
     if (_stateTransitionFlag) {
-        DEBUG_STATE_TRANSITION_LN("Change state field already set to true");
+        DEBUG_SERIAL_LN("Change state field already set to true");
         return;
     }
-    DEBUG_STATE_TRANSITION_LN("Setting _stateTransitionFlag field to true");
+    DEBUG_SERIAL_LN("Setting _stateTransitionFlag field to true");
     mutex_enter_blocking(&_stateTransitionMutex);
     _stateTransitionFlag = true;
     mutex_exit(&_stateTransitionMutex);
@@ -103,9 +102,9 @@ void ApplicationContext::setStateTransitionFlag() {
 void ApplicationContext::_changeStateInternal(StateInfo& info) {
     _currentStateInfo = info;
     
-    DEBUG_STATE_TRANSITION_LN("Changing state to: " + app_util::stateToString(info.state));
-    DEBUG_STATE_TRANSITION_LN("\t- with menu item in focus: " + String(info.inFocus));
-    DEBUG_STATE_TRANSITION_LN("_controller.use_count() = " + String(_controller.use_count()));
+    DEBUG_SERIAL_LN("Changing state to: " + app_util::stateToString(info.state));
+    DEBUG_SERIAL_LN("\t- with menu item in focus: " + String(info.inFocus));
+    DEBUG_SERIAL_LN("Current controller ref count = " + String(_controller.use_count()));
 
     _controller = _factory.create(info);
 }

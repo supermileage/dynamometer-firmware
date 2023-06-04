@@ -89,7 +89,7 @@ void loop1() {
 	UIEventHandler::instance().run();
 
 	if (millis() > c1_lastUpdateTime + 2000) {
-		// DEBUG_SERIAL_LN("Core 2 Heartbeat");
+		DEBUG_SERIAL_LN("Core 2 Heartbeat");
 		c1_lastUpdateTime = millis();
 	}
 }
