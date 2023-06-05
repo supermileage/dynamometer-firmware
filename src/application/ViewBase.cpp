@@ -13,22 +13,22 @@ ViewBase::ViewBase(Adafruit_GFX& display) : _display(display) {
 ViewBase::~ViewBase() { }
 
 void ViewBase::setHeader(const String& str) {
-    DEBUG_STATE_TRANSITION_LN("Setting header: " + str);
+    DEBUG_SERIAL_LN("Setting header: " + str);
     app_util::configureHeader(_header.get(), str);
 }
 
 void ViewBase::select() {
-    DEBUG_STATE_TRANSITION_LN("ViewBase::select");
+    DEBUG_SERIAL_LN("ViewBase::select");
     _navButtonSelect->select();
 }
 
 void ViewBase::back() {
-    DEBUG_STATE_TRANSITION_LN("ViewBase::back");
+    DEBUG_SERIAL_LN("ViewBase::back");
     _navButtonBack->select();
 }
 
 void ViewBase::revert() {
-    DEBUG_STATE_TRANSITION_LN("ViewBase::revert");
+    DEBUG_SERIAL_LN("ViewBase::revert");
     _navButtonBack->revert();
     _navButtonSelect->revert();
 }

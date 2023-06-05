@@ -47,7 +47,7 @@ MenuView& ControllerMenu::getView() {
 }
 
 void ControllerMenu::_handleInputSerial(input_data_t d) {
-    DEBUG_STATE_TRANSITION_LN("Serial input received: " + String(d));
+    DEBUG_SERIAL_LN("Serial input received: " + String(d));
     switch (d) {
         case 65:    // up
             _shiftFocus(-1);
@@ -75,11 +75,11 @@ void ControllerMenu::_handleInputEncoder(input_data_t d) {
 
 void ControllerMenu::_handleInputEncoderSelect(input_data_t d) {
     if (d && !_buttonHeld) {
-        DEBUG_STATE_TRANSITION_LN("Encoder Select High");
+        DEBUG_SERIAL_LN("Encoder Select High");
         _buttonHeld = true;
         _selectCurrent();
     } else {
-        DEBUG_STATE_TRANSITION_LN("Encoder Select Low");
+        DEBUG_SERIAL_LN("Encoder Select Low");
         if (_buttonHeld) {
             _buttonHeld = false;
             _triggerStateChange();
@@ -109,7 +109,7 @@ void ControllerMenu::_navigateBack() {
         return;
     }
 
-    DEBUG_STATE_TRANSITION_LN("Navigate Back");
+    DEBUG_SERIAL_LN("Navigate Back");
     auto self = shared_from_this();
     UIEventHandler::instance().addEvent([this, self]() {
         _menu->back();
@@ -132,7 +132,7 @@ void ControllerMenu::_shiftFocus(int32_t offset) {
 }
 
 void ControllerMenu::_selectCurrent() {
-    DEBUG_STATE_TRANSITION_LN("Select Current");
+    DEBUG_SERIAL_LN("Select Current");
     auto cur = _buttonInfoPairs[_inFocus].first;
     auto self = shared_from_this();
     UIEventHandler::instance().addEvent([this, cur, self]() {
@@ -153,7 +153,7 @@ void ControllerMenu::_triggerStateChange() {
         return;
     }
 
-    DEBUG_STATE_TRANSITION_LN("Trigger State Changed");
+    DEBUG_SERIAL_LN("Trigger State Changed");
     auto button = _buttonInfoPairs[_inFocus].first;
     auto self = shared_from_this();
     UIEventHandler::instance().addEvent(

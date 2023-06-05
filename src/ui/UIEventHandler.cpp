@@ -22,36 +22,38 @@ UIEventHandler& UIEventHandler::instance() {
 
 void UIEventHandler::init() {
     mutex_init(&_eventQueueMtx);
+    mutex_init(&_animationMutex);
 }
 
 void UIEventHandler::run() {
+    // execute events
     mutex_enter_blocking(&_eventQueueMtx);
-
     if (!_eventQueue.empty()) {
-        DEBUG_STATE_TRANSITION_LN("Event queue not empty");
+        DEBUG_SERIAL_LN("Event queue not empty");
         std::function<void()> event = _eventQueue.front();
         _eventQueue.pop();
         mutex_exit(&_eventQueueMtx);
 
         // run event outside of mutex
-        DEBUG_STATE_TRANSITION_LN("Invoking event from UIEventHandler");
+        DEBUG_SERIAL_LN("Invoking event from UIEventHandler");
         (event)();
     } else {
         mutex_exit(&_eventQueueMtx);
     }
 
+    // run animations
     for (std::shared_ptr<ui_util::Animation> animation : _animations) {
         animation->run(millis());
     }
 }
 
 void UIEventHandler::addEvent(std::function<void(void)> action) {
-    DEBUG_STATE_TRANSITION_LN("adding action to event queue");
+    DEBUG_SERIAL_LN("adding action to event queue");
     mutex_enter_blocking(&_eventQueueMtx);
-    DEBUG_STATE_TRANSITION_LN("pushing action to event queue");
+    DEBUG_SERIAL_LN("pushing action to event queue");
     _eventQueue.push(action);
     mutex_exit(&_eventQueueMtx);
-    DEBUG_STATE_TRANSITION_LN("exiting addEvent()");
+    DEBUG_SERIAL_LN("exiting addEvent()");
 }
 
 void UIEventHandler::addAnimation(std::shared_ptr<ui_util::Animation> animation) {
@@ -79,7 +81,14 @@ void UIEventHandler::clearEventQueue() {
 }
 
 void UIEventHandler::clearAnimations() {
-    mutex_enter_blocking(&_eventQueueMtx);
+    mutex_enter_blocking(&_animationMutex);
     _animations.clear();
-    mutex_exit(&_eventQueueMtx);
+    mutex_exit(&_animationMutex);
 }
+
+// Improves Debug Output, UIEventHandler, StateInfo, Animation
+// - replaces all calls to DEBUG_STATE_TRANSITION_LN macro with DEBUG_SERIAL_LN
+// - adds animation mutex to UIEventHandler
+// - adds toString method for StateInfo struct, for easier print debugging of state transitions
+// - fixes reuse of filename macro in global settings dictionary in application.cpp
+// - adds 

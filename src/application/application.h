@@ -51,15 +51,16 @@ namespace application {
             }
         }
 
-        void print() {
-            DEBUG_SERIAL_LN(" -- State Info Object -- ");
-            DEBUG_SERIAL_LN("\tstate:\t" + String(state));
-            DEBUG_SERIAL_LN("\theader:\t" + header);
-            DEBUG_SERIAL_LN("\tinFocus:\t" + String((int)inFocus));
-            DEBUG_SERIAL_LN("\tconfig:");
+        String toString() {
+            String ret = " -- State Info Object -- ";
+            ret += "\tstate:\t" + String(state);
+            ret += "\theader:\t" + String(header);
+            ret += "\tinFocus:\t" + String((int)inFocus);
+            ret += "\tconfig:";
             for (auto const& pair : config) {
-                DEBUG_SERIAL_LN("\t\t{ " + String((int)pair.first) + ", " + pair.second + " } " );
+                ret += "\t\t{ " + String((int)pair.first) + ", " + pair.second + " } ";
             }
+            return ret;
         }
     };
 

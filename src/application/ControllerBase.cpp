@@ -9,10 +9,10 @@ ControllerBase::~ControllerBase() {
 
 void ControllerBase::init(InputManager& manager) {
     manager.registerAction(ID_SERIAL, [this](input_data_t d) { this->_handleInputSerial(d); });
-    manager.registerAction(ID_ROT_ENCODER, [this](input_data_t d) { this->_handleInputEncoder(d); });
-    manager.registerAction(ID_ROTARY_EN_SELECT, [this](input_data_t d) { this->_handleInputEncoderSelect(d); });
-    manager.registerAction(ID_BACK, [this](input_data_t d) { this->_handleInputBack(d); });
-    manager.registerAction(ID_SELECT, [this](input_data_t d) { this->_handleInputSelect(d); });
+    manager.registerAction(ID_ROT_EN, [this](input_data_t d) { this->_handleInputEncoder(d); });
+    manager.registerAction(ID_ROT_EN_SW, [this](input_data_t d) { this->_handleInputEncoderSelect(d); });
+    manager.registerAction(ID_BACK_BUTTON, [this](input_data_t d) { this->_handleInputBack(d); });
+    manager.registerAction(ID_SELECT_BUTTON, [this](input_data_t d) { this->_handleInputSelect(d); });
     manager.registerAction(ID_BRAKE_BUTTON, [this](input_data_t d) { this->_handleInputBrakeButton(d); });
     manager.registerAction(ID_BRAKE_POT, [this](input_data_t d) { this->_handleInputBrakePot(d); });
 }
