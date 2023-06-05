@@ -42,7 +42,6 @@ class UIEventHandler {
 
         /**
          * @brief remove animation
-         * @note this will call delete on animation only if Animation::deleteOnTermination() returns true
         */
         void removeAnimation(std::shared_ptr<ui_util::Animation> animation);
 
