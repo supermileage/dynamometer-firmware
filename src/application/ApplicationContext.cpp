@@ -15,7 +15,7 @@ void ApplicationContext::begin() {
     _controller = _factory.create(_currentStateInfo);
 }
 
-uint t = 0;
+uint32_t last_ref_count = 0;
 
 void ApplicationContext::handle() {
     if (_nextStateInfo.state != NullState) {
@@ -31,9 +31,9 @@ void ApplicationContext::handle() {
         }
     }
 
-    if (millis() >= t + 1000) {
+    if (millis() >= last_ref_count + 1000) {
         DEBUG_SERIAL_LN("Current controller ref count: " + String(_controller.use_count()));
-        t = millis();
+        last_ref_count = millis();
     }
 }
 

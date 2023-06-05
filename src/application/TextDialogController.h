@@ -9,7 +9,7 @@
 #include "TextDialogView.h"
 #include "ui/ui_util.h"
 
-#define TEXT_FOCUS_ANIMATION_INTERVAL   750
+#define TEXT_FOCUS_ANIMATION_INTERVAL   450
 #define MAX_TEXT_LENGTH                 20
 
 class TextDialogController : public ControllerBase {

@@ -1,7 +1,7 @@
 #include "TextDialogController.h"
 #include "ui/UIEventHandler.h"
 
-#define FIRST_CHAR  '.' // 46 (not that certain characters have been co-opted to represent others)
+#define FIRST_CHAR  '.' // 46 (note that certain characters have been co-opted to represent others)
 #define LAST_CHAR   'z' // 122
 #define CHAR_RANGE  (LAST_CHAR - FIRST_CHAR)
 
@@ -151,8 +151,14 @@ void TextDialogController::_handleInputEncoderSelect(input_data_t d) {
     }
 }
 
+// note: currently commented out as hardware back button still hasn't been installed
 void TextDialogController::_handleInputBack(input_data_t d) {
     // TODO: back confirmation dialog
+    // if (d) {
+    //     if (!_rotarySwitchHeld && !_brakeButtonHeld) {
+    //         _navigateBack(d);
+    //     }
+    // }
 }
 
 void TextDialogController::_handleInputSelect(input_data_t d) {
