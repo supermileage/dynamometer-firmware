@@ -42,11 +42,9 @@ void UIEventHandler::run() {
     }
 
     // run animations
-    mutex_enter_blocking(&_animationMutex);
     for (std::shared_ptr<ui_util::Animation> animation : _animations) {
         animation->run(millis());
     }
-    mutex_exit(&_animationMutex);
 }
 
 void UIEventHandler::addEvent(std::function<void(void)> action) {

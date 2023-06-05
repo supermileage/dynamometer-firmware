@@ -38,7 +38,7 @@ class TextDialogController : public ControllerBase {
         class TextFocusAnimation : public Animation {
             public:
                 TextFocusAnimation(std::shared_ptr<UIElement> element) :
-                    Animation(TEXT_FOCUS_ANIMATION_INTERVAL, true), _element(element) { }
+                    Animation(TEXT_FOCUS_ANIMATION_INTERVAL), _element(element) { }
                 ~TextFocusAnimation() {
                     DEBUG_SERIAL_LN("~TextFocusAnimation");
                 }
