@@ -36,10 +36,17 @@ The simplest way to run this project's unit tests is to open a terminal in the p
 make run-tests
 ```
 
+### macOS users
+If you have never developed c/c++ on your machine before, then you will need to first install the xcode developer tools package:
+
+```
+xcode-select --install
+```
+
 ### Windows users
 Currently, the tests won't compile natively on windows (because they include ```<unistd.h>``` among other filesystem libraries), so windows users will either have to build and run the tests through wsl, or modify the test source files so they can be compiled and run natively.
 
-Open a wsl terminal instance in the project's root folder and run the above command.
+Open a wsl terminal instance in the project's root folder and run the above command.  Make sure you are running the latest version of wsl2.
 
 ### Testmate Extension
 If you would like to run/manage this projects unit tests with the testmate test extension, add the following entry to your settings.json file:
