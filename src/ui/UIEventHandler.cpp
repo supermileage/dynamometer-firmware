@@ -85,10 +85,3 @@ void UIEventHandler::clearAnimations() {
     _animations.clear();
     mutex_exit(&_animationMutex);
 }
-
-// Improves Debug Output, UIEventHandler, StateInfo, Animation
-// - replaces all calls to DEBUG_STATE_TRANSITION_LN macro with DEBUG_SERIAL_LN
-// - adds animation mutex to UIEventHandler
-// - adds toString method for StateInfo struct, for easier print debugging of state transitions
-// - fixes reuse of filename macro in global settings dictionary in application.cpp
-// - adds 
