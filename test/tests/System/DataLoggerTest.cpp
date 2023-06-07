@@ -22,14 +22,34 @@ String getTestInputPath();
 String getTestOutputPath();
 
 TEST_CASE( "DataLogger tests", "[DataLogger]" ) {
+
 	DataLogger logger(true);
     logger.init(0);
     initializeInputFolder();
     initializeOutputFolder();
     String input = getTestInputPath();
     String output = getTestOutputPath();
+    
 
-    SECTION("example test -- open file for write") {
+    DEBUG_SERIAL_LN("\n\nSTARTING TESTS\n");
+    
+    SECTION("Test 1 -- create file for write") {
+        String exampleFile = input += "input-test-1.csv";
+        bool success = logger.create(exampleFile, 4);
+
+        REQUIRE( success );
+        REQUIRE( logger.getNumColumns() == 4 );
+    }
+
+    SECTION("Test 2 -- open file for write") {
+        String exampleFile = input += "input-test-2.csv";
+        bool success = logger.open(exampleFile, 4);
+
+        REQUIRE( success );
+        REQUIRE( logger.getNumColumns() == 4 );
+    }
+
+    SECTION("Test 1 -- open file for write") {
         String exampleFile = input += "example-input-test.csv";
         bool success = logger.open(exampleFile, 4);
 
