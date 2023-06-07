@@ -219,7 +219,11 @@ void DataLogger::addEntry(String data) {
 }
 
 void DataLogger::addRow(String data) {
-    _buffer += data + "\r\n";
+    if (_curColumn == 0)
+        _buffer += data + "\r\n";
+    else
+        _buffer += "," + data + "\r\n";
+    
     _curColumn = 0;
     DEBUG_SERIAL_LN("Added " + data + " to buffer.");
 
