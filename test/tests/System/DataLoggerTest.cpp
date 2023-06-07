@@ -55,7 +55,7 @@ TEST_CASE( "DataLogger tests", "[DataLogger]" ) {
         String line2 = output.readLine();
 
         REQUIRE( line1.equals(String("optimus,prime,big,boy\r\n")));
-        REQUIRE( line2.equals(String("7,11,13,17")));
+        REQUIRE( line2.equals(String("7,11,13,17\r\n")));
     }
 }
 

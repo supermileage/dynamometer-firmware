@@ -60,6 +60,9 @@ File::File(int fd) : _fd(fd) {
 File::File() { }
 
 int File::available() {
+    if (_nextChar != NULL_CHAR) {
+        return 1;
+    }
     char c;
     _status = FctrlHelper::fileRead(_fd, &c, 1);
     _nextChar = c;
@@ -68,7 +71,9 @@ int File::available() {
 }
 
 int File::read() {
-    return _nextChar;
+    char ret = _nextChar;
+    _nextChar = NULL_CHAR;
+    return ret;
 }
 
 String File::readLine() {
