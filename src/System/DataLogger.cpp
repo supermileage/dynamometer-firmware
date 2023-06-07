@@ -213,7 +213,6 @@ void DataLogger::addEntry(String data) {
     }
 
     DEBUG_SERIAL_LN("Added " + data + " to buffer.");
-    _curColumn = 0;
 
     if (_osync)
         saveToDisk();
