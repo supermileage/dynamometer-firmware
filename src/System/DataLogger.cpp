@@ -23,6 +23,7 @@ bool DataLogger::create(String name, int numColumns) {
     _numColumns = numColumns;
     _curColumn = 0;
     _buffer = "";
+    _fileName = name;
     
     if (_curFile) {
         _fileValid = true;
@@ -110,12 +111,14 @@ bool DataLogger::open(String name, int numColumns) {
         if (columnsInFile == numColumns) {
             // file is good
             _numColumns = numColumns;
+            _fileName = name;
             return true;
         }
         // check if it is an empty file
         else if (_numColumns == 0 && escaped == false) {
             // file is empty
             _numColumns = numColumns;
+            _fileName = name;  
             return true;
         } else {
             // file is not empty, and does not have the correct number of columns
@@ -181,7 +184,7 @@ bool DataLogger::close() {
     if (_fileValid) {
         _curFile.close();
         _fileValid = false;
-
+        _fileName = "";
         DEBUG_SERIAL_LN("Closed loaded file.");
         return true;
     } else {
@@ -237,4 +240,11 @@ int DataLogger::getNumColumns() {
 
 int DataLogger::getBufferLength() {
     return _buffer.length();
+}
+
+String DataLogger::getFileName() {
+    if (_fileValid)
+        return _fileName;
+    else
+        return "";
 }

@@ -71,12 +71,18 @@ class DataLogger {
         */
         int getBufferLength();
 
+        /**
+         * @brief Returns name of currently open file, or an empty string if no file is open.
+        */
+        String getFileName();
+
         private:
         int _numColumns;
         int _curColumn;
         File _curFile;
         bool _fileValid = false;
         String _buffer;
+        String _fileName;
 
         bool _osync;
 };
