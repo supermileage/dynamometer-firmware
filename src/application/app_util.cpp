@@ -97,6 +97,8 @@ const String app_util::stateToString(ApplicationState state) {
             return "Calibration Mode";
         case CalibrationSettings:
             return "Calibration Settings";
+        case TextDialog:
+            return "Text Dialog";
         default:
             return "Does not exist";
     }

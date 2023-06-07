@@ -2,6 +2,7 @@
 
 #include "ControllerFactory.h"
 #include "ControllerMenu.h"
+#include "TextDialogController.h"
 
 const std::vector<ControllerMenu::MenuButtonInfo> mainMenuConfig = {
     { ControllerMenu::MenuButtonInfo {
@@ -48,6 +49,10 @@ std::shared_ptr<ControllerBase> ControllerFactory::_createInternal(StateInfo& in
             break;
         case SettingsMenu:
             // TODO: add SettingsMenu implementation
+            break;
+        case TextDialog:
+            ret = std::make_shared<TextDialogController>(*_context, _display);
+            static_cast<TextDialogController*>(ret.get())->init(_inputManager, info);
             break;
         default:
             // do nothing
