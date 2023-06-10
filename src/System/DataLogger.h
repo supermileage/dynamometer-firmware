@@ -85,6 +85,8 @@ class DataLogger {
         String _fileName;
 
         bool _osync;
+
+        String generateNewFileName(String name);
 };
 
 #endif

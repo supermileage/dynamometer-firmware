@@ -19,20 +19,28 @@ bool DataLogger::create(String name, int numColumns) {
         _fileValid = false;
     }
 
-    _curFile = SD.open(name, FILE_WRITE);
-    _numColumns = numColumns;
-    _curColumn = 0;
-    _buffer = "";
-    _fileName = name;
-    
-    if (_curFile) {
-        _fileValid = true;
-        DEBUG_SERIAL_LN("Creating file successful");
-        return true;
+    // check if file exists
+    if (SD.exists(name)) {
+        String newFileName = generateNewFileName (name);
+        return create(newFileName, numColumns);
     } else {
-        _fileValid = false;
-        DEBUG_SERIAL_LN("Creating file failed.");
-        return false;
+        // file already exists
+        // generate new file name
+        _curFile = SD.open(name, FILE_WRITE);
+        _numColumns = numColumns;
+        _curColumn = 0;
+        _buffer = "";
+        _fileName = name;
+        
+        if (_curFile) {
+            _fileValid = true;
+            DEBUG_SERIAL_LN("Creating file successful");
+            return true;
+        } else {
+            _fileValid = false;
+            DEBUG_SERIAL_LN("Creating file failed.");
+            return false;
+        }
     }
 }
 
@@ -126,38 +134,8 @@ bool DataLogger::open(String name, int numColumns) {
             _curFile.close();
             _fileValid = false;
             
-            // create new name for file
-
-            // find extension (example: myFile.csv)
-            int extensionIndex = name.lastIndexOf('.');
-            String base = name.substring(0, extensionIndex == -1 ? name.length() : extensionIndex);
-            String extension = extensionIndex == -1 ? "" : name.substring(extensionIndex + 1);
-            base.trim();
-
-            // find current file count (example: myFile(2).csv)
-            int fileCountStart = base.lastIndexOf('(');
-            int fileCountEnd = base.lastIndexOf(')');
-            int count = 0;
-            if (fileCountStart != -1 && fileCountEnd != -1 && fileCountEnd == (int)base.length() - 1) {
-                String countString = base.substring(fileCountStart + 1, fileCountEnd);
-                bool numeric = true;
-                
-                // checks if all characters in countString are numeric
-                for (size_t i = 0; i < countString.length(); i++) {
-                    if (!isdigit(countString.charAt(i))) {
-                        numeric = false;
-                        break;
-                    }
-                }
-
-                if (numeric) {
-                    count = countString.toInt();
-                    // take count out of file name
-                    base = base.substring(0, fileCountStart);
-                    base.trim();
-                }
-            }
-            String newFileName = base + "(" + (count + 1) + ")" + (extension != "" ? "." + extension : "");
+            // generate new file name
+            String newFileName = generateNewFileName(name);
             return open(newFileName, numColumns);
         }
     } else {
@@ -247,4 +225,41 @@ String DataLogger::getFileName() {
         return _fileName;
     else
         return "";
+}
+
+String DataLogger::generateNewFileName(String name) {
+    // create new name for file
+
+    // find extension (example: myFile.csv)
+    int extensionIndex = name.lastIndexOf('.');
+    String base = name.substring(0, extensionIndex == -1 ? name.length() : extensionIndex);
+    String extension = extensionIndex == -1 ? "" : name.substring(extensionIndex + 1);
+    base.trim();
+
+    // find current file count (example: myFile(2).csv)
+    int fileCountStart = base.lastIndexOf('(');
+    int fileCountEnd = base.lastIndexOf(')');
+    int count = 0;
+    if (fileCountStart != -1 && fileCountEnd != -1 && fileCountEnd == (int)base.length() - 1) {
+        String countString = base.substring(fileCountStart + 1, fileCountEnd);
+        bool numeric = true;
+        
+        // checks if all characters in countString are numeric
+        for (size_t i = 0; i < countString.length(); i++) {
+            if (!isdigit(countString.charAt(i))) {
+                numeric = false;
+                break;
+            }
+        }
+
+        if (numeric) {
+            count = countString.toInt();
+            // take count out of file name
+            base = base.substring(0, fileCountStart);
+            base.trim();
+        }
+    }
+    String newFileName = base + "(" + (count + 1) + ")" + (extension != "" ? "." + extension : "");
+    
+    return newFileName;
 }
