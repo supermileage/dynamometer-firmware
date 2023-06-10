@@ -63,7 +63,7 @@ bool DataLogger::open(String name, int numColumns) {
 
         DEBUG_SERIAL_LN("Loading " + name);
 
-        File _curFile = SD.open(name, FILE_WRITE);
+        _curFile = SD.open(name, FILE_WRITE);
         
         // check if file opened successfully
         if (_curFile) {
