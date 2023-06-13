@@ -33,49 +33,220 @@ TEST_CASE( "DataLogger tests", "[DataLogger]" ) {
 
     DEBUG_SERIAL_LN("\n\nSTARTING TESTS\n");
     
-    SECTION("Test 1 -- create file for write") {
-        String exampleFile = input += "input-test-1.csv";
-        bool success = logger.create(exampleFile, 4);
+    SECTION("Test 1 -- create file and write to file") {
 
-        REQUIRE( success );
-        REQUIRE( logger.getNumColumns() == 4 );
-    }
+        // create file with four columns
+        String outputFileName = output += "test-1.csv";
+        bool success = logger.create(outputFileName, 4);
 
-    SECTION("Test 2 -- open file for write") {
-        String exampleFile = input += "input-test-2.csv";
-        bool success = logger.open(exampleFile, 4);
-
-        REQUIRE( success );
-        REQUIRE( logger.getNumColumns() == 4 );
-    }
-
-    SECTION("Test 1 -- open file for write") {
-        String exampleFile = input += "example-input-test.csv";
-        bool success = logger.open(exampleFile, 4);
-
-        REQUIRE( success );
-        REQUIRE( logger.getNumColumns() == 4 );
-    }
-
-    SECTION("example test -- create new file for write") {
-        String exampleFile = output += "example-output-test.csv";
-        bool success = logger.create(exampleFile, 4);
-
+        // check if file has been created and number of columns is correct
         REQUIRE( success );
         REQUIRE( logger.getNumColumns() == 4 );
 
+        // adds header and adds a few entries
         logger.setHeader("optimus,prime,big,boy");
         logger.addEntry("7");
         logger.addEntry("11");
         logger.addEntry("13");
         logger.addEntry("17");
+        logger.addEntry("21");
+        logger.addEntry("23");
+        logger.addEntry("27");
+        logger.addEntry("31");
+        
+        // check if file output is correct
+        File output = SD.open(outputFileName, FILE_READ);
+        String line1 = output.readLine();
+        String line2 = output.readLine();
+        String line3 = output.readLine();
 
-        File output = SD.open(exampleFile, FILE_READ);
+        REQUIRE( line1.equals(String("optimus,prime,big,boy\r\n")) );
+        REQUIRE( line2.equals(String("7,11,13,17\r\n")) );
+        REQUIRE( line3.equals(String("21,23,27,31\r\n")) );
+
+        // adds a few rows
+        logger.addRow("1,2,3,4");
+        logger.addRow("5,6,7,8");
+        logger.addEntry("9");
+        logger.addEntry("10");
+        logger.addRow("11,12");
+        logger.addRow("13,14,15,16");
+
+        output.close();
+
+        // check if file output is correct
+        output = SD.open(outputFileName, FILE_READ);
+        output.readLine();output.readLine();output.readLine();
+        String line4 = output.readLine();
+        String line5 = output.readLine();
+        String line6 = output.readLine();
+        String line7 = output.readLine();
+
+        REQUIRE( line4.equals(String("1,2,3,4\r\n")) );
+        REQUIRE( line5.equals(String("5,6,7,8\r\n")) );
+        REQUIRE( line6.equals(String("9,10,11,12\r\n")) );
+        REQUIRE( line7.equals(String("13,14,15,16\r\n")) );
+
+        output.close();
+
+        // try closing file
+        success = logger.close();
+
+        // check file was closed
+        REQUIRE( success );
+
+        // make sure we cannot write to file anymore
+        logger.setHeader("this should not be written to file");
+        logger.addEntry("this should not be written to file");
+        logger.addRow("this should not be written to file");
+    }
+
+    SECTION("Test 2 -- open file with correct number of columns") {
+
+        // create new file
+        String outputFileName = output += "test-2.csv";
+        bool success = logger.create(outputFileName, 4);
+        logger.setHeader("this,is,the,header");
+        logger.addRow("this,is,a,row");
+        logger.close();
+
+        // try to open file with 4 columns
+        success = logger.open(outputFileName, 4);
+
+        // check file is successfully created
+        REQUIRE( success );
+        REQUIRE( logger.getNumColumns() == 4 );
+
+        // write some stuff
+        logger.addRow("this,is,another,row");
+
+        // check if file output is correct
+        File output = SD.open(outputFileName, FILE_READ);
+        String line1 = output.readLine();
+        String line2 = output.readLine();
+        String line3 = output.readLine();
+
+        REQUIRE( line1.equals(String("this,is,the,header\r\n")) );
+        REQUIRE( line2.equals(String("this,is,a,row\r\n")) );
+        REQUIRE( line3.equals(String("this,is,another,row\r\n")) );
+    }
+
+    SECTION("Test 3 -- open file with wrong number of columns") {
+        // create new file
+        String outputFileName = output + "test-3.csv";
+        bool success = logger.create(outputFileName, 4);
+        logger.setHeader("this,is,the,header");
+        logger.addRow("this,is,a,row");
+        logger.close();
+
+        // create new file
+        String expectedFileName = output + "test-3(1).csv";
+        success = logger.open(outputFileName, 3);
+
+        // check file is successfully created
+        REQUIRE( success );
+        REQUIRE( logger.getNumColumns() == 3 );
+
+        // write some stuff
+        logger.addEntry("7");
+        logger.addEntry("11");
+        logger.addEntry("13");
+        logger.addEntry("17");
+        logger.addEntry("21");
+        logger.addEntry("23");
+
+        // check if file output is correct
+        File output = SD.open(expectedFileName, FILE_READ);
         String line1 = output.readLine();
         String line2 = output.readLine();
 
-        REQUIRE( line1.equals(String("optimus,prime,big,boy\r\n")));
-        REQUIRE( line2.equals(String("7,11,13,17\r\n")));
+        REQUIRE( logger.getFileName().equals(expectedFileName) );
+        REQUIRE( line1.equals(String("7,11,13\r\n")) );
+        REQUIRE( line2.equals(String("17,21,23\r\n")) );
+    }
+    
+    SECTION("Test 4 -- create new file") {
+
+        // create new file
+        String outputFileName = output + "test-4.csv";
+        bool success = logger.create(outputFileName, 4);
+
+        // write some stuff
+        logger.addEntry("7");
+        logger.addEntry("11");
+        logger.addEntry("13");
+        logger.addEntry("17");
+
+        // check file is successfully created
+        REQUIRE( success );
+        REQUIRE( logger.getFileName().equals(outputFileName) );
+        
+        // check file output
+        File output = SD.open(outputFileName, FILE_READ);
+        String line1 = output.readLine();
+        REQUIRE( line1.equals(String("7,11,13,17\r\n")) );
+
+        // close file and check file name is empty string
+        logger.close();
+        REQUIRE( logger.getFileName().equals("") );
+    }
+
+    SECTION("Test 5 -- create file that already exists") {
+
+        // create new file
+        String outputFileName = output + "test-5.csv";
+        bool success = logger.create(outputFileName, 4);
+
+        String expectedFileName = output + "test-5(1).csv";
+
+        // try to create file with the same file name as the previously created file
+        success = logger.open(outputFileName, 4);
+
+        // check file is successfully created
+        REQUIRE( success );
+        REQUIRE( logger.getFileName().equals(expectedFileName) );
+        
+        // close file and check file name is empty string
+        logger.close();
+        REQUIRE( logger.getFileName().equals("") );
+    }
+
+    SECTION("Test 6 -- file name generation logic") {
+        String outputFileName = output + "test-6(5).csv";
+        String expectedFileName = output + "test-6(6).csv";
+        logger.create(outputFileName, 1);
+        logger.close();
+        logger.create(outputFileName, 1);
+        REQUIRE( logger.getFileName().equals(expectedFileName) );
+        logger.close();
+        REQUIRE( logger.getFileName().equals("") );
+        
+        outputFileName = output + "test-6(2048).csv";
+        expectedFileName = output + "test-6(2049).csv";
+        logger.create(outputFileName, 1);
+        logger.close();
+        logger.create(outputFileName, 1);
+        REQUIRE( logger.getFileName().equals(expectedFileName) );
+        logger.close();
+        REQUIRE( logger.getFileName().equals("") );
+        
+        outputFileName = output + "(1024)(2048)(1).csv";
+        expectedFileName = output + "(1024)(2048)(2).csv";
+        logger.create(outputFileName, 1);
+        logger.close();
+        logger.create(outputFileName, 1);
+        REQUIRE( logger.getFileName().equals(expectedFileName) );
+        logger.close();
+        REQUIRE( logger.getFileName().equals("") );
+        
+        outputFileName = output + "test(1a).csv";
+        expectedFileName = output + "test(1a)(1).csv";
+        logger.create(outputFileName, 1);
+        logger.close();
+        logger.create(outputFileName, 1);
+        REQUIRE( logger.getFileName().equals(expectedFileName) );
+        logger.close();
+        REQUIRE( logger.getFileName().equals("") );
     }
 }
 
