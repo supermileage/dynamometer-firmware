@@ -84,24 +84,25 @@ bool DataLogger::open(String name, int numColumns) {
             return false;
         }
 
-        // some variables to help identify how many columns in the first line
-        int commaNum = 0;
-        bool charactersPresent = false;
-        bool escaped = false;
+        // some variables to help identify how many columns in the csv file
+        int commaNum = 0; // number of commas in the header
+        bool charactersPresent = false; // whether the first line contains non-escape characters
+        bool escapeCharacterEncountered = false; // whether the file contains escape characters 
 
         int columnsInFile = 0;
 
         while (_curFile.available()) {
             char readChar = _curFile.read(); // char to hold a character that has been read
 
-            if (readChar == ',') {
-                commaNum++;
-            } else if (readChar == '\n' || readChar == '\r') {
-                escaped = true;
-                break;
-            } else {
-                charactersPresent = true;
-            }
+            if (escapeCharacterEncountered != true) { // check if we are still on the first line (header line)
+                if (readChar == ',') {
+                    commaNum++;
+                } else if (readChar == '\n' || readChar == '\r') {
+                    escapeCharacterEncountered = true;
+                } else {
+                    charactersPresent = true;
+                }
+            } else; // keep on reading characters until we hit the end of file
         }
 
         // determine the number of columns
@@ -123,7 +124,7 @@ bool DataLogger::open(String name, int numColumns) {
             return true;
         }
         // check if it is an empty file
-        else if (_numColumns == 0 && escaped == false) {
+        else if (_numColumns == 0 && escapeCharacterEncountered == false) {
             // file is empty
             _numColumns = numColumns;
             _fileName = name;  
@@ -139,8 +140,7 @@ bool DataLogger::open(String name, int numColumns) {
             return open(newFileName, numColumns);
         }
     } else {
-        // file doesnt exist. create new file
-
+        // file doesn't exist. create new file
         DEBUG_SERIAL_LN(name + " doesn't exist. Creating new file");
         return create(name, numColumns);
     }
