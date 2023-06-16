@@ -7,6 +7,7 @@
 
 #define GAUGE_MIN_VAL 0
 #define GAUGE_MAX_VAL POTENTIOMETER_MAX
+#define INCREMENT_AMOUNT 15
 
 #define GAUGE_RADIUS 65
 #define GAUGE_BACKGROUND_COLOUR COLOUR_DARKGREY
@@ -57,10 +58,10 @@ void ControllerSandbox::_handleInputSerial(input_data_t d) {
     DEBUG_SERIAL_LN("Serial input received: " + String(d));
     switch (d) {
         case 65:    // up
-            _gaugeValueChanged(static_cast<int32_t>(_gauge->getDisplayValue() - 1));
+            _gaugeValueChanged(static_cast<int32_t>(_gauge->getDisplayValue() - INCREMENT_AMOUNT));
             break;
         case 66:    // down 
-            _gaugeValueChanged(static_cast<int32_t>(_gauge->getDisplayValue() + 1));
+            _gaugeValueChanged(static_cast<int32_t>(_gauge->getDisplayValue() + INCREMENT_AMOUNT));
             break;
         default:    // do nothing
             break;
