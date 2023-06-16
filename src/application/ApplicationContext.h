@@ -19,8 +19,8 @@ class ControllerFactory;
 using namespace application;
 
 // application always starts from main menu
-#define APPLICATION_INITIAL_STATE       MainMenu
-#define APPLICATION_INITIAL_HEADER      "main menu"
+#define APPLICATION_INITIAL_STATE       Sandbox
+#define APPLICATION_INITIAL_HEADER      "sandbox"
 
 /**
  * @brief maintains state and state transitions of application

@@ -3,6 +3,7 @@
 #include "ControllerFactory.h"
 #include "ControllerMenu.h"
 #include "TextDialogController.h"
+#include "ControllerSandbox.h"
 
 const std::vector<ControllerMenu::MenuButtonInfo> mainMenuConfig = {
     { ControllerMenu::MenuButtonInfo {
@@ -54,6 +55,9 @@ std::shared_ptr<ControllerBase> ControllerFactory::_createInternal(StateInfo& in
             ret = std::make_shared<TextDialogController>(*_context, _display);
             static_cast<TextDialogController*>(ret.get())->init(_inputManager, info);
             break;
+        case Sandbox:
+            ret = std::make_shared<ControllerSandbox>(*_context, _display);
+            ret->init(_inputManager);
         default:
             // do nothing
             break;

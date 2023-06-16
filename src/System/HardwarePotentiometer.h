@@ -7,6 +7,7 @@
 
 #define ALPHA 0.125f
 #define POTENTIOMETER_MAX 1016
+#define POTENTIOMETER_UPDATE_INTERVAL 40
 
 /**
  * @brief interprets analog pin as potentiometer value
@@ -30,10 +31,18 @@ class HardwarePotentiometer : public HardwareInput {
 
             if (readVal != _lastReadVal) {
                 input_data_t data = POTENTIOMETER_MAX - readVal;
-                
-                // data value shouldn't be less than 0 but if it is, set it to zero
-                (_action)(data < 0 ? 0 : data);
                 _lastReadVal = readVal;
+            }
+
+            // check if we should update
+            if (millis() >= _lastUpdateMillis + POTENTIOMETER_UPDATE_INTERVAL) {
+                _lastUpdateMillis = millis();
+
+                if (_lastUpdateVal != _lastReadVal) {
+                    // data value shouldn't be less than 0 but if it is, set it to zero
+                    (_action)(_lastReadVal < 0 ? 0 : _lastReadVal);
+                    _lastUpdateVal = _lastReadVal;
+                }
             }
         }
 
@@ -45,6 +54,8 @@ class HardwarePotentiometer : public HardwareInput {
         pin_size_t _pin;
         input_data_t _lastReadVal = INT32_MIN;
         float _accumulator;
+        input_data_t _lastUpdateVal = 0;
+        uint32_t _lastUpdateMillis = 0;
 
         inline input_data_t _readInternal() {
             // compute exponential moving average
