@@ -1,6 +1,6 @@
 #include "Container.h"
 
-Container::Container(Adafruit_GFX& display) : VisualElement(display) { }
+Container::Container(Adafruit_GFX& display) : RectangularElement(display) { }
 
 Container::~Container() { }
 
