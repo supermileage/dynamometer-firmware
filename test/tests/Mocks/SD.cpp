@@ -90,6 +90,7 @@ void File::close() {
     if ((_status = FctrlHelper::fileClose(_fd)) < 0) {
         std::cout << "error closing file: " << strerror(errno) << std::endl;
     }
+    _fd = -1;
 }
 
 size_t File::print(String buf) {
