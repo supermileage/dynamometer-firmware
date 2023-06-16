@@ -33,3 +33,12 @@ void InputManager::registerAction(uint8_t id, InputCallback action) {
         DEBUG_SERIAL_LN("InputManager: no input registered with ID = " + String(id));
     }
 }
+
+input_data_t InputManager::read(uint8_t id) {
+    if (_inputMap.find(id) != _inputMap.end()) {
+        return _inputMap[id]->read();
+    } else {
+        DEBUG_SERIAL_LN("InputManager read: no input registered with ID = " + String(id));
+        return 0;
+    }
+}

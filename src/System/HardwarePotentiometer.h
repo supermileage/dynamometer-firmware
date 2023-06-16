@@ -26,11 +26,7 @@ class HardwarePotentiometer : public HardwareInput {
         }
 
         void run() override {
-            int32_t readVal = analogRead(_pin);
-
-            // exponential moving average
-            float accumulator = static_cast<float>(_lastReadVal) * (1 - ALPHA);
-            readVal = static_cast<int32_t>(accumulator + static_cast<float>(readVal) * ALPHA);
+            input_data_t readVal = _readInternal();
 
             if (readVal != _lastReadVal) {
                 input_data_t data = POTENTIOMETER_MAX - readVal;
@@ -41,10 +37,23 @@ class HardwarePotentiometer : public HardwareInput {
             }
         }
 
+        input_data_t read() {
+            return _readInternal();
+        }
+
     private:
         pin_size_t _pin;
         input_data_t _lastReadVal = INT32_MIN;
         float _accumulator;
+
+        inline input_data_t _readInternal() {
+            // compute exponential moving average
+            int32_t readVal = analogRead(_pin);
+            float accumulator = static_cast<float>(_lastReadVal) * (1 - ALPHA);
+            return static_cast<int32_t>(accumulator + static_cast<float>(readVal) * ALPHA);
+        }
+
+
 };
 
 #endif
