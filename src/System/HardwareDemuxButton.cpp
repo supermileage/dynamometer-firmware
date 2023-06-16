@@ -31,3 +31,7 @@ void HardwareDemuxButton::run() {
 		}
 	}
 }
+
+input_data_t HardwareDemuxButton::read() {
+	return static_cast<input_data_t>(_read());
+}

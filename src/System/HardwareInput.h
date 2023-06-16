@@ -26,6 +26,15 @@ class HardwareInput {
         virtual void run() = 0;
 
         /**
+         * @brief get current value of input
+         * @note returns 0 by default, but should be implemented in Input classes whose initial
+         * state is important for control or graphics (ie. buttons and potentiometer)
+        */
+        virtual input_data_t read() {
+            return 0;
+        }
+
+        /**
          * @brief sets the callback action for this input
          * 
          * @note callback only called when input state changes

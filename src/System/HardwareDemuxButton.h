@@ -14,6 +14,7 @@ class HardwareDemuxButton : public HardwareInput {
         ~HardwareDemuxButton();
 		void init() override;
 		void run() override;
+		input_data_t read() override;
 
     private:
         HardwareDemuxer& _demuxer;

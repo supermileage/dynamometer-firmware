@@ -36,6 +36,11 @@ class InputManager : public Handleable {
          * @note action will replace currently assigned input callback for id
         */
         void registerAction(uint8_t id, InputCallback action);
+
+        /**
+         * @brief return read value for input with id
+        */
+       input_data_t read(uint8_t id);
         
     private:
         std::unordered_map<uint8_t, HardwareInput*> _inputMap;
