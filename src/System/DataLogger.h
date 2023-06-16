@@ -85,7 +85,6 @@ class DataLogger {
         int _numColumns;
         int _curColumn;
         File _curFile;
-        bool _fileValid = false;
         String _buffer;
         String _fileName;
 

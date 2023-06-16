@@ -14,9 +14,8 @@ DataLogger::~DataLogger(){};
 
 bool DataLogger::create(String name, int numColumns) {
     // if file is already open, close that file
-    if(_fileValid == true) {
+    if(_curFile) {
         _curFile.close();
-        _fileValid = false;
     }
 
     // check if file exists
@@ -33,11 +32,9 @@ bool DataLogger::create(String name, int numColumns) {
         _fileName = name;
         
         if (_curFile) {
-            _fileValid = true;
             DEBUG_SERIAL_LN("Creating file successful");
             return true;
         } else {
-            _fileValid = false;
             DEBUG_SERIAL_LN("Creating file failed.");
             return false;
         }
@@ -56,9 +53,8 @@ bool DataLogger::init(int pinNumber) {
 
 bool DataLogger::open(String name, int numColumns) {
     // if file is already open, close that file
-    if(_fileValid == true) {
+    if(_curFile) {
         _curFile.close();
-        _fileValid = false;
     }
 
     _curColumn = 0;
@@ -75,11 +71,9 @@ bool DataLogger::open(String name, int numColumns) {
         
         // check if file opened successfully
         if (_curFile) {
-            _fileValid = true;
             DEBUG_SERIAL_LN("Creating file successful");
             // continue with function
         } else {
-            _fileValid = false;
             DEBUG_SERIAL_LN("Creating file failed.");
             return false;
         }
@@ -133,7 +127,6 @@ bool DataLogger::open(String name, int numColumns) {
             // file is not empty, and does not have the correct number of columns
             DEBUG_SERIAL_LN("Incorrect column number in file: " + name + ". Creating file with new name.");
             _curFile.close();
-            _fileValid = false;
             
             // generate new file name
             String newFileName = generateNewFileName(name);
@@ -147,7 +140,7 @@ bool DataLogger::open(String name, int numColumns) {
 }
 
 bool DataLogger::saveToDisk() {
-    if (_fileValid) {
+    if (_curFile) {
         _curFile.print(_buffer);
         _buffer = "";
         DEBUG_SERIAL_LN("Write to file successful.");
@@ -159,9 +152,8 @@ bool DataLogger::saveToDisk() {
 }
 
 bool DataLogger::close() {
-    if (_fileValid) {
+    if (_curFile) {
         _curFile.close();
-        _fileValid = false;
         _fileName = "";
         DEBUG_SERIAL_LN("Closed loaded file.");
         return true;
@@ -221,7 +213,7 @@ int DataLogger::getBufferLength() {
 }
 
 String DataLogger::getFileName() {
-    if (_fileValid)
+    if (_curFile)
         return _fileName;
     else
         return "";
