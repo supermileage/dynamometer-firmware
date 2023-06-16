@@ -2,7 +2,7 @@
 
 TextComponent::~TextComponent() { }
 
-void TextComponent::setOwner(VisualElement* owner) {
+void TextComponent::setOwner(RectangularElement* owner) {
     _owner = owner;
 }
 

@@ -4,7 +4,7 @@
 #include "VisualElement.h"
 #include "TextComponent.h"
 
-class TextElement : public VisualElement {
+class TextElement : public RectangularElement {
     public:
         TextElement(Adafruit_GFX& display);
         ~TextElement();

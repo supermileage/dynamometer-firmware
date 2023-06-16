@@ -5,14 +5,14 @@
 #include <memory>
 
 #include "Adafruit_GFX.h"
-#include "VisualElement.h"
+#include "RectangularElement.h"
 
 /**
  * @brief Container class provides border and background for set of visual elements
  * 
  * @note note that default orientation is column
 */
-class Container : public VisualElement {
+class Container : public RectangularElement {
     public:
         enum Alignment { Left, Center, Right, Top, Bottom };
         enum Orientation { Column, Row };
