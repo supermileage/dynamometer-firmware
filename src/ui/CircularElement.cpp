@@ -10,7 +10,7 @@ int16_t CircularElement::getWidth() {
 }
 
 int16_t CircularElement::getHeight() {
-    return _radius * 2;;
+    return _radius * 2;
 }
 
 
