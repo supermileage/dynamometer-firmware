@@ -6,6 +6,7 @@
 #include <iostream>
 #include <string>
 #include <array>
+#include <filesystem>
 
 #include "test_config.h"
 #include "Arduino.h"
@@ -283,8 +284,7 @@ void initializeInputFolder() {
 
         int fd;
         if ((fd = open(testFilePath.c_str(), O_RDWR | O_CREAT | O_TRUNC, 0666)) < 0) {
-            std::cout << "unable to open input file " << testFileName << ": " <<
-                strerror(errno) << std::endl;
+            std::cout << "unable to open input file -- " << strerror(errno) << ":\n" << testFilePath << std::endl;
             continue;
         }
         const char* testFileData = testFileContents[i];
@@ -342,12 +342,11 @@ std::string getTestDirectoryPath() {
     if (getcwd(buf, sizeof(buf)) == NULL) {
         std::cout << "failed to get directory path" << std::endl;
     }
-
-    std::string cwd(buf);
-    std::size_t pos = cwd.find("bin");
+    std::string cwd = std::filesystem::canonical("/proc/self/exe");
+    std::size_t pos = cwd.find("bin/");
 
     if (pos == string::npos) {
-        pos = cwd.find("dynamometer-firmware");
+        pos = cwd.find("dynamometer-firmware/test/");
 
         if (pos == string::npos) {
             std::cout << "failed to find path: please rename project folder to dynamometer-firmware" << std::endl;
@@ -357,7 +356,6 @@ std::string getTestDirectoryPath() {
         pos += strlen("dynamometer-firmware/test/");
         cwd.append("/test/");
     }
-
     return cwd.substr(0,pos);
 }
 
