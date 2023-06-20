@@ -337,11 +337,6 @@ void initializeOutputFolder() {
 }
 
 std::string getTestDirectoryPath() {
-    char buf[PATH_MAX];
-
-    if (getcwd(buf, sizeof(buf)) == NULL) {
-        std::cout << "failed to get directory path" << std::endl;
-    }
     std::string cwd = std::filesystem::canonical("/proc/self/exe");
     std::size_t pos = cwd.find("bin/");
 
