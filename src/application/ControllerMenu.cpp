@@ -50,9 +50,11 @@ void ControllerMenu::_handleInputSerial(input_data_t d) {
     DEBUG_SERIAL_LN("Serial input received: " + String(d));
     switch (d) {
         case 65:    // up
+        case 119:    // w
             _shiftFocus(-1);
             break;
         case 66:    // down 
+        case 115:    // s
             _shiftFocus(1);
             break;
         case 8:     // backspace
