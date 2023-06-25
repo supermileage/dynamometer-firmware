@@ -255,3 +255,22 @@ String DataLogger::generateNewFileName(String name) {
     
     return newFileName;
 }
+
+
+
+// FOR TESTING
+String DataLogger::openAndRead(String name, int num) {
+    String buf = "";
+    File tempFile = SD.open(name);
+    for (int i = 0; i < num; i++) {
+        if (tempFile.available()) {
+            buf += tempFile.read();
+        } 
+        else {
+            DEBUG_SERIAL_LN("ERROR: END OF FILE REACHED, MAKE SURE TO USE A FILE WITH MORE CHARACTERS");
+            break;
+        }
+    }
+    tempFile.close();
+    return buf;
+}

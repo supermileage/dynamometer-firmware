@@ -17,6 +17,9 @@
 #include "System/HardwareRotaryEncoder.h"
 #include "System/InputManager.h"
 
+#include "System/DataLogger.h"
+#include "Testing/SDCardTester.h"
+
 #include "settings.h"
 
 /* system resources */
@@ -74,6 +77,14 @@ void setup() {
 	// inputManager.registerAction(ID_BRAKE_POT, [](input_data_t d) { Serial.printf("Brake pot value: %s\n", String(d).c_str()); });
 	// inputManager.registerAction(ID_ROT_EN_SW, [](input_data_t d) { Serial.printf("Rotary switch is %s\n", String(d == 0 ? "Low" : "High").c_str()); });
 	// inputManager.registerAction(ID_ROT_EN, [](input_data_t d) { Serial.printf("Rotary encoder changed: %s\n", String(d).c_str()); });
+
+	// SD CARD TESTING
+	DEBUG_SERIAL_LN("SD CARD PIN NUMBER REQUIRED BEFORE TESTING");
+	DataLogger logger = DataLogger();
+	logger.init(LCD_CS);
+	
+	SDCardTester tester = SDCardTester();
+	tester.testFilePerformance(logger);
 }
 
 void loop() {
