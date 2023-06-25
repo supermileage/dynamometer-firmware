@@ -58,6 +58,7 @@ void ControllerMenu::_handleInputSerial(input_data_t d) {
             _shiftFocus(1);
             break;
         case 8:     // backspace
+        case 113:    // q
             _navigateBack();
             break;
         case 10:    // enter '\n'
@@ -65,6 +66,10 @@ void ControllerMenu::_handleInputSerial(input_data_t d) {
             break;
         case 13:    // enter '\r'
             _selectCurrent();
+            break;
+        case 101:    // e
+            _selectCurrent();
+            _triggerStateChange();
             break;
         default:    // do nothing
             break;
