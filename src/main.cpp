@@ -81,7 +81,7 @@ void setup() {
 	// SD CARD TESTING
 	DEBUG_SERIAL_LN("SD CARD PIN NUMBER REQUIRED BEFORE TESTING");
 	DataLogger logger = DataLogger();
-	logger.init(LCD_CS);
+	logger.init(SD_CS);
 	
 	SDCardTester tester = SDCardTester();
 	tester.testFilePerformance(logger);

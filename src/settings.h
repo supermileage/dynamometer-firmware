@@ -58,4 +58,7 @@
 #define ID_BRAKE_BUTTON     5
 #define ID_BRAKE_POT        6
 
+/* SD Card */
+#define SD_CS           13
+
 #endif
