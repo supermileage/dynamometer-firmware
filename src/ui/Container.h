@@ -2,15 +2,17 @@
 #define _CONTAINER_H_
 
 #include <vector>
+#include <memory>
+
 #include "Adafruit_GFX.h"
-#include "VisualElement.h"
+#include "RectangularElement.h"
 
 /**
  * @brief Container class provides border and background for set of visual elements
  * 
  * @note note that default orientation is column
 */
-class Container : public VisualElement {
+class Container : public RectangularElement {
     public:
         enum Alignment { Left, Center, Right, Top, Bottom };
         enum Orientation { Column, Row };
@@ -30,12 +32,12 @@ class Container : public VisualElement {
         /**
          * @brief add set of visual element children to container
         */
-        Container& addVisualElements(std::vector<VisualElement*>& elements);
+        Container& addVisualElements(std::vector<std::shared_ptr<VisualElement>>& elements);
 
         /**
          * @brief add visual element child to container
         */
-        Container& addVisualElement(VisualElement* element);
+        Container& addVisualElement(std::shared_ptr<VisualElement> element);
 
         /**
          * @brief draws header, optional border and all visual elements in window
@@ -57,7 +59,7 @@ class Container : public VisualElement {
        void align(Alignment a = Center);
 
     private:
-        std::vector<VisualElement*> _elements;
+        std::vector<std::shared_ptr<VisualElement>> _elements;
         int16_t _padding = 0;
         Orientation _orientation = Column;
         

@@ -1,6 +1,6 @@
 #include "UIElement.h"
 
-UIElement::UIElement(Adafruit_GFX& display) : VisualElement(display) { }
+UIElement::UIElement(Adafruit_GFX& display) : RectangularElement(display) { }
 
 void UIElement::focus() {
     _drawInternal(_focusColour);

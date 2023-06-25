@@ -22,29 +22,19 @@ class VisualElement {
         Point getPosition();
 
         /**
+         * @brief get width of visual element
+        */
+        virtual int16_t getWidth() = 0;
+
+        /**
+         * @brief get height of visual element
+        */
+        virtual int16_t getHeight() = 0;
+
+        /**
          * @brief set position (top left corner)
         */
         VisualElement& setPosition(Point pos);
-        
-        /**
-         * @brief get width of visual element relative to its position
-        */
-        int16_t getWidth();
-        
-        /**
-         * @brief set width of visual element relative to its position
-        */
-        VisualElement& setWidth(int16_t width);
-        
-        /**
-         * @brief get height of visual element relative to its position
-        */
-        int16_t getHeight();
-
-        /**
-         * @brief set height of visual element relative to its position
-        */
-        VisualElement& setHeight(int16_t height);
 
         /**
          * @brief get background colour: 5-6-5 16-bit colour
@@ -56,13 +46,11 @@ class VisualElement {
         */
         VisualElement& setBackgroundColour(uint16_t colour);
 
-
         /**
-         * @brief add border with 16-bit 5-6-5 colour and width/height
-         * 
-         * @note width/height match _width/_height fields by default; max width = 320 and max height = 240
+         * @brief add border line with 16-bit 5-6-5 colour and 1-pixel thickness
+         * @note width is thickness of borderline
         */
-        VisualElement& addBorder(uint16_t colour, int16_t width = -1, int16_t height = -1);
+        VisualElement& addBorder(uint16_t colour);
 
         /**
          * @brief draw visual element to screen
@@ -72,18 +60,15 @@ class VisualElement {
         /**
          * @brief clear visual element from screen
         */
-        void clear();
+        virtual void clear() = 0;
 
     protected:
         Adafruit_GFX& _display;
         VisualElement* _parent = nullptr;
         Point _position = Point { 0, 0 };
-        int16_t _width = 0;
-        int16_t _height = 0;
         uint16_t _backgroundColour = 0;
         uint16_t _borderColour = 0;
         int16_t _borderWidth = 0;
-        int16_t _borderHeight = 0;
         bool _hasBorder = false;
 
         /**
@@ -91,7 +76,7 @@ class VisualElement {
          * 
          * @param colour background colour for draw
         */
-        virtual void _drawInternal(uint16_t colour);
+        virtual void _drawInternal(uint16_t colour) = 0;
 
 };
 

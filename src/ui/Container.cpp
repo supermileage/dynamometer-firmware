@@ -1,6 +1,6 @@
 #include "Container.h"
 
-Container::Container(Adafruit_GFX& display) : VisualElement(display) { }
+Container::Container(Adafruit_GFX& display) : RectangularElement(display) { }
 
 Container::~Container() { }
 
@@ -9,15 +9,15 @@ Container& Container::setPadding(int16_t padding) {
     return *this;
 }
 
-Container& Container::addVisualElements(std::vector<VisualElement*>& elements) {
-    for (VisualElement* element : elements) {
+Container& Container::addVisualElements(std::vector<std::shared_ptr<VisualElement>>& elements) {
+    for (auto element : elements) {
         element->setParent(this);
         _elements.push_back(element);
     }
     return *this;
 }
 
-Container& Container::addVisualElement(VisualElement* element) {
+Container& Container::addVisualElement(std::shared_ptr<VisualElement> element) {
     element->setParent(this);
     _elements.push_back(element);
     return *this;
@@ -27,7 +27,7 @@ void Container::draw() {
     // draw background and border
     VisualElement::draw();
     
-    for (VisualElement* element : _elements) {
+    for (auto element : _elements) {
         element->draw();
     }
 }
@@ -54,7 +54,7 @@ void Container::align(Alignment a) {
 
 void Container::_alignHorizontal(Alignment horizontal) {
     // TODO: implement top/bottom alignment
-    for (VisualElement* element : _elements) {
+    for (auto element : _elements) {
         int16_t elementX = _position.x + (_width - element->getWidth()) / 2;
         element->setPosition(Point { elementX, element->getPosition().y });
     }
@@ -62,7 +62,7 @@ void Container::_alignHorizontal(Alignment horizontal) {
 
 void Container::_alignVertical(Alignment vertical) {
     // TODO: implement left/right alignment
-    for (VisualElement* element : _elements) {
+    for (auto element : _elements) {
         int16_t elementY = _position.y + (_height - element->getHeight()) / 2;
         element->setPosition(Point { element->getPosition().x, elementY });
     }
@@ -70,14 +70,14 @@ void Container::_alignVertical(Alignment vertical) {
 
 void Container::_applyVerticalSpacing() {
     int16_t totalHeight = 0;
-    for (VisualElement* element : _elements) {
+    for (auto element : _elements) {
         totalHeight += element->getHeight();
     }
 
     // equal vertical space between all elements
     int16_t padding = (_height - totalHeight) / (_elements.size() + 1);
     int16_t cur = padding + _position.y;
-    for (VisualElement* element : _elements) {
+    for (auto element : _elements) {
         element->setPosition(Point { element->getPosition().x, cur });
         cur += (padding + element->getHeight());
     }
@@ -85,13 +85,13 @@ void Container::_applyVerticalSpacing() {
 
 void Container::_applyHorizontalSpacing() {
     int16_t total = 0;
-    for (VisualElement* element : _elements) {
+    for (auto element : _elements) {
         total += element->getWidth();
     }
 
     int16_t padding = (_width - total) / (_elements.size() + 1);
     int16_t cur = padding + _position.x;
-    for (VisualElement* element : _elements) {
+    for (auto element : _elements) {
         element->setPosition(Point { cur, element->getPosition().y });
         cur += (padding + element->getWidth());
     }

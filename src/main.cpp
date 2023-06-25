@@ -1,14 +1,22 @@
 #include "Arduino.h"
 #include "SPI.h"
 #include "Wire.h"
-#include "Adafruit_GFX.h"
 #include "Adafruit_ILI9341.h"
 #include "XPT2046_Touchscreen.h"
 #include "Sensor/SensorOptical.h"
 
-#include "application/MenuViewExample.h"
+#include "application/ApplicationContext.h"
+#include "application/ControllerFactory.h"
 #include "graphics/colour.h"
 #include "ui/UIEventHandler.h"
+
+#include "System/HardwareDemuxer.h"
+#include "System/HardwareInputSerial.h"
+#include "System/HardwareDemuxButton.h"
+#include "System/HardwarePotentiometer.h"
+#include "System/HardwareRotaryEncoder.h"
+#include "System/InputManager.h"
+
 #include "settings.h"
 
 /* system resources */
@@ -18,12 +26,24 @@ XPT2046_Touchscreen ts(TOUCH_CS);
 /* sensors */
 SensorOptical optical(pio0, 0);
 
+/* io */
+InputManager inputManager;
+HardwareInputSerial inputSerial;
+HardwareDemuxer demuxer(DEMUX_SELECT0, DEMUX_SELECT1, DEMUX_OUT);
+HardwareDemuxButton selectButton(demuxer, DEMUX_SELECT_SELECT, LED_SELECT, false);
+HardwareDemuxButton backButton(demuxer, DEMUX_SELECT_BACK, LED_BACK, false);
+HardwareDemuxButton brakeButton(demuxer, DEMUX_SELECT_BRAKE, LED_BRAKE, false);
+HardwareDemuxButton encoderButton(demuxer, DEMUX_SELECT_ROT_EN_SW, LED_NULL, true);
+HardwarePotentiometer pot(POT_IN);
+HardwareRotaryEncoder rot(ROT_EN_A, ROT_EN_B);
+
 /* ui */
-MenuViewExample menu(tft);
-UIEventHandler uiCore;
+ControllerFactory factory(tft, inputManager);
+ApplicationContext context(inputManager, tft, factory);
 
 /* global variables */
-uint64_t c0_lastUpdateTime = 0;
+uint c0_lastUpdateTime = 0;
+uint c1_lastUpdateTime = 0;
 int c0_lastCount = 0;
 
 /* Core0 */
@@ -34,25 +54,42 @@ void setup() {
 	tft.setRotation(3);
 	tft.fillScreen(COLOUR_BLACK);
 
+	inputManager.registerInput(ID_SERIAL, &inputSerial);
+	inputManager.registerInput(ID_SELECT_BUTTON, &selectButton);
+	inputManager.registerInput(ID_BACK_BUTTON, &backButton);
+	inputManager.registerInput(ID_BRAKE_BUTTON, &brakeButton);
+	inputManager.registerInput(ID_ROT_EN_SW, &encoderButton);
+	inputManager.registerInput(ID_BRAKE_POT, &pot);
+	inputManager.registerInput(ID_ROT_EN, &rot);
+
+	// DEMUX TEST
+	demuxer.init();
+
+	// initialize all handleable objects
 	delay(1000);
-	uiCore.addEvent([]() { menu.init(); });
 	Handleable::beginAll();
+
+	// INPUT TEST
+	// inputManager.registerAction(ID_BRAKE_BUTTON, [](input_data_t d) { Serial.printf("Brake button is %s\n", String(d == 0 ? "Low" : "High").c_str()); });
+	// inputManager.registerAction(ID_BRAKE_POT, [](input_data_t d) { Serial.printf("Brake pot value: %s\n", String(d).c_str()); });
+	// inputManager.registerAction(ID_ROT_EN_SW, [](input_data_t d) { Serial.printf("Rotary switch is %s\n", String(d == 0 ? "Low" : "High").c_str()); });
+	// inputManager.registerAction(ID_ROT_EN, [](input_data_t d) { Serial.printf("Rotary encoder changed: %s\n", String(d).c_str()); });
 }
 
 void loop() {
-	if (millis() > c0_lastUpdateTime + 100) {
-		c0_lastUpdateTime = millis();
-		uiCore.addEvent([]() { menu.run(); });
-	}
-
 	Handleable::handleAll();
 }
 
 /* Core1 */
 void setup1() {
-	uiCore.init();
+	UIEventHandler::instance().init();
 }
 
 void loop1() {
-	uiCore.run();
+	UIEventHandler::instance().run();
+
+	if (millis() > c1_lastUpdateTime + 2000) {
+		DEBUG_SERIAL_LN("Core 2 Heartbeat");
+		c1_lastUpdateTime = millis();
+	}
 }

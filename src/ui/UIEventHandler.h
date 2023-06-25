@@ -4,6 +4,7 @@
 #include "pico/mutex.h"
 #include <queue>
 #include <functional>
+#include <memory>
 
 #include "ui_util.h"
 
@@ -14,8 +15,9 @@
 */
 class UIEventHandler {
     public:
-        UIEventHandler();
         ~UIEventHandler();
+
+        static UIEventHandler& instance();
 
         /**
          * @brief initializes mutexes
@@ -24,6 +26,7 @@ class UIEventHandler {
 
         /**
          * @brief handles event queue and animations
+         * @note only executes one event per call to loop
         */
         void run();
 
@@ -35,14 +38,12 @@ class UIEventHandler {
         /**
          * @brief add animation
         */
-        void addAnimation(ui_util::Animation* animation);
+        void addAnimation(std::shared_ptr<ui_util::Animation> animation);
 
         /**
          * @brief remove animation
-         * 
-         * @note this will not call delete on the animation ptr: freeing data is the user's responsibility
         */
-        void removeAnimation(ui_util::Animation* animation);
+        void removeAnimation(std::shared_ptr<ui_util::Animation> animation);
 
         /**
          * @brief clears all events from queue
@@ -51,15 +52,17 @@ class UIEventHandler {
 
         /**
          * @brief clears all animations
-         * 
-         * @note this will not call delete on any of the animation ptrs: freeing data is the user's responsibility
+         * @note must be called after clearEventQueue if both event queue and animations are being cleared
         */
         void clearAnimations();
 
     private:
+        static UIEventHandler* _instance;
         mutex_t _eventQueueMtx;
         std::queue<std::function<void(void)>> _eventQueue;
-        std::vector<ui_util::Animation*> _animations;
+        std::vector<std::shared_ptr<ui_util::Animation>> _animations;
+
+        UIEventHandler();
 
 };
 

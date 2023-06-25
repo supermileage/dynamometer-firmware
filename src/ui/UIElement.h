@@ -3,12 +3,12 @@
 
 #include <functional>
 
-#include "VisualElement.h"
+#include "RectangularElement.h"
 
 /**
  * @brief base class for interactive UI elements
 */
-class UIElement : public VisualElement {
+class UIElement : public RectangularElement {
     public:
         UIElement(Adafruit_GFX& display);
         virtual ~UIElement() { }

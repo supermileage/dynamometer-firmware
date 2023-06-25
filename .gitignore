@@ -1,8 +1,9 @@
 .pio
 .vscode/c_cpp_properties.json
 .vscode/launch.json
-.vscode/extensions.json
+.vscode/settings.json
 .DS_Store
 test/bin/
 test/dep/
 test/obj/
+test/output/

@@ -4,7 +4,7 @@
 #include "Arduino.h"
 #include "Adafruit_GFX.h"
 
-#include "VisualElement.h"
+#include "RectangularElement.h"
 
 class TextComponent {
     public:
@@ -13,7 +13,7 @@ class TextComponent {
         /**
          * @brief sets visual element owner of this text component
         */
-        void setOwner(VisualElement* owner);
+        void setOwner(RectangularElement* owner);
 
         /**
          * @brief returns display string of this text component
@@ -56,7 +56,7 @@ class TextComponent {
         void draw(Adafruit_GFX& display, uint16_t colour);
 
     private:
-        VisualElement* _owner;
+        RectangularElement* _owner;
         String _displayString = "";
         GFXfont const* _font = nullptr;
         uint16_t _fontColour = 0;
@@ -65,6 +65,7 @@ class TextComponent {
         uint8_t _textSizeX = 1;
         uint8_t _textSizeY = 1;
         bool _textChanged = false;
+        bool _heightComputed = false;
 
         void _drawInternal(Adafruit_GFX& display, uint16_t colour);
 

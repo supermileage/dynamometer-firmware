@@ -2,7 +2,7 @@
 
 TextComponent::~TextComponent() { }
 
-void TextComponent::setOwner(VisualElement* owner) {
+void TextComponent::setOwner(RectangularElement* owner) {
     _owner = owner;
 }
 
@@ -19,6 +19,7 @@ TextComponent& TextComponent::setDisplayString(const String& str) {
 TextComponent& TextComponent::setFont(const GFXfont* font) {
     _font = font;
     _textChanged = true;
+    _heightComputed = false;
     return *this;
 }
 
@@ -40,9 +41,13 @@ TextComponent& TextComponent::setFontSize(uint8_t w, uint8_t h) {
 
 void TextComponent::draw(Adafruit_GFX& display) {
     if (_textChanged) {
-        Point dimensions = ui_util::computeStringDimensions(_font, _displayString, _textSizeX, _textSizeY);
-        _textWidth = dimensions.x;
-        _textHeight = dimensions.y;
+        _textWidth = ui_util::computeStringDimensions(_font, _displayString, _textSizeX, _textSizeY).x;
+        
+        // prevent text from moving around a bunch on the y axis if display string changes
+        if (!_heightComputed) {
+            _textHeight = ui_util::computeCharacterDimensions(_font, (uint8_t)'L', _textSizeX, _textSizeY).y;
+            _heightComputed = true;
+        }
         _textChanged = false;
     }
 
@@ -55,7 +60,7 @@ void TextComponent::draw(Adafruit_GFX& display, uint16_t colour) {
 
 void TextComponent::_drawInternal(Adafruit_GFX& display, uint16_t colour) {
     display.setFont(_font);
-    display.setTextColor(colour);
+    display.setTextColor(colour, _owner->getBackgroundColour());
     display.setTextSize(_textSizeX, _textSizeY);
 
     // horizontally center text in field
