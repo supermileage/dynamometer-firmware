@@ -11,6 +11,8 @@
 #define ROLLER_RADIUS 0.08276057 // metres
 #define VELOCITY_FACTOR (GEAR_RATIO * ROLLER_RADIUS) // speed of vehicle [m/s] = velocity factor * angular velocity [rad/s]
 
+#define UINT32_T_MAX 0xffffffffU
+
 const uint16_t SensorOptical::NumApertures = NUM_APERTURES;
 const float SensorOptical::VelocityFactor = VELOCITY_FACTOR; 
 
@@ -32,11 +34,36 @@ void SensorOptical::begin() {
 
 void SensorOptical::handle() {
     uint32_t currentTime = micros();
-    if (currentTime >= _lastUpdateTime + _readInterval) {
+    uint32_t nextUpdateTime = _lastUpdateTime + _readInterval;
+
+    bool invokeUpdate = false; 
+    bool overflow = false;
+
+    if (nextUpdateTime > _lastUpdateTime) {
+        // micros() will not overflow before next update
+        if (currentTime >= nextUpdateTime) {
+            invokeUpdate = true;
+            overflow = false;
+        }
+    } else {
+        // micros() will overflow before next update
+        if (currentTime < _lastUpdateTime && currentTime >= nextUpdateTime) {
+            invokeUpdate = true;
+            overflow = true;
+        }
+    }
+
+    if (invokeUpdate) {        
         // n is num apertures we've passed over since last velocity update
         int32_t currentCount = pio_counter_get_count(_pio, _stateMachine);
         int32_t n = currentCount - _lastUpdateCount;
-        uint32_t deltaT = currentTime - _lastUpdateTime;
+
+        uint32_t deltaT;
+        if (overflow) {
+            deltaT = (UINT32_T_MAX - _lastUpdateTime) + currentTime + 1;
+        } else {
+            deltaT = currentTime - _lastUpdateTime;
+        }
 
         _angularVelocity = ((double)n / NUM_APERTURES) * 2 * _PI * (MEGA / (double)deltaT);
         _lastUpdateCount = currentCount;
