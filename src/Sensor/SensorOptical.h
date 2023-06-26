@@ -19,8 +19,8 @@ class SensorOptical: public Sensor {
         String getHumanName() override;
         void begin() override;
         void handle() override;
-        double getAngularVelocity();
-        double getLinearVelocity();
+        float getAngularVelocity();
+        float getLinearVelocity();
         void setReadInterval(uint32_t interval);
         uint32_t getReadInterval();
 
@@ -30,7 +30,7 @@ class SensorOptical: public Sensor {
         uint32_t _lastUpdateTime = 0;
         int32_t _lastUpdateCount = 0;
         uint32_t _readInterval = 0;
-        double _angularVelocity = 0;
+        float _angularVelocity = 0;
 
         #ifdef DEBUG_OPTICAL_ENABLED
         int32_t _lastDisplayCount = 0;

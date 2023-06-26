@@ -38,7 +38,7 @@ void SensorOptical::handle() {
         int32_t n = currentCount - _lastUpdateCount;
         uint32_t deltaT = currentTime - _lastUpdateTime;
 
-        _angularVelocity = ((double)n / NUM_APERTURES) * 2 * _PI * (MEGA / (double)deltaT);
+        _angularVelocity = ((float)n / NUM_APERTURES) * 2 * _PI * (MEGA / (float)deltaT);
         _lastUpdateCount = currentCount;
         _lastUpdateTime = currentTime;
     }
@@ -59,10 +59,10 @@ uint32_t SensorOptical::getReadInterval() {
     return _readInterval;
 }
 
-double SensorOptical::getAngularVelocity() {
+float SensorOptical::getAngularVelocity() {
     return _angularVelocity;
 }
 
-double SensorOptical::getLinearVelocity() {
+float SensorOptical::getLinearVelocity() {
     return VELOCITY_FACTOR * _angularVelocity;
 }
