@@ -16,7 +16,7 @@ void SDCardTester::testFilePerformance (DataLogger logger) {
 
 	
 	int sum;
-	int numOfTrials = 30;
+	int numOfTrials = 100;
 
 	// create a template string with 1000 characters
 	String templateString = "";
@@ -38,7 +38,7 @@ void SDCardTester::testFilePerformance (DataLogger logger) {
 	sum = 0;
 	for (int i = 0; i < numOfTrials; i++) {
 		// initialize
-		logger.create("test1.txt", 0);
+		logger.create("test1.txt", 1);
 		
 		// start test
 		start = micros();
@@ -71,11 +71,12 @@ void SDCardTester::testFilePerformance (DataLogger logger) {
 
 	// Test 2 - how long does it take to write a single column entry for a csv file?
 	Serial.println("\n\nTest 2: how long does it take to write a single column entry for a csv file?");
+	Serial.println("Entry: \"1.0\"");
 
 	sum = 0;
 	for (int i = 0; i < numOfTrials; i++) {
 		// initialize
-		logger.create("test2.txt", 0);
+		logger.create("test2.txt", 1);
 
 		// start test
 		start = micros();
@@ -102,15 +103,52 @@ void SDCardTester::testFilePerformance (DataLogger logger) {
 	Serial.println(" micros");
 
 
+	// ***************************************************************************************************************************************** //
+
+	// Test 3 - how long does it take to write 5 column entries for a csv file?
+	Serial.println("\n\nTest 2: how long does it take to write five column entries for a csv file (osync = false)?");
+
+	sum = 0;
+	for (int i = 0; i < numOfTrials; i++) {
+		// initialize
+		logger.create("test3.txt", 5);
+
+		// start test
+		start = micros();
+
+		// writes single entry to file
+		logger.addEntry(templateEntry);
+		logger.addEntry(templateEntry);
+		logger.addEntry(templateEntry);
+		logger.addEntry(templateEntry);
+		logger.addEntry(templateEntry);
+		logger.saveToDisk();
+
+		// end test
+		end = micros();
+		deltaTime = end - start;
+
+		Serial.print("   Trial ");
+		Serial.print((i + 1));
+		Serial.print(": ");
+		Serial.print(deltaTime);
+		Serial.println(" micros");
+
+		sum += deltaTime;
+		logger.close();
+	}
+	Serial.print("\nAverage time: ");
+	Serial.print((float)sum / numOfTrials);
+	Serial.println(" micros");
 
 
 	// ***************************************************************************************************************************************** //
 	
-	// Test 3 - how long does it take to open a file and read 1000 bytes from sd card into a buffer?
-	Serial.println("\n\nTest 3: how long does it take to open a file and read 1000 bytes from sd card into a buffer?");
+	// Test 4 - how long does it take to open a file and read 1000 bytes from sd card into a buffer?
+	Serial.println("\n\nTest 4: how long does it take to open a file and read 1000 bytes from sd card into a buffer?");
 
 	// intialize
-	logger.create("test3.txt", 0);
+	logger.create("test4.txt", 0);
 	logger.addEntry(templateString);
 	logger.saveToDisk();
 	logger.close();
@@ -123,7 +161,7 @@ void SDCardTester::testFilePerformance (DataLogger logger) {
 
 		// opens previous file and reads 1000 characters
 		int num = 1000;
-		String result = logger.openAndRead("test3.txt", num);
+		String result = logger.openAndRead("test4.txt", num);
 
 		// end test
 		end = micros();
