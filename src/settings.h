@@ -4,7 +4,7 @@
 #include "Arduino.h"
 
 /* Debug Settings */
-#define DEBUG_SERIAL_EN 1
+#define DEBUG_SERIAL_EN 0
 
 #if DEBUG_SERIAL_EN
 #define DEBUG_SERIAL_LN(x) Serial.println(x)

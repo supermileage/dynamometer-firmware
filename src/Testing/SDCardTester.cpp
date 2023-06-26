@@ -14,6 +14,10 @@ void SDCardTester::testFilePerformance (DataLogger logger) {
 	int end;
 	int deltaTime;
 
+	
+	int sum;
+	int numOfTrials = 30;
+
 	// create a template string with 1000 characters
 	String templateString = "";
 	for (int i = 0; i < 1000; i++)
@@ -29,27 +33,36 @@ void SDCardTester::testFilePerformance (DataLogger logger) {
 	// ***************************************************************************************************************************************** //
 	
 	// Test 1 - how long does it take to write a 1000 character string to the sd card?
-	DEBUG_SERIAL_LN("Test 1: how long does it take to write a 1000 character string to the sd card?");
+	Serial.println("\n\nTest 1: how long does it take to write a 1000 character string to the sd card?");
 
-	// initialize
-	logger.create("test1.txt", 0);
-	
-	// start test
-	start = micros();
+	sum = 0;
+	for (int i = 0; i < numOfTrials; i++) {
+		// initialize
+		logger.create("test1.txt", 0);
+		
+		// start test
+		start = micros();
 
-	// writes 1000 characters to file
-	logger.addEntry(templateString);
-	logger.saveToDisk();
+		// writes 1000 characters to file
+		logger.addEntry(templateString);
+		logger.saveToDisk();
 
-	// end test
-	end = micros();
-	deltaTime = end - start;
+		// end test
+		end = micros();
+		deltaTime = end - start;
 
-	DEBUG_SERIAL("It took ");
-	DEBUG_SERIAL(deltaTime);
-	DEBUG_SERIAL_LN(" micros to conduct test 1.");
+		Serial.print("   Trial ");
+		Serial.print((i + 1));
+		Serial.print(": ");
+		Serial.print(deltaTime);
+		Serial.println(" micros");
 
-	logger.close();
+		sum += deltaTime;
+		logger.close();
+	}
+	Serial.print("\nAverage time: ");
+	Serial.print((float)sum / numOfTrials);
+	Serial.println(" micros");
 
 
 
@@ -57,29 +70,36 @@ void SDCardTester::testFilePerformance (DataLogger logger) {
 	// ***************************************************************************************************************************************** //
 
 	// Test 2 - how long does it take to write a single column entry for a csv file?
-	DEBUG_SERIAL_LN("Test 2: how long does it take to write a single column entry for a csv file?");
+	Serial.println("\n\nTest 2: how long does it take to write a single column entry for a csv file?");
 
-	// initialize
-	logger.create("test2.txt", 0);
+	sum = 0;
+	for (int i = 0; i < numOfTrials; i++) {
+		// initialize
+		logger.create("test2.txt", 0);
 
-	// start test
-	start = micros();
+		// start test
+		start = micros();
 
-	// writes single entry to file
-	logger.addEntry(templateEntry);
-	logger.saveToDisk();
+		// writes single entry to file
+		logger.addEntry(templateEntry);
+		logger.saveToDisk();
 
-	// end test
-	end = micros();
-	deltaTime = end - start;
+		// end test
+		end = micros();
+		deltaTime = end - start;
 
-	DEBUG_SERIAL("It took ");
-	DEBUG_SERIAL(deltaTime);
-	DEBUG_SERIAL_LN(" micros to conduct test 2.");
+		Serial.print("   Trial ");
+		Serial.print((i + 1));
+		Serial.print(": ");
+		Serial.print(deltaTime);
+		Serial.println(" micros");
 
-	logger.close();
-
-
+		sum += deltaTime;
+		logger.close();
+	}
+	Serial.print("\nAverage time: ");
+	Serial.print((float)sum / numOfTrials);
+	Serial.println(" micros");
 
 
 
@@ -87,7 +107,7 @@ void SDCardTester::testFilePerformance (DataLogger logger) {
 	// ***************************************************************************************************************************************** //
 	
 	// Test 3 - how long does it take to open a file and read 1000 bytes from sd card into a buffer?
-	DEBUG_SERIAL_LN("Test 3: how long does it take to open a file and read 1000 bytes from sd card into a buffer?");
+	Serial.println("\n\nTest 3: how long does it take to open a file and read 1000 bytes from sd card into a buffer?");
 
 	// intialize
 	logger.create("test3.txt", 0);
@@ -95,23 +115,34 @@ void SDCardTester::testFilePerformance (DataLogger logger) {
 	logger.saveToDisk();
 	logger.close();
 
-	// start test
-	start = micros();
+	sum = 0;
+	for (int i = 0; i < numOfTrials; i++) {
 
-	// opens previous file and reads 1000 characters
-    int num = 1000;
-	String result = logger.openAndRead("test3.txt", num);
+		// start test
+		start = micros();
 
-	// end test
-	end = micros();
-	deltaTime = end - start;
-	if (result.length() != num) {
-		DEBUG_SERIAL("It took ");
-		DEBUG_SERIAL(deltaTime);
-		DEBUG_SERIAL_LN(" micros to conduct test 3.");
-    } else {
-		DEBUG_SERIAL_LN("Use larger file. Could not complete test.");
-    }
-	DEBUG_SERIAL_LN("Charaters read: " + result);
-	logger.close();
+		// opens previous file and reads 1000 characters
+		int num = 1000;
+		String result = logger.openAndRead("test3.txt", num);
+
+		// end test
+		end = micros();
+		deltaTime = end - start;
+
+		Serial.print("   Trial ");
+		Serial.print((i + 1));
+		Serial.print(": ");
+		if (result.length() != num) {
+			Serial.print(deltaTime);
+			Serial.println(" micros");
+		} else {
+			Serial.println(" Use larger file. Could not complete test.");
+			break;
+		}
+		// DEBUG_SERIAL_LN("Charaters read: " + result);
+		sum += deltaTime;
+	}
+	Serial.print("\nAverage time: ");
+	Serial.print((float)sum / numOfTrials);
+	Serial.println(" micros");
 }
