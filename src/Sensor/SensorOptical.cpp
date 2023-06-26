@@ -4,11 +4,11 @@
 // div of 8.0 works fine, but will count 2x when pio runs any faster
 #define PIO_CLOCK_DIV 8.0f
 #define MEGA 1000000
-#define _PI 3.1415
+#define _PI 3.1415f
 
 #define NUM_APERTURES 64
-#define GEAR_RATIO 0.2 
-#define ROLLER_RADIUS 0.08276057 // metres
+#define GEAR_RATIO 0.2f
+#define ROLLER_RADIUS 0.08276057f // metres
 #define VELOCITY_FACTOR (GEAR_RATIO * ROLLER_RADIUS) // speed of vehicle [m/s] = velocity factor * angular velocity [rad/s]
 
 const uint16_t SensorOptical::NumApertures = NUM_APERTURES;

@@ -36,7 +36,7 @@ class SensorForce : public Sensor {
         float _force;
         uint8_t _pinNumber;
         PinMode _pinMode;
-        uint64_t _lastReadTime = 0;
+        uint32_t _lastReadTime = 0;
 };
 
 #endif
