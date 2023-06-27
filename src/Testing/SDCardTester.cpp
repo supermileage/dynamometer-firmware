@@ -17,6 +17,7 @@ void SDCardTester::testFilePerformance (DataLogger logger) {
 	
 	int sum;
 	int numOfTrials = 100;
+	String filename = "";
 
 	// create a template string with 1000 characters
 	String templateString = "";
@@ -37,8 +38,13 @@ void SDCardTester::testFilePerformance (DataLogger logger) {
 
 	sum = 0;
 	for (int i = 0; i < numOfTrials; i++) {
+		String prefix = "test1[";
+		String suffix = "].txt";
+		filename = prefix + i;
+		filename = filename + suffix;
+
 		// initialize
-		logger.create("test1.txt", 1);
+		logger.create(filename, 1);
 		
 		// start test
 		start = micros();
@@ -75,8 +81,13 @@ void SDCardTester::testFilePerformance (DataLogger logger) {
 
 	sum = 0;
 	for (int i = 0; i < numOfTrials; i++) {
+		String prefix = "test2[";
+		String suffix = "].txt";
+		filename = prefix + i;
+		filename = filename + suffix;
+
 		// initialize
-		logger.create("test2.txt", 1);
+		logger.create(filename, 1);
 
 		// start test
 		start = micros();
@@ -106,12 +117,17 @@ void SDCardTester::testFilePerformance (DataLogger logger) {
 	// ***************************************************************************************************************************************** //
 
 	// Test 3 - how long does it take to write 5 column entries for a csv file?
-	Serial.println("\n\nTest 2: how long does it take to write five column entries for a csv file (osync = false)?");
+	Serial.println("\n\nTest 3: how long does it take to write five column entries for a csv file (osync = false)?");
 
 	sum = 0;
 	for (int i = 0; i < numOfTrials; i++) {
+		String prefix = "test3[";
+		String suffix = "].txt";
+		filename = prefix + i;
+		filename = filename + suffix;
+
 		// initialize
-		logger.create("test3.txt", 5);
+		logger.create(filename, 5);
 
 		// start test
 		start = micros();
