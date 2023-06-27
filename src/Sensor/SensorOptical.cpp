@@ -11,8 +11,6 @@
 #define ROLLER_RADIUS 0.08276057 // metres
 #define VELOCITY_FACTOR (GEAR_RATIO * ROLLER_RADIUS) // speed of vehicle [m/s] = velocity factor * angular velocity [rad/s]
 
-#define UINT32_T_MAX 0xffffffffU
-
 const uint16_t SensorOptical::NumApertures = NUM_APERTURES;
 const float SensorOptical::VelocityFactor = VELOCITY_FACTOR; 
 
@@ -60,7 +58,7 @@ void SensorOptical::handle() {
 
         uint32_t deltaT;
         if (overflow) {
-            deltaT = (UINT32_T_MAX - _lastUpdateTime) + currentTime + 1;
+            deltaT = (UINT32_MAX - _lastUpdateTime) + currentTime + 1;
         } else {
             deltaT = currentTime - _lastUpdateTime;
         }
