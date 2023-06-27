@@ -6,7 +6,8 @@
 void simulateAperturePasses(SensorOptical& optical, uint32_t numPasses);
 
 TEST_CASE( "SensorOptical::getAngularVelocity", "[SensorOptical]" ) {
-	SensorOptical optical(0, 0, 10000);
+    uint32_t readInterval = 10000;
+	SensorOptical optical(0, 0, readInterval);
     setMicros(0);
 
     SECTION("full rotation in one second") {
@@ -49,6 +50,37 @@ TEST_CASE( "SensorOptical::getAngularVelocity", "[SensorOptical]" ) {
         setMicros(10000);
         simulateAperturePasses(optical, SensorOptical::NumApertures / 16);
         REQUIRE( optical.getAngularVelocity() == Approx(39.268).margin(0.01) );
+    }
+
+    SECTION("micros overflow, sixteenth rotation in 10 milliseconds (case 1)") {
+        setMicros(UINT32_MAX);
+        optical.begin();
+        setMicros(UINT32_MAX + 10000);
+        simulateAperturePasses(optical, SensorOptical::NumApertures / 16);
+        REQUIRE( optical.getAngularVelocity() == Approx(39.268).margin(0.01) );
+    }
+
+    SECTION("micros overflow, sixteenth rotation in 10 milliseconds (case 2)") {
+        setMicros(UINT32_MAX - 9999);
+        optical.begin();
+        setMicros(UINT32_MAX - 9999 + 10000);
+        simulateAperturePasses(optical, SensorOptical::NumApertures / 16);
+        REQUIRE( optical.getAngularVelocity() == Approx(39.268).margin(0.01) );
+    }
+
+    SECTION("read interval not elapsed") {
+        optical.begin();
+        setMicros(readInterval - 1);
+        simulateAperturePasses(optical, SensorOptical::NumApertures / 16);
+        REQUIRE( optical.getAngularVelocity() == 0.0 );
+    }
+
+    SECTION("micros overflow, read interval not elapsed") {
+        setMicros(UINT32_MAX - 5000);
+        optical.begin();
+        setMicros(UINT32_MAX - 5000 + (readInterval - 1));
+        simulateAperturePasses(optical, SensorOptical::NumApertures / 16);
+        REQUIRE( optical.getAngularVelocity() == 0.0 );
     }
 }
 
