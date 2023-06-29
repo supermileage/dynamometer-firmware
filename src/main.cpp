@@ -3,7 +3,9 @@
 #include "Wire.h"
 #include "Adafruit_ILI9341.h"
 #include "XPT2046_Touchscreen.h"
+
 #include "Sensor/SensorOptical.h"
+#include "Sensor/SensorForce.h"
 
 #include "application/ApplicationContext.h"
 #include "application/ControllerFactory.h"
@@ -25,6 +27,7 @@ XPT2046_Touchscreen ts(TOUCH_CS);
 
 /* sensors */
 SensorOptical optical(pio0, 0);
+SensorForce force;
 
 /* io */
 InputManager inputManager;
@@ -49,11 +52,18 @@ int c0_lastCount = 0;
 /* Core0 */
 void setup() {
 	Serial.begin(115200);
-
+	
+	// screen
 	tft.begin();
 	tft.setRotation(3);
 	tft.fillScreen(COLOUR_BLACK);
 
+	// sensor
+	optical.begin();
+	force.begin();
+
+	// ui inputs
+	demuxer.init();
 	inputManager.registerInput(ID_SERIAL, &inputSerial);
 	inputManager.registerInput(ID_SELECT_BUTTON, &selectButton);
 	inputManager.registerInput(ID_BACK_BUTTON, &backButton);
@@ -61,23 +71,15 @@ void setup() {
 	inputManager.registerInput(ID_ROT_EN_SW, &encoderButton);
 	inputManager.registerInput(ID_BRAKE_POT, &pot);
 	inputManager.registerInput(ID_ROT_EN, &rot);
+	inputManager.begin();
 
-	// DEMUX TEST
-	demuxer.init();
-
-	// initialize all handleable objects
-	delay(1000);
-	Handleable::beginAll();
-
-	// INPUT TEST
-	// inputManager.registerAction(ID_BRAKE_BUTTON, [](input_data_t d) { Serial.printf("Brake button is %s\n", String(d == 0 ? "Low" : "High").c_str()); });
-	// inputManager.registerAction(ID_BRAKE_POT, [](input_data_t d) { Serial.printf("Brake pot value: %s\n", String(d).c_str()); });
-	// inputManager.registerAction(ID_ROT_EN_SW, [](input_data_t d) { Serial.printf("Rotary switch is %s\n", String(d == 0 ? "Low" : "High").c_str()); });
-	// inputManager.registerAction(ID_ROT_EN, [](input_data_t d) { Serial.printf("Rotary encoder changed: %s\n", String(d).c_str()); });
+	// application
+	context.begin();
 }
 
 void loop() {
-	Handleable::handleAll();
+	inputManager.handle();
+	context.handle();
 }
 
 /* Core1 */
