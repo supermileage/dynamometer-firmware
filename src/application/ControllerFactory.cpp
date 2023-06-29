@@ -97,15 +97,15 @@ const NavMenuConfig MainMenuConfig = {
 
 const NavMenuConfig CalibrationMenuConfig = {
     { ButtonInfo { .text = "Begin Calibration", .info { .state = CalibrationMode } } },
-    { ButtonInfo { .text = "Calibration Settings", .info { .state = CalibrationSettings } } }
+    { ButtonInfo { .text = "Settings", .info { .state = CalibrationSettings } } }
 };
 
 const NavMenuConfig AutoControlMenuConfig = {
     { ButtonInfo { .text = "Start Session", .info { .state = AutoControlMode } } },
-    { ButtonInfo { .text = "Automation Settings", .info { .state = AutoControlSettings } } }
+    { ButtonInfo { .text = "Settings", .info { .state = AutoControlSettings } } }
 };
 
 const NavMenuConfig ManualControlMenuConfig = {
     { ButtonInfo { .text = "Start Session", .info { .state = ManualControlMode } } },
-    { ButtonInfo { .text = "Manual Settings", .info { .state = ManualControlSettings } } }
+    { ButtonInfo { .text = "Settings", .info { .state = ManualControlSettings } } }
 };
