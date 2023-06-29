@@ -69,7 +69,7 @@ void setup() {
 	demuxer.init();
 
 	// initialize all handleable objects
-	delay(1000);
+	delay(2000);
 	Handleable::beginAll();
 
 	// INPUT TEST
