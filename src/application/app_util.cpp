@@ -87,16 +87,26 @@ const String app_util::stateToString(ApplicationState state) {
     switch (state) {
         case MainMenu:
             return "Main Menu";
-        case ManualControlMenu:
-            return "Manual Control";
+        case GlobalSettingsMenu:
+            return "Global Settings";
         case CalibrationMenu:
-            return "Calibration";
-        case SettingsMenu:
-            return "Settings";
+            return "Calibration Menu";
         case CalibrationMode:
             return "Calibration Mode";
         case CalibrationSettings:
             return "Calibration Settings";
+        case AutoControlMenu:
+            return "Manual Control Menu";
+        case AutoControlMode:
+            return "Manual Control Mode";
+        case AutoControlSettings:
+            return "Manual Control Settings";
+        case ManualControlMenu:
+            return "Manual Control Menu";
+        case ManualControlMode:
+            return "Manual Control Mode";
+        case ManualControlSettings:
+            return "Manual Control Settings";
         case TextDialog:
             return "Text Dialog";
         default:
