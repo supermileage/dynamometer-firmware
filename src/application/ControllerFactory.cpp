@@ -82,14 +82,14 @@ std::shared_ptr<ControllerBase> ControllerFactory::_createInternal(StateInfo& in
 
 const NavMenuConfig MainMenuConfig = {
     { ButtonInfo {
-        .text = "Run Calibration",
-        .info = { .state = CalibrationMenu } } },
-    { ButtonInfo {
         .text = "Manual Control",
         .info = { .state = ManualControlMenu } } },
     { ButtonInfo {
         .text = "Automated Control",
         .info = { .state = AutoControlMenu } } },
+    { ButtonInfo {
+        .text = "Calibration",
+        .info = { .state = CalibrationMenu } } },
     { ButtonInfo {
         .text = "Settings",
         .info = { .state = GlobalSettingsMenu } } }
