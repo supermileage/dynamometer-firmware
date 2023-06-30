@@ -5,7 +5,6 @@
 #include <memory>
 
 #include "Adafruit_GFX.h"
-#include "System/Handleable.h"
 #include "System/InputManager.h"
 
 #include "ControllerFactory.h"
@@ -25,7 +24,7 @@ using namespace application;
 /**
  * @brief maintains state and state transitions of application
  */
-class ApplicationContext : public Handleable {
+class ApplicationContext {
     public:
         ApplicationContext(InputManager& manager, Adafruit_GFX& display, ControllerFactory& factory);
         ~ApplicationContext();
@@ -33,12 +32,12 @@ class ApplicationContext : public Handleable {
         /**
          * @brief initialize application context
         */
-        void begin() override;
+        void begin();
 
         /**
          * @brief handle state transitions
         */
-        void handle() override;
+        void handle();
 
         /**
          * @brief try to set info for next state which this context will transition to

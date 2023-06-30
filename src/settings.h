@@ -28,6 +28,7 @@
 
 /* Sensor */
 #define OPTICAL_SENSOR_PIN  2
+#define FORCE_SENSOR_PIN    26
 
 /* Demux (Buttons) */
 #define BUTTON_DEBOUNCE_MILLIS      50

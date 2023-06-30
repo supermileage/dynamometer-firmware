@@ -19,10 +19,6 @@ SensorOptical::SensorOptical(PIO pio, uint stateMachine, uint32_t readInterval) 
 
 SensorOptical::~SensorOptical() { }
 
-String SensorOptical::getHumanName() {
-    return "OpticalSensor";
-}
-
 void SensorOptical::begin() {
     pinMode(OPTICAL_SENSOR_PIN, INPUT);
 	uint offset = pio_add_program(_pio, &pio_counter_program);
