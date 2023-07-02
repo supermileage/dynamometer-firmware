@@ -17,6 +17,10 @@ void ControllerBase::init(InputManager& manager) {
     manager.registerAction(ID_BRAKE_POT, [this](input_data_t d) { this->_handleInputBrakePot(d); });
 }
 
+void ControllerBase::handle() {
+    // default: do nothing
+}
+
 uint8_t ControllerBase::getInFocus() {
     return _inFocus;
 }
