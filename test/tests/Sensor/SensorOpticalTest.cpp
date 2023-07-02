@@ -82,6 +82,14 @@ TEST_CASE( "SensorOptical::getAngularVelocity", "[SensorOptical]" ) {
         simulateAperturePasses(optical, SensorOptical::NumApertures / 16);
         REQUIRE( optical.getAngularVelocity() == 0.0 );
     }
+
+    SECTION("micros overflow -- SensorOptical doesn't expect overflow") {
+        setMicros(UINT32_MAX - 10000);
+        optical.begin();
+        setMicros(0);
+        simulateAperturePasses(optical, SensorOptical::NumApertures / 16);
+        REQUIRE( optical.getAngularVelocity() == Approx(39.268).margin(0.01) );
+    }
 }
 
 void simulateAperturePasses(SensorOptical& optical, uint count) {
