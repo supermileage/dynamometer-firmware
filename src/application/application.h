@@ -12,13 +12,18 @@ namespace application {
     */
     enum ApplicationState {
         NullState = -1,
-        MainMenu = 0,
-        ManualControlMenu = 1,
-        CalibrationMenu = 2,
-        SettingsMenu = 3,
-        CalibrationMode = 4,
-        CalibrationSettings = 5,
-        TextDialog = 6
+        MainMenu,
+        GlobalSettingsMenu,
+        CalibrationMenu,
+        CalibrationMode,
+        CalibrationSettings,
+        AutoControlMenu,
+        AutoControlMode,
+        AutoControlSettings,
+        ManualControlMenu,
+        ManualControlMode,
+        ManualControlSettings,
+        TextDialog,
     };
 
     /**
