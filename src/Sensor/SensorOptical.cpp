@@ -32,36 +32,20 @@ void SensorOptical::begin() {
 
 void SensorOptical::handle() {
     uint32_t currentTime = micros();
-    uint32_t nextUpdateTime = _lastUpdateTime + _readInterval;
+    uint32_t deltaT;
 
-    bool invokeUpdate = false; 
-    bool overflow = false;
-
-    if (nextUpdateTime > _lastUpdateTime) {
-        // micros() will not overflow before next update
-        if (currentTime >= nextUpdateTime) {
-            invokeUpdate = true;
-            overflow = false;
-        }
+    if (currentTime < _lastUpdateTime) {
+        // overflow: compute interval with overflow
+        deltaT = UINT32_MAX - _lastUpdateTime + currentTime + 1;
     } else {
-        // micros() will overflow before next update
-        if (currentTime < _lastUpdateTime && currentTime >= nextUpdateTime) {
-            invokeUpdate = true;
-            overflow = true;
-        }
+        // no overflow
+        deltaT = currentTime - _lastUpdateTime;
     }
 
-    if (invokeUpdate) {        
-        // n is num apertures we've passed over since last velocity update
+    if (deltaT >= _readInterval) {
+         // n is num apertures we've passed over since last velocity update
         int32_t currentCount = pio_counter_get_count(_pio, _stateMachine);
         int32_t n = currentCount - _lastUpdateCount;
-
-        uint32_t deltaT;
-        if (overflow) {
-            deltaT = (UINT32_MAX - _lastUpdateTime) + currentTime + 1;
-        } else {
-            deltaT = currentTime - _lastUpdateTime;
-        }
 
         _angularVelocity = ((double)n / NUM_APERTURES) * 2 * _PI * (MEGA / (double)deltaT);
         _lastUpdateCount = currentCount;
