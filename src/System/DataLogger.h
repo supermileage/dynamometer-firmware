@@ -81,6 +81,14 @@ class DataLogger {
         */
         String getFileName();
 
+
+        
+        // FOR TESTING PURPOSES
+        
+        //Opens a file and read num characters into a string buffer
+        //Returns buffer
+        String openAndRead(String name, int num);
+
         private:
         int _numColumns;
         int _curColumn;
