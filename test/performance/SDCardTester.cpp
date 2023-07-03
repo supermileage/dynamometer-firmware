@@ -1,6 +1,4 @@
-#include "settings.h"
 #include "SDCardTester.h"
-#include "../System/DataLogger.h"
 
 using namespace std;
 
@@ -9,7 +7,7 @@ using namespace std;
 SDCardTester::SDCardTester() {};
 SDCardTester::~SDCardTester() {};
 
-void SDCardTester::testFilePerformance (DataLogger logger) {
+void SDCardTester::testFilePerformance (DataLogger& logger) {
 	
 	// time tracking variables
 	int start;

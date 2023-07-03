@@ -4,6 +4,7 @@
 #include "VisualElement.h"
 
 class CircularElement : public VisualElement {
+    public:
         CircularElement(Adafruit_GFX& display);
         ~CircularElement();
         

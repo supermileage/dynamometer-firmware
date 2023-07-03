@@ -4,14 +4,15 @@
 
 #include "Arduino.h"
 #include "SPI.h"
-#include "../System/DataLogger.h"
+#include "System/DataLogger.h"
+
 using namespace std;
 
 class SDCardTester {
     public:
         SDCardTester();
         ~SDCardTester();
-        void testFilePerformance(DataLogger logger);
+        void testFilePerformance(DataLogger& logger);
 
     private:
 };

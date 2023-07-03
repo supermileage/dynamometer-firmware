@@ -34,6 +34,11 @@ class ControllerBase : public std::enable_shared_from_this<ControllerBase> {
         virtual void init(InputManager& manager);
 
         /**
+         * @brief run controller
+        */
+        virtual void handle();
+
+        /**
          * @brief returns index of current ui element in focus
         */
 		uint8_t getInFocus();

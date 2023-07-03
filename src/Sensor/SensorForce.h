@@ -1,31 +1,22 @@
 #ifndef _SENSOR_FORCE_H_
 #define _SENSOR_FORCE_H_
 
-#include "Sensor.h"
-
-class SensorForce : public Sensor {
+class SensorForce {
     public:
-        /*
-         * Constructor
-        */
-        SensorForce(pin_size_t pinNumber, PinMode mode);
-
         /*
          * Destructor
         */
         ~SensorForce();
 
-        String getHumanName() override;
-
         /*
          * initialization method (called at startup)
         */
-        void begin() override;
+        void begin();
 
         /*
          * handle method (called in loop)
         */
-        void handle() override;
+        void handle();
 
         /*
          * returns value representing current force on force sensor
@@ -34,9 +25,7 @@ class SensorForce : public Sensor {
 
     private:
         float _force;
-        uint8_t _pinNumber;
-        PinMode _pinMode;
-        uint64_t _lastReadTime = 0;
+        uint32_t _lastReadTime = 0;
 };
 
 #endif

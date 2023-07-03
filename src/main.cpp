@@ -3,7 +3,9 @@
 #include "Wire.h"
 #include "Adafruit_ILI9341.h"
 #include "XPT2046_Touchscreen.h"
+
 #include "Sensor/SensorOptical.h"
+#include "Sensor/SensorForce.h"
 
 #include "application/ApplicationContext.h"
 #include "application/ControllerFactory.h"
@@ -17,9 +19,6 @@
 #include "System/HardwareRotaryEncoder.h"
 #include "System/InputManager.h"
 
-#include "System/DataLogger.h"
-#include "Testing/SDCardTester.h"
-
 #include "settings.h"
 
 /* system resources */
@@ -28,6 +27,7 @@ XPT2046_Touchscreen ts(TOUCH_CS);
 
 /* sensors */
 SensorOptical optical(pio0, 0);
+SensorForce force;
 
 /* io */
 InputManager inputManager;
@@ -52,11 +52,18 @@ int c0_lastCount = 0;
 /* Core0 */
 void setup() {
 	Serial.begin(115200);
-
+	
+	// screen
 	tft.begin();
 	tft.setRotation(3);
 	tft.fillScreen(COLOUR_BLACK);
 
+	// sensor
+	optical.begin();
+	force.begin();
+
+	// ui inputs
+	demuxer.init();
 	inputManager.registerInput(ID_SERIAL, &inputSerial);
 	inputManager.registerInput(ID_SELECT_BUTTON, &selectButton);
 	inputManager.registerInput(ID_BACK_BUTTON, &backButton);
@@ -64,31 +71,15 @@ void setup() {
 	inputManager.registerInput(ID_ROT_EN_SW, &encoderButton);
 	inputManager.registerInput(ID_BRAKE_POT, &pot);
 	inputManager.registerInput(ID_ROT_EN, &rot);
+	inputManager.begin();
 
-	// DEMUX TEST
-	demuxer.init();
-
-	// initialize all handleable objects
-	delay(2000);
-	Handleable::beginAll();
-
-	// INPUT TEST
-	// inputManager.registerAction(ID_BRAKE_BUTTON, [](input_data_t d) { Serial.printf("Brake button is %s\n", String(d == 0 ? "Low" : "High").c_str()); });
-	// inputManager.registerAction(ID_BRAKE_POT, [](input_data_t d) { Serial.printf("Brake pot value: %s\n", String(d).c_str()); });
-	// inputManager.registerAction(ID_ROT_EN_SW, [](input_data_t d) { Serial.printf("Rotary switch is %s\n", String(d == 0 ? "Low" : "High").c_str()); });
-	// inputManager.registerAction(ID_ROT_EN, [](input_data_t d) { Serial.printf("Rotary encoder changed: %s\n", String(d).c_str()); });
-
-	// SD CARD TESTING
-	DEBUG_SERIAL_LN("SD CARD PIN NUMBER REQUIRED BEFORE TESTING");
-	DataLogger logger = DataLogger();
-	logger.init(SD_CS);
-	
-	SDCardTester tester = SDCardTester();
-	tester.testFilePerformance(logger);
+	// application
+	context.begin();
 }
 
 void loop() {
-	Handleable::handleAll();
+	inputManager.handle();
+	context.handle();
 }
 
 /* Core1 */
@@ -100,7 +91,7 @@ void loop1() {
 	UIEventHandler::instance().run();
 
 	if (millis() > c1_lastUpdateTime + 2000) {
-		// DEBUG_SERIAL_LN("Core 2 Heartbeat");
+		DEBUG_SERIAL_LN("Core 2 Heartbeat");
 		c1_lastUpdateTime = millis();
 	}
 }
