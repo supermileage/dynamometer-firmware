@@ -80,16 +80,9 @@ void setup() {
 	context.begin();
 }
 
-uint32_t g_error_time = 0;
-
 void loop() {
 	inputManager.handle();
 	context.handle();
-
-	if (millis() >= g_error_time + 2000) {
-		dyno_assert(millis() < g_error_time + 2000);
-		g_error_time = millis();
-	}
 }
 
 /* Core1 */
