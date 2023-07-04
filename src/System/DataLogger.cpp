@@ -41,16 +41,6 @@ bool DataLogger::create(String name, int numColumns) {
     }
 }
 
-bool DataLogger::init(int pinNumber) {
-    if (SD.begin(pinNumber, SPI1)) {
-        DEBUG_SERIAL_LN("SD card is present & ready");
-        return true;
-    } else {
-        DEBUG_SERIAL_LN("SD card missing or failed");
-        return false;
-    }
-}
-
 bool DataLogger::open(String name, int numColumns) {
     // if file is already open, close that file
     if(_curFile) {
