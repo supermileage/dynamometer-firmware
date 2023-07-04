@@ -4,6 +4,16 @@
 #include "SD.h"
 #include "settings.h"
 
+class ErrorHandler;
+extern ErrorHandler& ErrorUtil;
+
+#if DYNO_ASSERT_EN
+#define dyno_assert(__expr) ((__expr) ? (void)0 : ErrorUtil.errorAssert(__FILE__, __LINE__, \
+                                __PRETTY_FUNCTION__, #__expr))
+#else
+#define dyno_assert(__expr) { }
+#endif
+
 class ErrorHandler {
     public:
         /* error handling */
@@ -24,7 +34,5 @@ class ErrorHandler {
         void _openLogFile();
         void _closeLogFile();
 };
-
-extern ErrorHandler& ErrorUtil;
 
 #endif

@@ -7,17 +7,9 @@
 #include "ui/UIButton.h"
 #include "ui/Container.h"
 #include "ui/TextElement.h"
-#include "System/ErrorHandler.h"
 #include "application.h"
 
 using namespace application;
-
-#if DYNO_ASSERT_EN
-#define dyno_assert(__expr) ((__expr) ? (void)0 : ErrorUtil.errorAssert(__FILE__, __LINE__, \
-                                __PRETTY_FUNCTION__, #__expr))
-#else
-#define dyno_assert(__expr) { }
-#endif
 
 namespace app_util {
     /* configure different visual elements as defined by macros in style.h */
