@@ -1,7 +1,7 @@
 #include "ErrorHandler.h"
 #include <string.h>
 
-#define FORMATTED_MESSAGE_SIZE (sizeof("assert failed: (  )\n\tfile:  ln  in \n\n") + 2)
+#define FORMATTED_MESSAGE_SIZE (sizeof("assert failed: (  )\n\t<,ln > in \n\n") + 2)
 
 ErrorHandler* ErrorHandler::_instance = nullptr;
 ErrorHandler& ErrorUtil = ErrorHandler::instance();
@@ -46,7 +46,7 @@ void ErrorHandler::errorAssert(const char* file, int line, const char* func, con
     char* path = strstr(file, "src/");
     int len = strlen(path) + 4 + strlen(func) + strlen(expression) + FORMATTED_MESSAGE_SIZE;
     char* buf = new char[len + 1] { 0 };
-    sprintf(buf, "assert failed: ( %s )\n\tfile: %s ln %d in %s\n\n", expression, path, line, func);
+    sprintf(buf, "assert failed: ( %s )\n\t<%s,ln %d> in %s\n\n", expression, path, line, func);
     
     switch (_behaviour) {
         case Log:
