@@ -51,7 +51,7 @@ void ErrorLogger::errorAssert(const char* file, int line, const char* func, cons
     delete[] buf;
 }
 
-void ErrorLogger::errorLog(char* buf) {
+void ErrorLogger::errorLog(const char* buf) {
     switch (_behaviour) {
         case Log:
             _logToDisk(buf);

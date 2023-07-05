@@ -11,7 +11,7 @@ extern ErrorLogger& ErrorUtil;
 #define dyno_assert(__expr) ((__expr) ? (void)0 : ErrorUtil.errorAssert(__FILE__, __LINE__, \
                                 __PRETTY_FUNCTION__, #__expr))
 #define dyno_log(__buf)     ErrorUtil.errorLog(__buf)
-#define dyno_log_str(__str) ErrorUtil.errorLog(__str.c_str())
+#define dyno_log_str(__str) ErrorUtil.errorLog((__str).c_str())
 #else
 #define dyno_assert(__expr) { }
 #define dyno_log(__buf) { }
@@ -27,7 +27,7 @@ class ErrorLogger {
         void init(ErrorHandlingBehaviour behaviour);
         void setBehaviour(ErrorHandlingBehaviour behaviour);
         void errorAssert(const char* file, int line, const char* func, const char* expression);
-        void errorLog(char* buf);
+        void errorLog(const char* buf);
 
     private:
         static ErrorLogger* _instance;
