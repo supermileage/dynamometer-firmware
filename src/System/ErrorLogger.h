@@ -10,9 +10,12 @@ extern ErrorLogger& ErrorUtil;
 #if DYNO_ASSERT_EN
 #define dyno_assert(__expr) ((__expr) ? (void)0 : ErrorUtil.errorAssert(__FILE__, __LINE__, \
                                 __PRETTY_FUNCTION__, #__expr))
-
+#define dyno_log(__buf)     ErrorUtil.errorLog(__buf)
+#define dyno_log_str(__str) ErrorUtil.errorLog(__str.c_str())
 #else
 #define dyno_assert(__expr) { }
+#define dyno_log(__buf) { }
+#define dyno_log_str(__str) { }
 #endif
 
 class ErrorLogger {
