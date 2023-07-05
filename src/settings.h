@@ -4,7 +4,9 @@
 #include "Arduino.h"
 
 /* Debug Settings */
-#define DEBUG_SERIAL_EN 0
+#define DEBUG_SERIAL_EN     0
+#define DYNO_ASSERT_EN      1
+#define ERROR_LOGFILE_PATH  "error/logfile.txt"
 
 #if DEBUG_SERIAL_EN
 #define DEBUG_SERIAL_LN(x) Serial.println(x)
@@ -24,7 +26,8 @@
 #define LCD_RST     20
 #define LCD_DC      21
 #define LCD_CS      17
-#define TOUCH_CS    13
+#define TOUCH_CS    11
+#define SD_CS       13
 
 /* Sensor */
 #define OPTICAL_SENSOR_PIN  2
