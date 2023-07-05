@@ -18,7 +18,7 @@
 #include "System/HardwarePotentiometer.h"
 #include "System/HardwareRotaryEncoder.h"
 #include "System/InputManager.h"
-#include "System/ErrorHandler.h"
+#include "System/ErrorLogger.h"
 
 #include "settings.h"
 
@@ -76,7 +76,7 @@ void setup() {
 	inputManager.begin();
 
 	// application
-	ErrorUtil.init(ErrorHandler::LogAndPrint);
+	ErrorUtil.init(ErrorLogger::LogAndPrint);
 	context.begin();
 }
 
