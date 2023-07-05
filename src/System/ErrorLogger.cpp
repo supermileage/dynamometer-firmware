@@ -1,7 +1,7 @@
 #include "ErrorLogger.h"
 #include <string.h>
 
-#define FORMATTED_MESSAGE_SIZE (sizeof("assert failed: (  )\n\t<,ln > in \n\n") + 2)
+#define FORMATTED_MESSAGE_SIZE (sizeof("assert failed: (  )\n\t<,ln > in ") + 2)
 
 ErrorLogger* ErrorLogger::_instance = nullptr;
 ErrorLogger& ErrorUtil = ErrorLogger::instance();
@@ -46,7 +46,7 @@ void ErrorLogger::errorAssert(const char* file, int line, const char* func, cons
     char* path = strstr(file, "src/");
     int len = strlen(path) + 4 + strlen(func) + strlen(expression) + FORMATTED_MESSAGE_SIZE;
     char* buf = new char[len + 1] { 0 };
-    sprintf(buf, "assert failed: ( %s )\n\t<%s,ln %d> in %s\n\n", expression, path, line, func);
+    sprintf(buf, "assert failed: ( %s )\n\t<%s,ln %d> in %s", expression, path, line, func);
     errorLog(buf);
     delete[] buf;
 }
@@ -57,11 +57,11 @@ void ErrorLogger::errorLog(const char* buf) {
             _logToDisk(buf);
             break;
         case Print:
-            Serial.print(buf);
+            Serial.println(buf);
             break;
         case LogAndPrint:
             _logToDisk(buf);
-            Serial.print(buf);
+            Serial.println(buf);
             break;
         default:
             break;
@@ -71,6 +71,8 @@ void ErrorLogger::errorLog(const char* buf) {
 void ErrorLogger::_logToDisk(const char* buf) {
     if (_logFile) {
         _logFile.write(buf, strlen(buf));
+        char line = '\n';
+        _logFile.write(&line, 1);
         _logFile.flush();
     }
 }
