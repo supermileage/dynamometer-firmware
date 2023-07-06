@@ -1,28 +1,25 @@
-#include "CsvFile.h"
+#include "DataLogger.h"
 #include "settings.h"
+#include "system_util.h"
 
 using namespace std;
 
 //public methods:
 
-bool CsvFile::create(String name, int numColumns, int mode) {
+bool DataLogger::create(String name, int numColumns, int mode) {
     // if file is already open, close that file
     if(_curFile) {
         _curFile.close();
     }
 
     // uniquify name if necessary
-    while (SD.exists(name)) {
-        name = _generateNewFileName(name);
-    }
+    name = system_util::uniquifyFilename(name);
     _numColumns = numColumns;
     _curColumn = 0;
-    _buffer = "";
     _fileName = name;
     _curFile = SD.open(name, mode);
     
     if (_curFile) {
-        DEBUG_SERIAL_LN("Creating file successful");
         return true;
     } else {
         _numColumns = 0;
@@ -32,14 +29,13 @@ bool CsvFile::create(String name, int numColumns, int mode) {
     }
 }
 
-bool CsvFile::open(String name, int numColumns, int mode) {
+bool DataLogger::open(String name, int numColumns, int mode) {
     // if file is already open, close that file
     if (_curFile) { 
         _curFile.close();
     }
     _numColumns = numColumns;
     _curColumn = 0;
-    _buffer = "";
     _fileName = "";
     _curFile = SD.open(name, mode);
 
@@ -53,9 +49,7 @@ bool CsvFile::open(String name, int numColumns, int mode) {
         return true;
     } else if (_computeNumColumns() != numColumns) {
         // uniquify name if necessary
-        while (SD.exists(name)) {
-            name = _generateNewFileName(name);
-        }
+        name = system_util::uniquifyFilename(name);
         return open(name, numColumns, mode);
     } else {
         // file has correct number of columns
@@ -64,64 +58,55 @@ bool CsvFile::open(String name, int numColumns, int mode) {
     }
 }
 
-bool CsvFile::saveToDisk() {
+bool DataLogger::saveToDisk() {
     if (_curFile) {
-        _curFile.print(_buffer);
         _curFile.flush();
-        _buffer = "";
-        DEBUG_SERIAL_LN("Write to file successful.");
         return true;
     } else {
-        DEBUG_SERIAL_LN("Write to file failed.");
+        DEBUG_SERIAL_LN("DataLogger: save failed -- no file currently open");
         return false;
     }
 }
 
-bool CsvFile::close() {
+bool DataLogger::close() {
     if (_curFile) {
         _curFile.close();
+        _numColumns = 0;
         _fileName = "";
-        DEBUG_SERIAL_LN("Closed loaded file.");
         return true;
     } else {
-        DEBUG_SERIAL_LN("Failed to close loaded file.");
+        DEBUG_SERIAL_LN("DataLogger: failed to close loaded file.");
         return false;
     }
 }
 
-void CsvFile::setHeader(String header) {
-    _buffer += header + "\r\n";
-    DEBUG_SERIAL_LN("Added header " + header + " to buffer.");
+void DataLogger::setHeader(String header) {
+    _curFile.print(header + "\r\n");
 }
 
-void CsvFile::addEntry(String data) {
+void DataLogger::addEntry(String data) {
     if (_curColumn == 0)
-        _buffer += data;
+        _curFile.print(data);
     else
-        _buffer += "," + data;
+        _curFile.print("," + data);
 
     _curColumn++;
 
     // check if we reached end of row
     if (_curColumn == _numColumns) {
-        _buffer += "\r\n";
+        _curFile.print("\r\n");
         _curColumn = 0;
     }
-
-    DEBUG_SERIAL_LN("Added " + data + " to buffer.");
 }
 
-void CsvFile::addRow(String data) {
+void DataLogger::addRow(String data) {
     if (_curColumn == 0)
-        _buffer += data + "\r\n";
+        _curFile.print(data + "\r\n");
     else
-        _buffer += "," + data + "\r\n";
-    
-    _curColumn = 0;
-    DEBUG_SERIAL_LN("Added " + data + " to buffer.");
+        DEBUG_SERIAL_LN("DataLogger::addRow can only be called when _curColumn is 0");    
 }
 
-String CsvFile::readEntry() {
+String DataLogger::readEntry() {
     String ret = "";
     if (_curFile && !_eofReached()) {
         while (_curFile.available()) {
@@ -138,7 +123,7 @@ String CsvFile::readEntry() {
     return ret;
 }
 
-std::vector<String> CsvFile::readRow() {
+std::vector<String> DataLogger::readRow() {
     std::vector<String> vec;
     if (_curColumn != 0 || _eofReached()) {
         return vec;
@@ -150,58 +135,22 @@ std::vector<String> CsvFile::readRow() {
     return vec;
 }
 
-int CsvFile::getNumColumns() {
+int DataLogger::getNumColumns() {
     return _numColumns;
 }
 
-int CsvFile::getBufferLength() {
-    return _buffer.length();
+int DataLogger::getFileSize() {
+    return _curFile.size();
 }
 
-String CsvFile::getFileName() {
+String DataLogger::getFileName() {
     if (_curFile)
         return _fileName;
     else
         return "";
 }
 
-String CsvFile::_generateNewFileName(String name) {
-    // create new name for file
-
-    // find extension (example: myFile.csv)
-    int extensionIndex = name.lastIndexOf('.');
-    String base = name.substring(0, extensionIndex == -1 ? name.length() : extensionIndex);
-    String extension = extensionIndex == -1 ? "" : name.substring(extensionIndex + 1);
-    base.trim();
-
-    // find current file count (example: myFile(2).csv)
-    int fileCountStart = base.lastIndexOf('(');
-    int fileCountEnd = base.lastIndexOf(')');
-    int count = 0;
-    if (fileCountStart != -1 && fileCountEnd != -1 && fileCountEnd == (int)base.length() - 1) {
-        String countString = base.substring(fileCountStart + 1, fileCountEnd);
-        bool numeric = true;
-        
-        // checks if all characters in countString are numeric
-        for (size_t i = 0; i < countString.length(); i++) {
-            if (!isdigit(countString.charAt(i))) {
-                numeric = false;
-                break;
-            }
-        }
-
-        if (numeric) {
-            count = countString.toInt();
-            // take count out of file name
-            base = base.substring(0, fileCountStart);
-            base.trim();
-        }
-    }
-    String newFileName = base + "(" + (count + 1) + ")" + (extension != "" ? "." + extension : "");
-    return newFileName;
-}
-
-int CsvFile::_computeNumColumns() {
+int DataLogger::_computeNumColumns() {
     if (!_curFile) {
         return 0;
     }
@@ -225,7 +174,7 @@ int CsvFile::_computeNumColumns() {
     return count;
 }
 
-void CsvFile::_seekNextLine() {
+void DataLogger::_seekNextLine() {
     if (!isalnum(_curFile.peek())) {
         while (_curFile.available()) {
             char c = (char)_curFile.read();
@@ -236,10 +185,10 @@ void CsvFile::_seekNextLine() {
     _curColumn = 0;
 }
 
-bool CsvFile::_eofReached() {
+bool DataLogger::_eofReached() {
     return _curFile.position() == _curFile.size();
 }
 
-bool CsvFile::_isValidEntry(char c) {
+bool DataLogger::_isValidEntry(char c) {
     return isalnum(c) || c == '.' || c == '-';
 }

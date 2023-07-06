@@ -10,7 +10,7 @@
 
 #include "test_config.h"
 #include "Arduino.h"
-#include "CsvFile.h"
+#include "DataLogger.h"
 
 /* Generated Test Data (for test cases where you append to existing file) */
 extern const char* appendTestData1;
@@ -22,8 +22,8 @@ void initializeOutputFolder();
 String getTestInputPath();
 String getTestOutputPath();
 
-TEST_CASE( "CsvFile tests", "[CsvFile]" ) {
-	CsvFile logfile;
+TEST_CASE( "DataLogger tests", "[DataLogger]" ) {
+	DataLogger logfile;
     initializeInputFolder();
     initializeOutputFolder();
     String input = getTestInputPath();
@@ -66,7 +66,8 @@ TEST_CASE( "CsvFile tests", "[CsvFile]" ) {
         logfile.addRow("5,6,7,8");
         logfile.addEntry("9");
         logfile.addEntry("10");
-        logfile.addRow("11,12");
+        logfile.addEntry("11");
+        logfile.addEntry("12");
         logfile.addRow("13,14,15,16");
         logfile.saveToDisk();
 
@@ -252,7 +253,7 @@ TEST_CASE( "CsvFile tests", "[CsvFile]" ) {
         REQUIRE( logfile.getFileName().equals("") );
     }
 
-    SECTION("CsvFile::readEntry test -- 3 rows of well-formatted data") {
+    SECTION("DataLogger::readEntry test -- 3 rows of well-formatted data") {
         logfile.open(input + String("input-test.csv"), 4, FILE_READ);
 
         REQUIRE ( logfile.readEntry().equals("deep") );
@@ -276,7 +277,7 @@ TEST_CASE( "CsvFile tests", "[CsvFile]" ) {
         logfile.close();
     }
 
-    SECTION("CsvFile::readEntry test -- 2 rows, no terminating CRLF") {
+    SECTION("DataLogger::readEntry test -- 2 rows, no terminating CRLF") {
         logfile.open(input + String("input-test-no-CRLF.csv"), 4, FILE_READ);
 
         REQUIRE ( logfile.readEntry().equals("deep") );
@@ -295,7 +296,7 @@ TEST_CASE( "CsvFile tests", "[CsvFile]" ) {
         logfile.close();
     }
 
-    SECTION("CsvFile::readRow test") {
+    SECTION("DataLogger::readRow test") {
         logfile.open(input + String("input-test.csv"), 4, FILE_READ);
         std::vector<String> row1 = logfile.readRow();
         std::vector<String> row2 = logfile.readRow();
@@ -326,7 +327,7 @@ TEST_CASE( "CsvFile tests", "[CsvFile]" ) {
         logfile.close();
     }
 
-    SECTION("CsvFile::readRow test -- no terminating CRLF") {
+    SECTION("DataLogger::readRow test -- no terminating CRLF") {
         logfile.open(input + String("input-test-no-CRLF.csv"), 4, FILE_READ);
         std::vector<String> row1 = logfile.readRow();
         std::vector<String> row2 = logfile.readRow();
