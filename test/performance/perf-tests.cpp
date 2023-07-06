@@ -2,13 +2,13 @@
 #include "SPI.h"
 
 #include "settings.h"
-#include "System/DataLogger.h"
+#include "System/CsvFile.h"
 
 #include "ui/UIEventHandler.h"
 #include "SDCardTester.h"
 
 /* system resources */
-DataLogger logger;
+CsvFile logfile;
 
 /* global variables */
 uint c0_lastUpdateTime = 0;
@@ -17,14 +17,13 @@ uint c1_lastUpdateTime = 0;
 /* core0 */
 void setup() {
 	Serial.begin(115200);
+    SD.begin(SD_CS, SPI1);
+    while (!Serial) { }
 
 	delay(2000);
-
-	// sd card performance testing
-	logger.init(SD_CS);
 	
 	SDCardTester tester = SDCardTester();
-	tester.testFilePerformance(logger);
+	tester.testFilePerformance(logfile);
 }
 
 void loop() {

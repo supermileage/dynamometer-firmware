@@ -7,15 +7,15 @@
 using namespace std;
 
 //Class to log data to a file on an SD Card in the CSV format.
-class DataLogger {
+class CsvFile {
     public:
 
         /**
-         * @brief Constructs a DataLogger object.
+         * @brief Constructs a CsvFile object.
         */
-        DataLogger(bool osync = false);
+        CsvFile(bool osync = false);
 
-        ~DataLogger();
+        ~CsvFile();
 
         /**
          * @brief Creates a new CSV file with a given number of columns with the specified name and loads it.
@@ -32,7 +32,7 @@ class DataLogger {
          * - If file exists and has a different number of columns, create new file with a different name.
          * @return True on success, false otherwise.
         */
-        bool open(String name, int numColumns);
+        bool open(String name, int numColumns, int mode = FILE_WRITE);
 
         /**
          * @brief Saves any csv data for current file to disk.
@@ -76,13 +76,19 @@ class DataLogger {
         */
         String getFileName();
 
+        /**
+         * @brief reads row of entries and returns as vector of string
+         * @returns vector of all entries in row
+         * @note returns empty vector if end of file reached, or if CsvFile::_currentColumn != 0
+        */
+        std::vector<String> readRow();
 
-        
-        // FOR TESTING PURPOSES
-        
-        //Opens a file and read num characters into a string buffer
-        //Returns buffer
-        String openAndRead(String name, int num);
+        /**
+         * @brief read single string entry from row
+         * @returns string with next entry in column CsvFile::_currentColumn
+         * @note returns empty string if end of file is reached
+        */
+        String readEntry();
 
         private:
         int _numColumns;
@@ -90,10 +96,13 @@ class DataLogger {
         File _curFile;
         String _buffer;
         String _fileName;
-
+        
         bool _osync;
 
-        String generateNewFileName(String name);
+        String _generateNewFileName(String name);
+        int _computeNumColumns();
+        void _seekNextLine();
+        bool _eofReached();
 };
 
 #endif

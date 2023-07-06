@@ -7,7 +7,7 @@ using namespace std;
 SDCardTester::SDCardTester() {};
 SDCardTester::~SDCardTester() {};
 
-void SDCardTester::testFilePerformance (DataLogger& logger) {
+void SDCardTester::testFilePerformance (CsvFile& logger) {
 	
 	// time tracking variables
 	int start;

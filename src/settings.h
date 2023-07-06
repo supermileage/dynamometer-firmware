@@ -4,7 +4,7 @@
 #include "Arduino.h"
 
 /* Debug Settings */
-#define DEBUG_SERIAL_EN     0
+#define DEBUG_SERIAL_EN     1
 #define DYNO_ASSERT_EN      1
 #define ERROR_LOGFILE_PATH  "error/logfile.txt"
 
