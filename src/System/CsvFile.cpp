@@ -74,7 +74,7 @@ bool CsvFile::open(String name, int numColumns, int mode) {
 
 bool CsvFile::saveToDisk() {
     if (_curFile) {
-        _curFile.write(_buffer);
+        _curFile.print(_buffer);
         _curFile.flush();
         _buffer = "";
         DEBUG_SERIAL_LN("Write to file successful.");

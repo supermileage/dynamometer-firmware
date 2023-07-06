@@ -52,7 +52,7 @@ class File {
         int read();
         String readLine();
         void close();
-        size_t write(String buf);
+        size_t print(String buf);
         size_t position();
         void seek(uint32_t pos);
         int peek();

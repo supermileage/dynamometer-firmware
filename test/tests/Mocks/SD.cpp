@@ -92,7 +92,7 @@ void File::close() {
     _fd = -1;
 }
 
-size_t File::write(String buf) {
+size_t File::print(String buf) {
     return FctrlHelper::fileWrite(_fd, buf.c_str(), buf.length());
 }
 
