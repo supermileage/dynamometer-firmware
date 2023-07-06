@@ -126,7 +126,7 @@ String CsvFile::readEntry() {
     if (_curFile && !_eofReached()) {
         while (_curFile.available()) {
             char c = (char)_curFile.read();
-            if (!isalnum(c)) {
+            if (!_isValidEntry(c)) {
                 break;
             }
             ret += c;
@@ -238,4 +238,8 @@ void CsvFile::_seekNextLine() {
 
 bool CsvFile::_eofReached() {
     return _curFile.position() == _curFile.size();
+}
+
+bool CsvFile::_isValidEntry(char c) {
+    return isalnum(c) || c == '.' || c == '-';
 }

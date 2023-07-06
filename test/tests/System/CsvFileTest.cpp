@@ -265,12 +265,10 @@ TEST_CASE( "CsvFile tests", "[CsvFile]" ) {
         REQUIRE ( logfile.readEntry().equals("3") );
         REQUIRE ( logfile.readEntry().equals("4") );
         
-        REQUIRE ( logfile.readEntry().equals("5") );
-        REQUIRE ( logfile.readEntry().equals("6") );
-        REQUIRE ( logfile.readEntry().equals("7") );
-
-        String secondLast = logfile.readEntry();
-        REQUIRE ( secondLast.equals("8") );
+        REQUIRE ( logfile.readEntry().equals("5.0") );
+        REQUIRE ( logfile.readEntry().equals("6.123") );
+        REQUIRE ( logfile.readEntry().equals("-7.456") );
+        REQUIRE ( logfile.readEntry().equals("8.789") );
 
         String last = logfile.readEntry();
         REQUIRE ( last.length() == 0 );
@@ -316,6 +314,11 @@ TEST_CASE( "CsvFile tests", "[CsvFile]" ) {
         REQUIRE ( row2[1].equals("2") );
         REQUIRE ( row2[2].equals("3") );
         REQUIRE ( row2[3].equals("4") );
+
+        REQUIRE ( row3[0].equals("5.0") );
+        REQUIRE ( row3[1].equals("6.123") );
+        REQUIRE ( row3[2].equals("-7.456") );
+        REQUIRE ( row3[3].equals("8.789") );
 
         std::vector<String> last = logfile.readRow();
         REQUIRE ( last.size() == 0 );

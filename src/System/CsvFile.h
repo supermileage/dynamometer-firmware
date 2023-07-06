@@ -94,6 +94,7 @@ class CsvFile {
         int _computeNumColumns();
         void _seekNextLine();
         bool _eofReached();
+        inline bool _isValidEntry(char c);
 };
 
 #endif
