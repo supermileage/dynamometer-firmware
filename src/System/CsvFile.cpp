@@ -5,38 +5,30 @@ using namespace std;
 
 //public methods:
 
-CsvFile::CsvFile(bool osync /*= false*/) {
-    _osync = osync;
-}
-
-CsvFile::~CsvFile(){};
-
-bool CsvFile::create(String name, int numColumns) {
+bool CsvFile::create(String name, int numColumns, int mode) {
     // if file is already open, close that file
     if(_curFile) {
         _curFile.close();
     }
 
-    // check if file exists
-    if (SD.exists(name)) {
-        String newFileName = _generateNewFileName (name);
-        return create(newFileName, numColumns);
+    // uniquify name if necessary
+    while (SD.exists(name)) {
+        name = _generateNewFileName(name);
+    }
+    _numColumns = numColumns;
+    _curColumn = 0;
+    _buffer = "";
+    _fileName = name;
+    _curFile = SD.open(name, mode);
+    
+    if (_curFile) {
+        DEBUG_SERIAL_LN("Creating file successful");
+        return true;
     } else {
-        // file already exists
-        // generate new file name
-        _curFile = SD.open(name, FILE_WRITE);
-        _numColumns = numColumns;
-        _curColumn = 0;
-        _buffer = "";
-        _fileName = name;
-        
-        if (_curFile) {
-            DEBUG_SERIAL_LN("Creating file successful");
-            return true;
-        } else {
-            DEBUG_SERIAL_LN("Creating file failed.");
-            return false;
-        }
+        _numColumns = 0;
+        _fileName = "";
+        DEBUG_SERIAL_LN("Creating file failed");
+        return false;
     }
 }
 
@@ -45,28 +37,28 @@ bool CsvFile::open(String name, int numColumns, int mode) {
     if (_curFile) { 
         _curFile.close();
     }
-
+    _numColumns = numColumns;
     _curColumn = 0;
     _buffer = "";
-    _numColumns = 0;
     _fileName = "";
     _curFile = SD.open(name, mode);
 
     if (!_curFile) {
         // open failed
+        _numColumns = 0;
         return false;
     } else if (_curFile.size() == 0) {
         // empty file
-        _numColumns = numColumns;
         _fileName = name;
         return true;
     } else if (_computeNumColumns() != numColumns) {
-        // column count mismatch
-        String newFileName = _generateNewFileName(name);
-        return open(newFileName, numColumns, mode);
+        // uniquify name if necessary
+        while (SD.exists(name)) {
+            name = _generateNewFileName(name);
+        }
+        return open(name, numColumns, mode);
     } else {
         // file has correct number of columns
-        _numColumns = numColumns;
         _fileName = name;
         return true;
     }
@@ -100,9 +92,6 @@ bool CsvFile::close() {
 void CsvFile::setHeader(String header) {
     _buffer += header + "\r\n";
     DEBUG_SERIAL_LN("Added header " + header + " to buffer.");
-
-    if (_osync)
-        saveToDisk();
 }
 
 void CsvFile::addEntry(String data) {
@@ -120,9 +109,6 @@ void CsvFile::addEntry(String data) {
     }
 
     DEBUG_SERIAL_LN("Added " + data + " to buffer.");
-
-    if (_osync)
-        saveToDisk();
 }
 
 void CsvFile::addRow(String data) {
@@ -133,9 +119,6 @@ void CsvFile::addRow(String data) {
     
     _curColumn = 0;
     DEBUG_SERIAL_LN("Added " + data + " to buffer.");
-
-    if (_osync)
-        saveToDisk();
 }
 
 String CsvFile::readEntry() {

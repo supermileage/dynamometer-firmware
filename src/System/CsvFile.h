@@ -11,19 +11,12 @@ class CsvFile {
     public:
 
         /**
-         * @brief Constructs a CsvFile object.
-        */
-        CsvFile(bool osync = false);
-
-        ~CsvFile();
-
-        /**
          * @brief Creates a new CSV file with a given number of columns with the specified name and loads it.
          * - If file does not exist, create a new file.
          * - If file already exists, create a new file with a different name.
          * @return True on success, false otherwise.
         */
-        bool create(String name, int numColumns);
+        bool create(String name, int numColumns, int mode = FILE_WRITE);
 
         /**
          * @brief Allows a user to load a CSV file located with the specified name. 
@@ -93,11 +86,9 @@ class CsvFile {
         private:
         int _numColumns;
         int _curColumn;
-        File _curFile;
         String _buffer;
         String _fileName;
-        
-        bool _osync;
+        File _curFile;
 
         String _generateNewFileName(String name);
         int _computeNumColumns();

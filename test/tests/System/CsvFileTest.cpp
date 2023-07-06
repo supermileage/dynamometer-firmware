@@ -23,7 +23,7 @@ String getTestInputPath();
 String getTestOutputPath();
 
 TEST_CASE( "CsvFile tests", "[CsvFile]" ) {
-	CsvFile logfile(true);
+	CsvFile logfile;
     initializeInputFolder();
     initializeOutputFolder();
     String input = getTestInputPath();
@@ -49,6 +49,7 @@ TEST_CASE( "CsvFile tests", "[CsvFile]" ) {
         logfile.addEntry("23");
         logfile.addEntry("27");
         logfile.addEntry("31");
+        logfile.saveToDisk();
         
         // check if file output is correct
         File output = SD.open(outputFileName, FILE_READ);
@@ -67,6 +68,7 @@ TEST_CASE( "CsvFile tests", "[CsvFile]" ) {
         logfile.addEntry("10");
         logfile.addRow("11,12");
         logfile.addRow("13,14,15,16");
+        logfile.saveToDisk();
 
         output.close();
 
@@ -104,6 +106,7 @@ TEST_CASE( "CsvFile tests", "[CsvFile]" ) {
         bool success = logfile.create(outputFileName, 4);
         logfile.setHeader("this,is,the,header");
         logfile.addRow("this,is,a,row");
+        logfile.saveToDisk();
         logfile.close();
 
         // try to open file with 4 columns
@@ -115,6 +118,7 @@ TEST_CASE( "CsvFile tests", "[CsvFile]" ) {
 
         // write some stuff
         logfile.addRow("this,is,another,row");
+        logfile.saveToDisk();
 
         // check if file output is correct
         File output = SD.open(outputFileName, FILE_READ);
@@ -133,6 +137,7 @@ TEST_CASE( "CsvFile tests", "[CsvFile]" ) {
         bool success = logfile.create(outputFileName, 4);
         logfile.setHeader("this,is,the,header");
         logfile.addRow("this,is,a,row");
+        logfile.saveToDisk();
         logfile.close();
 
         // create new file
@@ -150,6 +155,7 @@ TEST_CASE( "CsvFile tests", "[CsvFile]" ) {
         logfile.addEntry("17");
         logfile.addEntry("21");
         logfile.addEntry("23");
+        logfile.saveToDisk();
 
         // check if file output is correct
         File output = SD.open(expectedFileName, FILE_READ);
@@ -172,6 +178,7 @@ TEST_CASE( "CsvFile tests", "[CsvFile]" ) {
         logfile.addEntry("11");
         logfile.addEntry("13");
         logfile.addEntry("17");
+        logfile.saveToDisk();
 
         // check file is successfully created
         REQUIRE( success );
