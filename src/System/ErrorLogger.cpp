@@ -38,12 +38,12 @@ void ErrorLogger::setBehaviour(ErrorHandlingBehaviour behaviour) {
     _behaviour = behaviour;
 }
 
-void ErrorLogger::errorAssert(const char* file, int line, const char* func, const char* expression) {
+void ErrorLogger::errorAssert(const char* filename, int line, const char* func, const char* expression) {
     if (_behaviour == DoNothing) {
         return;
     }
 
-    char* path = strstr(file, "src/");
+    char* path = strstr(filename, "src/");
     int len = strlen(path) + 4 + strlen(func) + strlen(expression) + FORMATTED_MESSAGE_SIZE;
     char* buf = new char[len + 1] { 0 };
     sprintf(buf, "assert failed: ( %s )\n\t<%s,ln %d> in %s", expression, path, line, func);
