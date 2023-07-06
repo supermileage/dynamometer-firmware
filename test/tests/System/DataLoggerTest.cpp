@@ -25,7 +25,6 @@ String getTestOutputPath();
 TEST_CASE( "DataLogger tests", "[DataLogger]" ) {
 
 	DataLogger logger(true);
-    logger.init(0);
     initializeInputFolder();
     initializeOutputFolder();
     String input = getTestInputPath();

@@ -18,11 +18,6 @@ class DataLogger {
         ~DataLogger();
 
         /**
-         * @brief Initializes DataLogger object and begins access to the SDcard.
-        */
-        bool init(int pinNumber);
-
-        /**
          * @brief Creates a new CSV file with a given number of columns with the specified name and loads it.
          * - If file does not exist, create a new file.
          * - If file already exists, create a new file with a different name.
