@@ -2,12 +2,14 @@
 #define _APP_UTIL_H_
 
 #include <memory>
+#include <string.h>
 
 #include "Arduino.h"
+#include "settings.h"
+#include "application.h"
 #include "ui/UIButton.h"
 #include "ui/Container.h"
 #include "ui/TextElement.h"
-#include "application.h"
 
 using namespace application;
 
@@ -27,6 +29,16 @@ namespace app_util {
      * @brief get string name for state
     */
     const String stateToString(ApplicationState state);
+
+    /**
+     * @brief get csv header name for value id
+    */
+   const String valueToHeader(ValueId id);
+
+    /**
+     * @brief get csv header name for value id
+    */
+   const String valueToUnit(ValueId id);
 }
 
 #endif
