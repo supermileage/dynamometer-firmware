@@ -16,7 +16,7 @@ uint c1_lastUpdateTime = 0;
 
 /* core0 */
 void setup() {
-	Serial.begin(115200);
+    Serial.begin(115200);
     SD.begin(SD_CS, SPI1);
     while (!Serial) { }
 
