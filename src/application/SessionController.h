@@ -3,8 +3,11 @@
 
 #include <functional>
 
+#include "application.h"
+#include "Sensor/SensorOptical.h"
+#include "Sensor/SensorForce.h"
+#include "System/DataLogger.h"
 #include "ControllerBase.h"
-#include "SessionView.h"
 
 using namespace application;
 
@@ -29,7 +32,6 @@ class SessionController : public ControllerBase {
         virtual void init(InputManager& manager, StateInfo& info);
 
     protected:
-        std::shared_ptr<SessionView> _view;
         SensorOptical& _optical;
         SensorForce& _force;
         DataLogger& _logger;

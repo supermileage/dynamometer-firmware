@@ -27,7 +27,7 @@ void TextDialogController::init(InputManager& manager, StateInfo& info) {
     // copy info and grab string id from info.config
     _info = info;
     _inFocus = info.inFocus;
-    _editStringId = static_cast<uint8_t>(_info.config[CONFIG_ID_EDIT_STRING_ID].toInt());
+    _editStringId = static_cast<uint8_t>(_info.config[CONFIG_ID_EDIT_STRING_GLOBAL_ID].toInt());
 
     // separate _text (fileName) from _extension -- we don't allow users to edit extensions
     if (application::GlobalSettings.find(_editStringId) != application::GlobalSettings.end()) {

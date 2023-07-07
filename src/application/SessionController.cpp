@@ -10,9 +10,7 @@
 
 SessionController::SessionController(ApplicationContext& context, Adafruit_GFX& display,
     SensorOptical& optical, SensorForce& force, DataLogger& logger) : ControllerBase(context, display),
-        _optical(optical), _force(force), _logger(logger) {
-            _view = std::make_shared<SessionView>(_display);
-}
+        _optical(optical), _force(force), _logger(logger) { }
 
 SessionController::~SessionController() { }
 
@@ -60,8 +58,6 @@ void SessionController::_handleInputSerial(input_data_t d) {
 void SessionController::_handleInputBack(input_data_t d) {
     if (_loggingEnabled && d) {
         // stop running calibration
-        auto self = shared_from_this();
-        UIEventHandler::instance().addEvent([this, self]() { _view->revert(); });
         _loggingEnabled = false;
 
         // TODO: save confirmation dialog
@@ -77,8 +73,6 @@ void SessionController::_handleInputSelect(input_data_t d) {
     if (!_loggingEnabled && d) {
         // start running
         _loggingEnabled = true;
-        // auto self = shared_from_this();
-        // UIEventHandler::instance().addEvent([this, self]() { _view->record(); });
     }
 }
 
@@ -104,7 +98,7 @@ void SessionController::_initializeOutput(StateInfo& info) {
     String& valueIdStr = info.config[VALUE_IDS];
     _valueIds = _parseValueIdStr(valueIdStr);
 
-    if (_logger.create(outputFile, valueIds.size())) {
+    if (_logger.create(outputFile, _valueIds.size())) {
         String header = _getHeaderFromIds(_valueIds);
         _logger.setHeader(header);
         outputFile = _logger.getFileName();
@@ -113,16 +107,12 @@ void SessionController::_initializeOutput(StateInfo& info) {
         dyno_log_str("Unable to create file with name: " + String(outputFile));
         outputFile = "error";
     }
-
-    // add logging values and output filename to display
-    _view->generateValueDisplay(_valueIds);
-    _view->setOutputFilename(outputFile);
 }
 
 String SessionController::_getHeaderFromIds(const std::vector<ValueId>& valueIds) {
     String header = "";
     for (int i = 0; i < valueIds.size(); i++) {
-        header += app_util::valueToString(valueIds[i]);
+        header += app_util::valueToHeader(valueIds[i]);
         
         if (i < valueIds.size() - 1) {
             header += ',';
@@ -161,15 +151,25 @@ std::function<String(void)> SessionController::_getValueLogger(ValueId id) {
             return [this]() { return String(_force.getForce()); };
         case AngularVelocity:
             return [this]() { return String(_optical.getAngularVelocity()); };
-        case AngularAcceleration:
-            return [this]() { return "0.0000"; };
-        case RpmVesc:
-            return [this]() { return "0.0000"; };
-        case RpmDyno:
-            return [this]() { return "0.0000"; };
+        case AngularAccel:
+            return []() { return "0.00"; };
+        case DynoRpm:
+            return []() { return "0.00"; };
+        case BpmVoltage:
+            return []() { return "0.00"; };
+        case BpmCurrent:
+            return []() { return "0.00"; };
+        case Time:
+            return []() { return "0.00"; };
+        case VescRpm:
+            return []() { return "0.00"; };
+        case VescDuty:
+            return []() { return "0.00"; };
+        case VescCurrent:
+            return []() { return "0.00"; };
         default:
             dyno_log_str("SessionController: no logging function for ValueId: " + String(id));
-            return [this]() { return "0.0000"; };
+            return []() { return "undefined"; };
     }
 }
 
