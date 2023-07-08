@@ -8,7 +8,7 @@
 #include "SDCardTester.h"
 
 /* system resources */
-DataLogger logger;
+DataLogger logfile;
 
 /* global variables */
 uint c0_lastUpdateTime = 0;
@@ -16,13 +16,14 @@ uint c1_lastUpdateTime = 0;
 
 /* core0 */
 void setup() {
-	Serial.begin(115200);
-	SD.begin(SD_CS, SPI1);
+    Serial.begin(115200);
+    SD.begin(SD_CS, SPI1);
+    while (!Serial) { }
 
 	delay(2000);
 	
 	SDCardTester tester = SDCardTester();
-	tester.testFilePerformance(logger);
+	tester.testFilePerformance(logfile);
 }
 
 void loop() {

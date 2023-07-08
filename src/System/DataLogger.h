@@ -11,19 +11,12 @@ class DataLogger {
     public:
 
         /**
-         * @brief Constructs a DataLogger object.
-        */
-        DataLogger(bool osync = false);
-
-        ~DataLogger();
-
-        /**
          * @brief Creates a new CSV file with a given number of columns with the specified name and loads it.
          * - If file does not exist, create a new file.
          * - If file already exists, create a new file with a different name.
          * @return True on success, false otherwise.
         */
-        bool create(String name, int numColumns);
+        bool create(String name, int numColumns, int mode = FILE_WRITE);
 
         /**
          * @brief Allows a user to load a CSV file located with the specified name. 
@@ -32,17 +25,19 @@ class DataLogger {
          * - If file exists and has a different number of columns, create new file with a different name.
          * @return True on success, false otherwise.
         */
-        bool open(String name, int numColumns);
+        bool open(String name, int numColumns, int mode = FILE_WRITE);
 
         /**
-         * @brief Saves any csv data for current file to disk.
+         * @brief saves any csv data for current file to disk.
          * @return True on success, false otherwise.
+         * @note this has a performance penalty, so only call when you absolutely need file to be on disk
         */
         bool saveToDisk();
 
         /**
          * @brief Close currently loaded file.
          * @return True on success, false otherwise.
+         * @note make sure to call saveToDisk before closing
         */
         bool close();
 
@@ -67,33 +62,39 @@ class DataLogger {
         int getNumColumns();
 
         /**
-         * @brief Returns number of bytes in buffer.
+         * @brief Returns current size of file
         */
-        int getBufferLength();
+        int getFileSize();
 
         /**
          * @brief Returns name of currently open file, or an empty string if no file is open.
         */
         String getFileName();
 
+        /**
+         * @brief reads row of entries and returns as vector of string
+         * @returns vector of all entries in row
+         * @note returns empty vector if end of file reached, or if DataLogger::_currentColumn != 0
+        */
+        std::vector<String> readRow();
 
-        
-        // FOR TESTING PURPOSES
-        
-        //Opens a file and read num characters into a string buffer
-        //Returns buffer
-        String openAndRead(String name, int num);
+        /**
+         * @brief read single string entry from row
+         * @returns string with next entry in column DataLogger::_currentColumn
+         * @note returns empty string if end of file is reached
+        */
+        String readEntry();
 
         private:
-        int _numColumns;
-        int _curColumn;
+        int _numColumns = 0;
+        int _curColumn = 0;
+        String _fileName = "";
         File _curFile;
-        String _buffer;
-        String _fileName;
 
-        bool _osync;
-
-        String generateNewFileName(String name);
+        int _computeNumColumns();
+        void _seekNextLine();
+        bool _eofReached();
+        inline bool _isValidEntry(char c);
 };
 
 #endif

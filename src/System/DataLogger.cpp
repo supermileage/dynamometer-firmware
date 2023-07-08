@@ -1,142 +1,69 @@
 #include "DataLogger.h"
 #include "settings.h"
+#include "system_util.h"
 
 using namespace std;
 
 //public methods:
 
-DataLogger::DataLogger(bool osync /*= false*/) {
-
-    _osync = osync;
-}
-
-DataLogger::~DataLogger(){};
-
-bool DataLogger::create(String name, int numColumns) {
+bool DataLogger::create(String name, int numColumns, int mode) {
     // if file is already open, close that file
     if(_curFile) {
         _curFile.close();
     }
 
-    // check if file exists
-    if (SD.exists(name)) {
-        String newFileName = generateNewFileName (name);
-        return create(newFileName, numColumns);
-    } else {
-        // file already exists
-        // generate new file name
-        _curFile = SD.open(name, FILE_WRITE);
-        _numColumns = numColumns;
-        _curColumn = 0;
-        _buffer = "";
-        _fileName = name;
-        
-        if (_curFile) {
-            DEBUG_SERIAL_LN("Creating file successful");
-            return true;
-        } else {
-            DEBUG_SERIAL_LN("Creating file failed.");
-            return false;
-        }
-    }
-}
-
-bool DataLogger::open(String name, int numColumns) {
-    // if file is already open, close that file
-    if(_curFile) {
-        _curFile.close();
-    }
-
+    // uniquify name if necessary
+    name = system_util::uniquifyFilename(name);
+    _numColumns = numColumns;
     _curColumn = 0;
-    _buffer = "";
-
-    // check if file exists
-    if (SD.exists(name)) {
-        // file already exists
-        // open the file and see how many columns are in the csv file
-
-        DEBUG_SERIAL_LN("Loading " + name);
-
-        _curFile = SD.open(name, FILE_WRITE);
-        
-        // check if file opened successfully
-        if (_curFile) {
-            DEBUG_SERIAL_LN("Creating file successful");
-            // continue with function
-        } else {
-            DEBUG_SERIAL_LN("Creating file failed.");
-            return false;
-        }
-
-        // some variables to help identify how many columns in the csv file
-        int commaNum = 0; // number of commas in the header
-        bool charactersPresent = false; // whether the first line contains non-escape characters
-        bool escapeCharacterEncountered = false; // whether the file contains escape characters 
-
-        int columnsInFile = 0;
-
-        while (_curFile.available()) {
-            char readChar = _curFile.read(); // char to hold a character that has been read
-
-            if (escapeCharacterEncountered != true) { // check if we are still on the first line (header line)
-                if (readChar == ',') {
-                    commaNum++;
-                } else if (readChar == '\n' || readChar == '\r') {
-                    escapeCharacterEncountered = true;
-                } else {
-                    charactersPresent = true;
-                }
-            } else; // keep on reading characters until we hit the end of file
-        }
-
-        // determine the number of columns
-        if (commaNum > 0) {
-            columnsInFile = commaNum + 1;
-        } else if (charactersPresent) {
-            columnsInFile = 1;
-        } else {
-            columnsInFile = 0;
-        }
-
-        DEBUG_SERIAL_LN("Counted " + (String)columnsInFile + " columns and reached end of row.");
-
-        // check if the number of columns in the file match the number of columns specified
-        if (columnsInFile == numColumns) {
-            // file is good
-            _numColumns = numColumns;
-            _fileName = name;
-            return true;
-        }
-        // check if it is an empty file
-        else if (_numColumns == 0 && escapeCharacterEncountered == false) {
-            // file is empty
-            _numColumns = numColumns;
-            _fileName = name;  
-            return true;
-        } else {
-            // file is not empty, and does not have the correct number of columns
-            DEBUG_SERIAL_LN("Incorrect column number in file: " + name + ". Creating file with new name.");
-            _curFile.close();
-            
-            // generate new file name
-            String newFileName = generateNewFileName(name);
-            return open(newFileName, numColumns);
-        }
+    _fileName = name;
+    _curFile = SD.open(name, mode);
+    
+    if (_curFile) {
+        return true;
     } else {
-        // file doesn't exist. create new file
-        DEBUG_SERIAL_LN(name + " doesn't exist. Creating new file");
-        return create(name, numColumns);
+        _numColumns = 0;
+        _fileName = "";
+        DEBUG_SERIAL_LN("Creating file failed");
+        return false;
+    }
+}
+
+bool DataLogger::open(String name, int numColumns, int mode) {
+    // if file is already open, close that file
+    if (_curFile) { 
+        _curFile.close();
+    }
+    _numColumns = numColumns;
+    _curColumn = 0;
+    _fileName = "";
+    _curFile = SD.open(name, mode);
+
+    if (!_curFile) {
+        // open failed
+        _numColumns = 0;
+        return false;
+    } else if (_curFile.size() == 0) {
+        // empty file
+        _fileName = name;
+        return true;
+    } else if (_computeNumColumns() != numColumns) {
+        // uniquify name if necessary
+        name = system_util::uniquifyFilename(name);
+        return open(name, numColumns, mode);
+    } else {
+        // file has correct number of columns
+        _fileName = name;
+        return true;
     }
 }
 
 bool DataLogger::saveToDisk() {
     if (_curFile) {
-        _curFile.print(_buffer);
-        _buffer = "";
-        DEBUG_SERIAL_LN("Write to file successful.");
+        _curFile.flush();
         return true;
     } else {
-        DEBUG_SERIAL_LN("Write to file failed.");
+        DEBUG_SERIAL_LN("DataLogger: save failed -- no file currently open");
         return false;
     }
 }
@@ -144,62 +71,76 @@ bool DataLogger::saveToDisk() {
 bool DataLogger::close() {
     if (_curFile) {
         _curFile.close();
+        _numColumns = 0;
         _fileName = "";
-        DEBUG_SERIAL_LN("Closed loaded file.");
         return true;
     } else {
-        DEBUG_SERIAL_LN("Failed to close loaded file.");
+        DEBUG_SERIAL_LN("DataLogger: failed to close loaded file.");
         return false;
     }
 }
 
 void DataLogger::setHeader(String header) {
-    _buffer += header + "\r\n";
-    DEBUG_SERIAL_LN("Added header " + header + " to buffer.");
-
-    if (_osync)
-        saveToDisk();
+    _curFile.print(header + "\r\n");
 }
 
 void DataLogger::addEntry(String data) {
     if (_curColumn == 0)
-        _buffer += data;
+        _curFile.print(data);
     else
-        _buffer += "," + data;
+        _curFile.print("," + data);
 
     _curColumn++;
 
     // check if we reached end of row
     if (_curColumn == _numColumns) {
-        _buffer += "\r\n";
+        _curFile.print("\r\n");
         _curColumn = 0;
     }
-
-    DEBUG_SERIAL_LN("Added " + data + " to buffer.");
-
-    if (_osync)
-        saveToDisk();
 }
 
 void DataLogger::addRow(String data) {
     if (_curColumn == 0)
-        _buffer += data + "\r\n";
+        _curFile.print(data + "\r\n");
     else
-        _buffer += "," + data + "\r\n";
-    
-    _curColumn = 0;
-    DEBUG_SERIAL_LN("Added " + data + " to buffer.");
+        DEBUG_SERIAL_LN("DataLogger::addRow can only be called when _curColumn is 0");    
+}
 
-    if (_osync)
-        saveToDisk();
+String DataLogger::readEntry() {
+    String ret = "";
+    if (_curFile && !_eofReached()) {
+        while (_curFile.available()) {
+            char c = (char)_curFile.read();
+            if (!_isValidEntry(c)) {
+                break;
+            }
+            ret += c;
+        }
+        if (++_curColumn == _numColumns) {
+            _seekNextLine();
+        }
+    }
+    return ret;
+}
+
+std::vector<String> DataLogger::readRow() {
+    std::vector<String> vec;
+    if (_curColumn != 0 || _eofReached()) {
+        return vec;
+    }
+    for (int i = 0; i < _numColumns; i++) {
+        String entry = readEntry();
+        vec.push_back(entry);
+    }
+    return vec;
 }
 
 int DataLogger::getNumColumns() {
     return _numColumns;
 }
 
-int DataLogger::getBufferLength() {
-    return _buffer.length();
+int DataLogger::getFileSize() {
+    return _curFile.size();
 }
 
 String DataLogger::getFileName() {
@@ -209,58 +150,45 @@ String DataLogger::getFileName() {
         return "";
 }
 
-String DataLogger::generateNewFileName(String name) {
-    // create new name for file
+int DataLogger::_computeNumColumns() {
+    if (!_curFile) {
+        return 0;
+    }
+    uint32_t temp = _curFile.position();
+    _curFile.seek(0);
+    String line = _curFile.readStringUntil('\n');
 
-    // find extension (example: myFile.csv)
-    int extensionIndex = name.lastIndexOf('.');
-    String base = name.substring(0, extensionIndex == -1 ? name.length() : extensionIndex);
-    String extension = extensionIndex == -1 ? "" : name.substring(extensionIndex + 1);
-    base.trim();
-
-    // find current file count (example: myFile(2).csv)
-    int fileCountStart = base.lastIndexOf('(');
-    int fileCountEnd = base.lastIndexOf(')');
     int count = 0;
-    if (fileCountStart != -1 && fileCountEnd != -1 && fileCountEnd == (int)base.length() - 1) {
-        String countString = base.substring(fileCountStart + 1, fileCountEnd);
-        bool numeric = true;
-        
-        // checks if all characters in countString are numeric
-        for (size_t i = 0; i < countString.length(); i++) {
-            if (!isdigit(countString.charAt(i))) {
-                numeric = false;
-                break;
-            }
-        }
-
-        if (numeric) {
-            count = countString.toInt();
-            // take count out of file name
-            base = base.substring(0, fileCountStart);
-            base.trim();
+    bool alphaNumeric = false;
+    for (uint16_t i = 0; i < line.length(); i++) {
+        if (line[i] == ',') {
+            alphaNumeric ? ++count : 0;
+            alphaNumeric = false;
+        } else if (isalnum(line[i])) {
+            alphaNumeric = true;
         }
     }
-    String newFileName = base + "(" + (count + 1) + ")" + (extension != "" ? "." + extension : "");
     
-    return newFileName;
+    _curFile.seek(temp);
+    alphaNumeric ? ++count : 0;
+    return count;
 }
 
-
-
-// FOR TESTING
-String DataLogger::openAndRead(String name, int num) {
-    String buf = "";
-    File tempFile = SD.open(name);
-    for (int i = 0; i < num; i++) {
-        if (tempFile.available()) {
-            buf += tempFile.read();
-        } 
-        else {
-            DEBUG_SERIAL_LN("ERROR: END OF FILE REACHED, MAKE SURE TO USE A FILE WITH MORE CHARACTERS");
-            break;
+void DataLogger::_seekNextLine() {
+    if (!isalnum(_curFile.peek())) {
+        while (_curFile.available()) {
+            char c = (char)_curFile.read();
+            if (c == '\n')
+                break;
         }
     }
-    tempFile.close();
-    return buf;
+    _curColumn = 0;
+}
+
+bool DataLogger::_eofReached() {
+    return _curFile.position() == _curFile.size();
+}
+
+bool DataLogger::_isValidEntry(char c) {
+    return isalnum(c) || c == '.' || c == '-';
 }
