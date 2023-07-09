@@ -9,8 +9,8 @@
 #define LOGGING_INTERVAL_ID     CONFIG_ID_LOGGING_INTERVAL
 
 SessionController::SessionController(ApplicationContext& context, Adafruit_GFX& display,
-    SensorOptical& optical, SensorForce& force, DataLogger& logger) : ControllerBase(context, display),
-        _optical(optical), _force(force), _logger(logger) { }
+    SensorOptical& optical, SensorForce& force) : ControllerBase(context, display),
+        _optical(optical), _force(force) { }
 
 SessionController::~SessionController() { }
 
@@ -36,7 +36,7 @@ void SessionController::init(InputManager& manager, StateInfo& info) {
 
 void SessionController::_logValues() {
     for (std::function<String(void)> logger : _valueLoggers) {
-        _logger.addEntry(logger());
+        _outputCsv.addEntry(logger());
     }
 }
 
@@ -61,8 +61,8 @@ void SessionController::_handleInputBack(input_data_t d) {
         _loggingEnabled = false;
 
         // TODO: save confirmation dialog
-        _logger.saveToDisk();
-        _logger.close();
+        _outputCsv.saveToDisk();
+        _outputCsv.close();
     } else if (!_loggingEnabled && d) {
         // no active session : navigate back
         _context.tryRevertState();
@@ -79,7 +79,6 @@ void SessionController::_handleInputSelect(input_data_t d) {
 void SessionController::_initializeOutput(StateInfo& info) {
     dyno_assert(info.config.find(OUTPUT_FILENAME_ID) != info.config.end());
     int id = info.config[OUTPUT_FILENAME_ID].toInt();
-
     dyno_assert(id != CONFIG_ID_NULL);
     
     String outputFile;
@@ -98,10 +97,10 @@ void SessionController::_initializeOutput(StateInfo& info) {
     String& valueIdStr = info.config[VALUE_IDS];
     _valueIds = _parseValueIdStr(valueIdStr);
 
-    if (_logger.create(outputFile, _valueIds.size())) {
+    if (_outputCsv.create(outputFile, _valueIds.size())) {
         String header = _getHeaderFromIds(_valueIds);
-        _logger.setHeader(header);
-        outputFile = _logger.getFileName();
+        _outputCsv.setHeader(header);
+        outputFile = _outputCsv.getFileName();
         _initializeValueLoggers(_valueIds);
     } else {
         dyno_log_str("Unable to create file with name: " + String(outputFile));
@@ -152,20 +151,28 @@ std::function<String(void)> SessionController::_getValueLogger(ValueId id) {
         case AngularVelocity:
             return [this]() { return String(_optical.getAngularVelocity()); };
         case AngularAccel:
+            // TODO: angular acceleration logger
             return []() { return "0.00"; };
         case DynoRpm:
+            // TODO: dyno rpm logger
             return []() { return "0.00"; };
         case BpmVoltage:
+            // TODO: bpm voltage logger
             return []() { return "0.00"; };
         case BpmCurrent:
+            // TODO: bpm current logger
             return []() { return "0.00"; };
         case Time:
+            // TODO: time logger
             return []() { return "0.00"; };
         case VescRpm:
+            // TODO: vesc rpm logger
             return []() { return "0.00"; };
         case VescDuty:
+            // TODO: vesc duty logger
             return []() { return "0.00"; };
         case VescCurrent:
+            // TODO: vesc current logger
             return []() { return "0.00"; };
         default:
             dyno_log_str("SessionController: no logging function for ValueId: " + String(id));

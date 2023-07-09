@@ -6,22 +6,17 @@
 #include "application.h"
 #include "Sensor/SensorOptical.h"
 #include "Sensor/SensorForce.h"
-#include "System/DataLogger.h"
+#include "System/CsvFile.h"
 #include "ControllerBase.h"
 
 using namespace application;
-
-class SessionController;
-
-typedef arduino::String (SessionController::*Method)(void);
 
 /**
  * @brief abstract base class for controller implementations of dyno's data collection modes
 */
 class SessionController : public ControllerBase {
     public:
-        SessionController(ApplicationContext& context, Adafruit_GFX& display, SensorOptical& optical,
-            SensorForce& force, DataLogger& logger);
+        SessionController(ApplicationContext& context, Adafruit_GFX& display, SensorOptical& optical, SensorForce& force);
         ~SessionController();
 
         /**
@@ -34,11 +29,11 @@ class SessionController : public ControllerBase {
     protected:
         SensorOptical& _optical;
         SensorForce& _force;
-        DataLogger& _logger;
         uint32_t _loggingInterval;
+        CsvFile _outputCsv;
         std::vector<std::function<String(void)>> _valueLoggers; // tandem with _valueIds
         std::vector<ValueId> _valueIds;                         // tandem with _valueLoggers
-        bool _loggingEnabled = false;
+        bool _loggingEnabled;
 
         void _handleInputSerial(input_data_t d) override;
         void _handleInputBack(input_data_t d) override;
