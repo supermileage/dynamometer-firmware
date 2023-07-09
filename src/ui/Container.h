@@ -2,10 +2,13 @@
 #define _CONTAINER_H_
 
 #include <vector>
+#include <utility>
 #include <memory>
 
 #include "Adafruit_GFX.h"
 #include "RectangularElement.h"
+
+using namespace std;
 
 /**
  * @brief Container class provides border and background for set of visual elements
@@ -30,14 +33,9 @@ class Container : public RectangularElement {
         Container& setPadding(int16_t padding);
 
         /**
-         * @brief add set of visual element children to container
-        */
-        Container& addVisualElements(std::vector<std::shared_ptr<VisualElement>>& elements);
-
-        /**
          * @brief add visual element child to container
         */
-        Container& addVisualElement(std::shared_ptr<VisualElement> element);
+        Container& addVisualElement(std::shared_ptr<VisualElement> element, Alignment align = Center);
 
         /**
          * @brief draws header, optional border and all visual elements in window
@@ -53,13 +51,11 @@ class Container : public RectangularElement {
 
         /**
          * @brief align elements in this container
-         * 
-         * @note interpretation of alignment changes depending on orientation
         */
-       void align(Alignment a = Center);
+       void alignElements();
 
     private:
-        std::vector<std::shared_ptr<VisualElement>> _elements;
+        vector<pair<shared_ptr<VisualElement>, Alignment>> _elements;
         int16_t _padding = 0;
         Orientation _orientation = Column;
         
@@ -68,14 +64,14 @@ class Container : public RectangularElement {
          * 
          * @note only Top, Center, Bottom are valid
         */
-        void _alignHorizontal(Alignment horizontal);
+        void _alignElementsHorizontal(Alignment horizontal);
         
         /**
          * @brief aligns elements oriented in column
          * 
          * @note only Left, Center and Right are valid
         */
-        void _alignVertical(Alignment vertical);
+        void _alignElementsVertical(Alignment vertical);
         
         /**
          * @brief applies equal vertical space between all elements oriented in column

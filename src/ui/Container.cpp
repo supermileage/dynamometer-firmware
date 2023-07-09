@@ -9,17 +9,9 @@ Container& Container::setPadding(int16_t padding) {
     return *this;
 }
 
-Container& Container::addVisualElements(std::vector<std::shared_ptr<VisualElement>>& elements) {
-    for (auto element : elements) {
-        element->setParent(this);
-        _elements.push_back(element);
-    }
-    return *this;
-}
-
-Container& Container::addVisualElement(std::shared_ptr<VisualElement> element) {
+Container& Container::addVisualElement(std::shared_ptr<VisualElement> element, Alignment align) {
     element->setParent(this);
-    _elements.push_back(element);
+    _elements.push_back(std::make_pair(element, align));
     return *this;
 }
 
@@ -37,14 +29,14 @@ Container& Container::setOrientation(Orientation o) {
     return *this;
 }
 
-void Container::align(Alignment a) {
+void Container::alignElements() {
     switch (_orientation) {
         case Column:
-            _alignHorizontal(a);
+            _alignElementsHorizontal();
             _applyVerticalSpacing();
             break;
         case Row:
-            _alignVertical(a);
+            _alignElementsVertical();
             _applyHorizontalSpacing();
             break;
         default:
@@ -52,7 +44,7 @@ void Container::align(Alignment a) {
     }
 }
 
-void Container::_alignHorizontal(Alignment horizontal) {
+void Container::_alignElementsHorizontal(Alignment horizontal) {
     // TODO: implement top/bottom alignment
     for (auto element : _elements) {
         int16_t elementX = _position.x + (_width - element->getWidth()) / 2;
@@ -60,7 +52,7 @@ void Container::_alignHorizontal(Alignment horizontal) {
     }
 }
 
-void Container::_alignVertical(Alignment vertical) {
+void Container::_alignElementsVertical(Alignment vertical) {
     // TODO: implement left/right alignment
     for (auto element : _elements) {
         int16_t elementY = _position.y + (_height - element->getHeight()) / 2;

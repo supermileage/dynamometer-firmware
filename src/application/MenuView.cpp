@@ -28,9 +28,9 @@ void MenuView::init() {
     app_util::configureNavButtonContainer(_navButtonContainer.get());
     
     // order matters for alignment: align top-level container first, then down
-    _window->align();
-    _menuContainer->align();
-    _navButtonContainer->align();
+    _window->alignElements();
+    _menuContainer->alignElements();
+    _navButtonContainer->alignElements();
 
     // call to principal container draws all elements
     DEBUG_SERIAL_LN("Drawing window");

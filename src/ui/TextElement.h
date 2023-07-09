@@ -1,7 +1,7 @@
 #ifndef _TEXT_ELEMENT_H_
 #define _TEXT_ELEMENT_H_
 
-#include "VisualElement.h"
+#include "RectangularElement.h"
 #include "TextComponent.h"
 
 class TextElement : public RectangularElement {
