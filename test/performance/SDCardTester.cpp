@@ -3,11 +3,12 @@
 using namespace std;
 
 #define DEBUG_OUTPUT_TRIAL 0
+#define FILE_FLAGS (FILE_WRITE)
 
 SDCardTester::SDCardTester() {};
 SDCardTester::~SDCardTester() {};
 
-void SDCardTester::testFilePerformance (DataLogger& logger) {
+void SDCardTester::testFilePerformance (CsvFile& logfile) {
 	
 	// time tracking variables
 	int start;
@@ -35,15 +36,14 @@ void SDCardTester::testFilePerformance (DataLogger& logger) {
 	sum = 0;
 	
 	// initialize
-	logger.create("test1.txt", 1);
+	logfile.create("test1.txt", 1, FILE_FLAGS);
 	
 	for (int i = 0; i < numTrials; i++) {
 		// start test
 		start = micros();
 
 		// writes 1000 characters to file
-		logger.addEntry(templateString);
-		logger.saveToDisk();
+		logfile.addEntry(templateString);
 
 		// end test
 		end = micros();
@@ -59,13 +59,11 @@ void SDCardTester::testFilePerformance (DataLogger& logger) {
 
 		sum += deltaTime;
 	}
-	logger.close();
+	logfile.saveToDisk();
+	logfile.close();
 	Serial.print("\nAverage time: ");
 	Serial.print((float)sum / numTrials);
 	Serial.println(" micros");
-
-
-
 
 	// ***************************************************************************************************************************************** //
 
@@ -74,7 +72,7 @@ void SDCardTester::testFilePerformance (DataLogger& logger) {
 	Serial.println("Entry: \"1.0\"");
 
 	// initialize
-	logger.create("test2.csv", 1);
+	logfile.create("test2.csv", 1, FILE_FLAGS);
 
 	sum = 0;
 	for (int i = 0; i < numTrials; i++) {
@@ -82,8 +80,7 @@ void SDCardTester::testFilePerformance (DataLogger& logger) {
 		start = micros();
 
 		// writes single entry to file
-		logger.addEntry(templateEntry);
-		logger.saveToDisk();
+		logfile.addEntry(templateEntry);
 
 		// end test
 		end = micros();
@@ -99,7 +96,8 @@ void SDCardTester::testFilePerformance (DataLogger& logger) {
 
 		sum += deltaTime;
 	}
-	logger.close();
+	logfile.saveToDisk();
+	logfile.close();
 	Serial.print("\nAverage time: ");
 	Serial.print((float)sum / numTrials);
 	Serial.println(" micros");
@@ -111,7 +109,7 @@ void SDCardTester::testFilePerformance (DataLogger& logger) {
 	Serial.println("\n\nTest 3: how long does it take to write five column entries for a csv file (osync = false)?");
 
 	// initialize
-	logger.create("test3.csv", 5);
+	logfile.create("test3.csv", 5, FILE_FLAGS);
 
 
 	sum = 0;
@@ -120,12 +118,11 @@ void SDCardTester::testFilePerformance (DataLogger& logger) {
 		start = micros();
 
 		// writes single entry to file
-		logger.addEntry(templateEntry);
-		logger.addEntry(templateEntry);
-		logger.addEntry(templateEntry);
-		logger.addEntry(templateEntry);
-		logger.addEntry(templateEntry);
-		logger.saveToDisk();
+		logfile.addEntry(templateEntry);
+		logfile.addEntry(templateEntry);
+		logfile.addEntry(templateEntry);
+		logfile.addEntry(templateEntry);
+		logfile.addEntry(templateEntry);
 
 		// end test
 		end = micros();
@@ -141,7 +138,8 @@ void SDCardTester::testFilePerformance (DataLogger& logger) {
 
 		sum += deltaTime;
 	}
-	logger.close();
+	logfile.saveToDisk();
+	logfile.close();
 	Serial.print("\nAverage time: ");
 	Serial.print((float)sum / numTrials);
 	Serial.println(" micros");
@@ -156,12 +154,12 @@ void SDCardTester::testFilePerformance (DataLogger& logger) {
 	if (SD.exists("test4.csv")) {
 		SD.remove("test4.csv");
 	}
-	logger.open("test4.csv", 1);
+	logfile.open("test4.csv", 1, FILE_FLAGS);
 	for (int i = 0; i < numTrials; i++) {
-		logger.addEntry(templateString);
-		logger.saveToDisk();
+		logfile.addEntry(templateString);
 	}
-	logger.close();
+	logfile.saveToDisk();
+	logfile.close();
 
 	// open and read file
 	File readFile = SD.open("test4.csv", FILE_READ);

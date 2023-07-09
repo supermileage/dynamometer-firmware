@@ -8,6 +8,8 @@
 #define FILE_READ 0
 #undef FILE_WRITE
 #define FILE_WRITE 1
+#undef EOF
+#define EOF 0
 
 #define NULL_CHAR -129
 
@@ -51,6 +53,12 @@ class File {
         String readLine();
         void close();
         size_t print(String buf);
+        size_t position();
+        void seek(uint32_t pos);
+        int peek();
+        size_t size();
+        void flush();
+        String readStringUntil(char terminator);
         operator bool() const;
 
     private:
