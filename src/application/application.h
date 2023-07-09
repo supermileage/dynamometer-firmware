@@ -76,6 +76,19 @@ namespace application {
     #define CONFIG_ID_DEFAULT_OUTPUT_FILENAME   1
     #define CONFIG_ID_DEFAULT_INPUT_FILENAME    2
     #define CONFIG_ID_DIALOG_START_STRING       3
+
+    enum ValueId {
+        Force = 0,
+        AngularVelocity,
+        AngularAccel,
+        DynoRpm,
+        BpmVoltage,
+        BpmCurrent,
+        Time,
+        VescRpm,
+        VescDuty,
+        VescCurrent,
+    };
 }
 
 #endif
