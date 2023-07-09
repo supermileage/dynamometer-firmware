@@ -40,80 +40,35 @@ void SessionController::_logValues() {
     }
 }
 
-void SessionController::_handleInputSerial(input_data_t d) {
-    DEBUG_SERIAL_LN("Serial input received: " + String(d));
-    switch (d) {
-        case 8:     // backspace
-        case 113:    // q
-            _handleInputBack(1);
-            break;
-        case 10:    // enter '\n'
-            _handleInputSelect(1);
-            break;
-        default:    // do nothing
-            break;
-    }
-}
-
-void SessionController::_handleInputBack(input_data_t d) {
-    if (_loggingEnabled && d) {
-        // stop running calibration
-        _loggingEnabled = false;
-
-        // TODO: save confirmation dialog
-        _outputCsv.saveToDisk();
-        _outputCsv.close();
-    } else if (!_loggingEnabled && d) {
-        // no active session : navigate back
-        _context.tryRevertState();
-    }
-}
-
-void SessionController::_handleInputSelect(input_data_t d) {
-    if (!_loggingEnabled && d) {
-        // start running
-        _loggingEnabled = true;
-    }
-}
-
 void SessionController::_initializeOutput(StateInfo& info) {
     dyno_assert(info.config.find(OUTPUT_FILENAME_ID) != info.config.end());
     int id = info.config[OUTPUT_FILENAME_ID].toInt();
     dyno_assert(id != CONFIG_ID_NULL);
     
-    String outputFile;
     // check if output filename available in local config, otherwise use global
     if (info.config.find(id) != info.config.end()) {
-        outputFile = info.config[id];
+        _outputFilename = info.config[id];
     } else if (application::GlobalSettings.find(id) != application::GlobalSettings.end()) {
-        outputFile = application::GlobalSettings[id];
+        _outputFilename = application::GlobalSettings[id];
     } else {
         dyno_log_str("SessionController: No entry for output filename with id " + String(id) + " in local/global info object");
-        outputFile = application::GlobalSettings[CONFIG_ID_DEFAULT_OUTPUT_FILENAME];
+        _outputFilename = application::GlobalSettings[CONFIG_ID_DEFAULT_OUTPUT_FILENAME];
     }
 
     // initialize csv file and value loggers
     dyno_assert(info.config.find(VALUE_IDS) != info.config.end());
     String& valueIdStr = info.config[VALUE_IDS];
     _valueIds = _parseValueIdStr(valueIdStr);
-
-    if (_outputCsv.create(outputFile, _valueIds.size())) {
-        String header = _getHeaderFromIds(_valueIds);
-        _outputCsv.setHeader(header);
-        outputFile = _outputCsv.getFileName();
-        _initializeValueLoggers(_valueIds);
-    } else {
-        dyno_log_str("Unable to create file with name: " + String(outputFile));
-        outputFile = "error";
-    }
+    _initializeValueLoggers(_valueIds);
+    _initializeOutputCsv(_valueIds, _outputFilename);
 }
 
-String SessionController::_getHeaderFromIds(const std::vector<ValueId>& valueIds) {
+String SessionController::_getHeaderFromIds(const std::vector<ValueId>& ids) {
     String header = "";
-    for (int i = 0; i < valueIds.size(); i++) {
-        header += app_util::valueToHeader(valueIds[i]);
+    for (int i = 0; i < ids.size(); i++) {
+        header += app_util::valueToHeader(ids[i]);
         
-        if (i < valueIds.size() - 1) {
+        if (i < ids.size() - 1) {
             header += ',';
         }
     }
@@ -123,6 +78,17 @@ String SessionController::_getHeaderFromIds(const std::vector<ValueId>& valueIds
 void SessionController::_initializeValueLoggers(const std::vector<ValueId>& ids) {
     for (ValueId id : ids) {
         _valueLoggers.push_back(_getValueLogger(id));
+    }
+}
+
+void SessionController::_initializeOutputCsv(const std::vector<ValueId>& ids, String& filename) {
+    if (_outputCsv.create(filename, ids.size())) {
+        String header = _getHeaderFromIds(ids);
+        _outputCsv.setHeader(header);
+        filename = _outputCsv.getFileName();
+    } else {
+        dyno_log_str("Unable to create file with name: " + String(filename));
+        filename = "error";
     }
 }
 

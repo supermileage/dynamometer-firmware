@@ -33,18 +33,22 @@ class SessionController : public ControllerBase {
         CsvFile _outputCsv;
         std::vector<std::function<String(void)>> _valueLoggers; // tandem with _valueIds
         std::vector<ValueId> _valueIds;                         // tandem with _valueLoggers
+        String _outputFilename = "";
         bool _loggingEnabled;
 
-        void _handleInputSerial(input_data_t d) override;
-        void _handleInputBack(input_data_t d) override;
-        void _handleInputSelect(input_data_t d) override;
+        /**
+         * @brief initializes output csv file
+         * @note CsvFile::create may generate a unique name to avoid overwriting other files --
+         * filename will be set to this name
+        */
+        void _initializeOutputCsv(const std::vector<ValueId>& ids, String& filename);
         void _logValues();
 
     private:
         void _initializeOutput(StateInfo& info);
         std::vector<ValueId> _parseValueIdStr(String& valueIds);
-        String _getHeaderFromIds(const std::vector<ValueId>& valueIds);
-        void _initializeValueLoggers(const std::vector<ValueId>& values);
+        String _getHeaderFromIds(const std::vector<ValueId>& ids);
+        void _initializeValueLoggers(const std::vector<ValueId>& ids);
         std::function<String(void)> _getValueLogger(ValueId id);
         int _countEntries(String& row);
 };
