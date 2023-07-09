@@ -132,7 +132,7 @@ std::vector<ValueId> SessionController::_parseValueIdStr(String& valueIds) {
     int last = 1;
     while (last > 0) {
         last = valueIds.substring(first).indexOf(',');
-        int valueId = -1;
+        int valueId;
         if (last < 0) {
             valueId = valueIds.substring(first).toInt();
         } else {
