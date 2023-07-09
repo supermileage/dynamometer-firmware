@@ -2,13 +2,13 @@
 #include "SPI.h"
 
 #include "settings.h"
-#include "System/DataLogger.h"
+#include "System/CsvFile.h"
 
 #include "ui/UIEventHandler.h"
 #include "SDCardTester.h"
 
 /* system resources */
-DataLogger logfile;
+CsvFile logfile;
 
 /* global variables */
 uint c0_lastUpdateTime = 0;
