@@ -8,6 +8,13 @@
 #include "Adafruit_GFX.h"
 #include "RectangularElement.h"
 
+#define CONTAINER_ALIGNMENT_RIGHT   0x1
+#define CONTAINER_ALIGNMENT_MIDDLE  0x2
+#define CONTAINER_ALIGNMENT_LEFT    0x4
+#define CONTAINER_ALIGNMENT_TOP     0x10
+#define CONTAINER_ALIGNMENT_CENTRE  0x20
+#define CONTAINER_ALIGNMENT_BOTTOM  0x40
+
 using namespace std;
 
 /**
@@ -17,7 +24,17 @@ using namespace std;
 */
 class Container : public RectangularElement {
     public:
-        enum Alignment { Left, Center, Right, Top, Bottom };
+        enum Alignment {
+            TopRight = (CONTAINER_ALIGNMENT_TOP | CONTAINER_ALIGNMENT_RIGHT),
+            TopMiddle = (CONTAINER_ALIGNMENT_TOP | CONTAINER_ALIGNMENT_MIDDLE),
+            TopLeft = (CONTAINER_ALIGNMENT_TOP | CONTAINER_ALIGNMENT_LEFT),
+            CentreRight = (CONTAINER_ALIGNMENT_CENTRE | CONTAINER_ALIGNMENT_RIGHT),
+            CentreMiddle = (CONTAINER_ALIGNMENT_CENTRE | CONTAINER_ALIGNMENT_MIDDLE),
+            CentreLeft = (CONTAINER_ALIGNMENT_CENTRE | CONTAINER_ALIGNMENT_LEFT),
+            BottomRight = (CONTAINER_ALIGNMENT_BOTTOM | CONTAINER_ALIGNMENT_RIGHT),
+            BottomMiddle = (CONTAINER_ALIGNMENT_BOTTOM | CONTAINER_ALIGNMENT_MIDDLE),
+            BottomLeft = (CONTAINER_ALIGNMENT_BOTTOM | CONTAINER_ALIGNMENT_LEFT)
+        };
         enum Orientation { Column, Row };
         
         /**
@@ -34,8 +51,10 @@ class Container : public RectangularElement {
 
         /**
          * @brief add visual element child to container
+         * @param element element to be added
+         * @param alignment alignment value for element
         */
-        Container& addVisualElement(std::shared_ptr<VisualElement> element, Alignment align = Center);
+        Container& addVisualElement(std::shared_ptr<VisualElement> element, Alignment alignment = CentreMiddle);
 
         /**
          * @brief draws header, optional border and all visual elements in window
@@ -55,7 +74,7 @@ class Container : public RectangularElement {
        void alignElements();
 
     private:
-        vector<pair<shared_ptr<VisualElement>, Alignment>> _elements;
+        vector<std::pair<std::shared_ptr<VisualElement>, Alignment>> _children;
         int16_t _padding = 0;
         Orientation _orientation = Column;
         
@@ -64,14 +83,14 @@ class Container : public RectangularElement {
          * 
          * @note only Top, Center, Bottom are valid
         */
-        void _alignElementsHorizontal(Alignment horizontal);
+        void _alignElementsHorizontal();
         
         /**
          * @brief aligns elements oriented in column
          * 
          * @note only Left, Center and Right are valid
         */
-        void _alignElementsVertical(Alignment vertical);
+        void _alignElementsVertical();
         
         /**
          * @brief applies equal vertical space between all elements oriented in column
@@ -83,6 +102,15 @@ class Container : public RectangularElement {
         */
         void _applyHorizontalSpacing();
 
+        /**
+         * @brief computes and returns horizontal offset for VisualElement in pair
+        */
+        int16_t _getHorizontalOffset(pair<shared_ptr<VisualElement>, Alignment> pair, int16_t width);
+
+        /**
+         * @brief computes and returns vertical offset for VisualElement in pair
+        */
+        int16_t _getVerticalOffset(pair<shared_ptr<VisualElement>, Alignment> pair, int16_t height);
 };
 
 #endif
