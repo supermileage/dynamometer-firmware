@@ -1,4 +1,6 @@
-#include "DataLogger.h"
+#include <vector>
+
+#include "CsvFile.h"
 #include "settings.h"
 #include "system_util.h"
 
@@ -6,7 +8,7 @@ using namespace std;
 
 //public methods:
 
-bool DataLogger::create(String name, int numColumns, int mode) {
+bool CsvFile::create(String name, int numColumns, int mode) {
     // if file is already open, close that file
     if(_curFile) {
         _curFile.close();
@@ -29,7 +31,7 @@ bool DataLogger::create(String name, int numColumns, int mode) {
     }
 }
 
-bool DataLogger::open(String name, int numColumns, int mode) {
+bool CsvFile::open(String name, int numColumns, int mode) {
     // if file is already open, close that file
     if (_curFile) { 
         _curFile.close();
@@ -58,33 +60,33 @@ bool DataLogger::open(String name, int numColumns, int mode) {
     }
 }
 
-bool DataLogger::saveToDisk() {
+bool CsvFile::saveToDisk() {
     if (_curFile) {
         _curFile.flush();
         return true;
     } else {
-        DEBUG_SERIAL_LN("DataLogger: save failed -- no file currently open");
+        DEBUG_SERIAL_LN("CsvFile: save failed -- no file currently open");
         return false;
     }
 }
 
-bool DataLogger::close() {
+bool CsvFile::close() {
     if (_curFile) {
         _curFile.close();
         _numColumns = 0;
         _fileName = "";
         return true;
     } else {
-        DEBUG_SERIAL_LN("DataLogger: failed to close loaded file.");
+        DEBUG_SERIAL_LN("CsvFile: failed to close loaded file.");
         return false;
     }
 }
 
-void DataLogger::setHeader(String header) {
+void CsvFile::setHeader(String header) {
     _curFile.print(header + "\r\n");
 }
 
-void DataLogger::addEntry(String data) {
+void CsvFile::addEntry(String data) {
     if (_curColumn == 0)
         _curFile.print(data);
     else
@@ -99,14 +101,14 @@ void DataLogger::addEntry(String data) {
     }
 }
 
-void DataLogger::addRow(String data) {
+void CsvFile::addRow(String data) {
     if (_curColumn == 0)
         _curFile.print(data + "\r\n");
     else
-        DEBUG_SERIAL_LN("DataLogger::addRow can only be called when _curColumn is 0");    
+        DEBUG_SERIAL_LN("CsvFile::addRow can only be called when _curColumn is 0");    
 }
 
-String DataLogger::readEntry() {
+String CsvFile::readEntry() {
     String ret = "";
     if (_curFile && !_eofReached()) {
         while (_curFile.available()) {
@@ -123,7 +125,7 @@ String DataLogger::readEntry() {
     return ret;
 }
 
-std::vector<String> DataLogger::readRow() {
+std::vector<String> CsvFile::readRow() {
     std::vector<String> vec;
     if (_curColumn != 0 || _eofReached()) {
         return vec;
@@ -135,22 +137,22 @@ std::vector<String> DataLogger::readRow() {
     return vec;
 }
 
-int DataLogger::getNumColumns() {
+int CsvFile::getNumColumns() {
     return _numColumns;
 }
 
-int DataLogger::getFileSize() {
+int CsvFile::getFileSize() {
     return _curFile.size();
 }
 
-String DataLogger::getFileName() {
+String CsvFile::getFileName() {
     if (_curFile)
         return _fileName;
     else
         return "";
 }
 
-int DataLogger::_computeNumColumns() {
+int CsvFile::_computeNumColumns() {
     if (!_curFile) {
         return 0;
     }
@@ -174,7 +176,7 @@ int DataLogger::_computeNumColumns() {
     return count;
 }
 
-void DataLogger::_seekNextLine() {
+void CsvFile::_seekNextLine() {
     if (!isalnum(_curFile.peek())) {
         while (_curFile.available()) {
             char c = (char)_curFile.read();
@@ -185,10 +187,10 @@ void DataLogger::_seekNextLine() {
     _curColumn = 0;
 }
 
-bool DataLogger::_eofReached() {
+bool CsvFile::_eofReached() {
     return _curFile.position() == _curFile.size();
 }
 
-bool DataLogger::_isValidEntry(char c) {
+bool CsvFile::_isValidEntry(char c) {
     return isalnum(c) || c == '.' || c == '-';
 }

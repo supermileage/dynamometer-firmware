@@ -112,4 +112,58 @@ const String app_util::stateToString(ApplicationState state) {
         default:
             return "Does not exist";
     }
+}                 
+
+const String app_util::valueToHeader(application::ValueId id) {
+    switch (id) {
+        case Force:
+            return "force";
+        case AngularVelocity:
+            return "avel";
+        case AngularAccel:
+            return "accel";
+        case DynoRpm:
+            return "rpm";
+        case BpmVoltage:
+            return "bpm";
+        case BpmCurrent:
+            return "bpmcur";
+        case Time:
+            return "time";
+        case VescRpm:
+            return "vrpm";
+        case VescDuty:
+            return "vduty";
+        case VescCurrent:
+            return "vcur";
+        default:
+            return "undefined";
+    }
+}
+
+const String app_util::valueToUnit(application::ValueId id) {
+    switch (id) {
+        case Force:
+            return "lbs";
+        case AngularVelocity:
+            return "rad/s";
+        case AngularAccel:
+            return "rad/s2";
+        case DynoRpm:
+            return "rpm";
+        case BpmVoltage:
+            return "V";
+        case BpmCurrent:
+            return "A";
+        case Time:
+            return "";
+        case VescRpm:
+            return "rpm";
+        case VescDuty:
+            return "";
+        case VescCurrent:
+            return "A";
+        default:
+            return "undefined";
+    }
 }

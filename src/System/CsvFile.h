@@ -7,7 +7,7 @@
 using namespace std;
 
 //Class to log data to a file on an SD Card in the CSV format.
-class DataLogger {
+class CsvFile {
     public:
 
         /**
@@ -74,13 +74,13 @@ class DataLogger {
         /**
          * @brief reads row of entries and returns as vector of string
          * @returns vector of all entries in row
-         * @note returns empty vector if end of file reached, or if DataLogger::_currentColumn != 0
+         * @note returns empty vector if end of file reached, or if CsvFile::_currentColumn != 0
         */
         std::vector<String> readRow();
 
         /**
          * @brief read single string entry from row
-         * @returns string with next entry in column DataLogger::_currentColumn
+         * @returns string with next entry in column CsvFile::_currentColumn
          * @note returns empty string if end of file is reached
         */
         String readEntry();

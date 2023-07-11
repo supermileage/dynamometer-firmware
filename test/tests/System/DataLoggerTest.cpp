@@ -10,7 +10,7 @@
 
 #include "test_config.h"
 #include "Arduino.h"
-#include "DataLogger.h"
+#include "CsvFile.h"
 
 /* Generated Test Data (for test cases where you append to existing file) */
 extern const char* appendTestData1;
@@ -22,8 +22,8 @@ void initializeOutputFolder();
 String getTestInputPath();
 String getTestOutputPath();
 
-TEST_CASE( "DataLogger tests", "[DataLogger]" ) {
-	DataLogger logfile;
+TEST_CASE( "CsvFile tests", "[CsvFile]" ) {
+	CsvFile logfile;
     initializeInputFolder();
     initializeOutputFolder();
     String input = getTestInputPath();
@@ -253,7 +253,7 @@ TEST_CASE( "DataLogger tests", "[DataLogger]" ) {
         REQUIRE( logfile.getFileName().equals("") );
     }
 
-    SECTION("DataLogger::readEntry test -- 3 rows of well-formatted data") {
+    SECTION("CsvFile::readEntry test -- 3 rows of well-formatted data") {
         logfile.open(input + String("input-test.csv"), 4, FILE_READ);
 
         REQUIRE ( logfile.readEntry().equals("deep") );
@@ -277,7 +277,7 @@ TEST_CASE( "DataLogger tests", "[DataLogger]" ) {
         logfile.close();
     }
 
-    SECTION("DataLogger::readEntry test -- 2 rows, no terminating CRLF") {
+    SECTION("CsvFile::readEntry test -- 2 rows, no terminating CRLF") {
         logfile.open(input + String("input-test-no-CRLF.csv"), 4, FILE_READ);
 
         REQUIRE ( logfile.readEntry().equals("deep") );
@@ -296,7 +296,7 @@ TEST_CASE( "DataLogger tests", "[DataLogger]" ) {
         logfile.close();
     }
 
-    SECTION("DataLogger::readRow test") {
+    SECTION("CsvFile::readRow test") {
         logfile.open(input + String("input-test.csv"), 4, FILE_READ);
         std::vector<String> row1 = logfile.readRow();
         std::vector<String> row2 = logfile.readRow();
@@ -327,7 +327,7 @@ TEST_CASE( "DataLogger tests", "[DataLogger]" ) {
         logfile.close();
     }
 
-    SECTION("DataLogger::readRow test -- no terminating CRLF") {
+    SECTION("CsvFile::readRow test -- no terminating CRLF") {
         logfile.open(input + String("input-test-no-CRLF.csv"), 4, FILE_READ);
         std::vector<String> row1 = logfile.readRow();
         std::vector<String> row2 = logfile.readRow();
