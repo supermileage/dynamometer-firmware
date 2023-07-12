@@ -58,7 +58,6 @@ void Container::_alignElementsHorizontal() {
 }
 
 void Container::_alignElementsVertical() {
-    // TODO: implement left/right alignment
     for (auto pair : _children) {
         std::shared_ptr<VisualElement> element = pair.first;
         int16_t elementY = _position.y + _getVerticalOffset(pair, _height);
