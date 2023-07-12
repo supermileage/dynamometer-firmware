@@ -15,6 +15,12 @@ class TextElement : public RectangularElement {
         void draw() override;
 
         /**
+         * @brief redraw text to screen
+         * @note doesn't draw background or border to screen
+        */
+        void redraw();
+
+        /**
          * @brief returns text component owned by this text element
         */
         TextComponent& getTextComponent();

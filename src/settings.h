@@ -5,7 +5,7 @@
 
 /* Debug Settings */
 #define DEBUG_SERIAL_EN     0
-#define DYNO_ASSERT_EN      1
+#define DYNO_ASSERT_EN      0
 #define ERROR_LOGFILE_PATH  "error/logfile.txt"
 
 #if DEBUG_SERIAL_EN

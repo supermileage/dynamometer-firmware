@@ -9,7 +9,10 @@ TextElement::~TextElement() { }
 void TextElement::draw() {
     // draw background and border
     VisualElement::draw();
+    _textComponent.draw(_display);
+}
 
+void TextElement::redraw() {
     _textComponent.draw(_display);
 }
 

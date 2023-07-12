@@ -50,24 +50,22 @@ class TextComponent {
         */
         void draw(Adafruit_GFX& display);
 
-        /**
-         * @brief draw with colour -- only to be called from within VisualElement owner of this class
-        */
-        void draw(Adafruit_GFX& display, uint16_t colour);
-
     private:
         VisualElement* _owner;
         String _displayString = "";
+        String _nextString = "";
         GFXfont const* _font = nullptr;
         uint16_t _fontColour = 0;
         int16_t _textWidth = 0;
         int16_t _textHeight = 0;
         uint8_t _textSizeX = 1;
         uint8_t _textSizeY = 1;
-        bool _textChanged = false;
-        bool _heightComputed = false;
+        bool _stringChanged = true;
+        bool _fontChanged = true;
+        bool _colourChanged = true;
 
         void _drawInternal(Adafruit_GFX& display, uint16_t colour);
+        void _drawOptimized(Adafruit_GFX& display, int16_t x, int16_t y);
 
 };
 
