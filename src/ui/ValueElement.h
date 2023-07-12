@@ -11,12 +11,13 @@ class ValueElement : public Container {
         }
 
         ValueElement& setLabel(String& label, Alignment alignment = Container::) {
-            
             return *this;
         }
+
     private:
-        TextElement _valueText;
-        String (*_valueHandler())
+        std::shared_ptr<TextElement> _valueElement = nullptr;
+        std::shared_ptr<TextElement> _labelElement = nullptr;
+        std::shared_ptr<TextElement> _unitsElement = nullptr;
 };
 
 #endif

@@ -37,7 +37,10 @@ void MenuView::init() {
     _window->draw();
 }
 
+bool g_whatever = false;
+
 void MenuView::addMenuButton(std::shared_ptr<UIButton> button, const String& str) {
     app_util::configureMenuButton(button.get(), str);
-    _menuContainer->addVisualElement(button);
+    _menuContainer->addVisualElement(button, g_whatever ? Container::CentreRight : Container::CentreRight);
+    g_whatever = !g_whatever;
 }
