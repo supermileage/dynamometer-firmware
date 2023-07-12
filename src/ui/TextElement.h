@@ -25,6 +25,11 @@ class TextElement : public RectangularElement {
         */
         TextComponent& getTextComponent();
 
+        /**
+         * @brief computes own dimensions based on string and font
+        */
+        TextElement& computeDimensions();
+
     private:
         TextComponent _textComponent;
 

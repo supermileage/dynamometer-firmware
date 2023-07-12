@@ -19,3 +19,10 @@ void TextElement::redraw() {
 TextComponent& TextElement::getTextComponent() {
     return _textComponent;
 }
+
+TextElement& TextElement::computeDimensions() {
+    ui_util::Point dim = _textComponent.computeDisplaySize();
+    _width = dim.x;
+    _height = dim.y;
+    return *this;
+}

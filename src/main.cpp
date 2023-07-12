@@ -23,6 +23,7 @@
 #include "settings.h"
 
 #include "graphics/fonts.h"
+#include "ui/ValueElement.h"
 
 /* system resources */
 Adafruit_ILI9341 tft = Adafruit_ILI9341(&SPI, LCD_DC, LCD_CS, LCD_RST);
@@ -54,7 +55,7 @@ uint c1_lastUpdateTime = 0;
 int c0_lastCount = 0;
 
 /* sandbox */
-TextElement text(display);
+ValueElement value(display);
 
 /* Core0 */
 void setup() {
@@ -87,17 +88,25 @@ void setup() {
 	ErrorUtil.init(ErrorLogger::LogAndPrint);
 	context.begin();
 
+	String label = "cur: ";
+	String val = "00.00";
+	String units = "A";
+
 	// sandbox
-	text.getTextComponent()
-		.setDisplayString("00:00")
-		.setFont(FREE_SANS_12PT7B)
-		.setFontSize(1,1)
-		.setFontColour(COLOUR_WHITE);
-	text.setWidth(220)
-		.setHeight(100)
-		.setPosition(ui_util::Point { .x = 50, .y = 70})
-		.setBackgroundColour(COLOUR_BLACK);
-	UIEventHandler::instance().addEvent([]() { text.draw(); });
+	value.configureLabel(label, TOM_THUMB, COLOUR_WHITE, 2, 2)
+		.configureValue(val, FREE_SERIF_BOLD_18PT7B, COLOUR_WHITE)
+		.configureUnits(units, FREE_SERIF_BOLD_12PT7B, COLOUR_WHITE)
+		.setOrientation(Container::Row)
+		.setWidth(180)
+		.setHeight(ui_util::computeCharacterDimensions(FREE_SERIF_BOLD_18PT7B, '0', 1, 1).y + 4)
+		.setPosition(ui_util::Point { .x = 50, .y = 40 })
+		.setBackgroundColour(COLOUR_BLACK)
+		.addBorder(COLOUR_LIGHTGREY);
+	
+	UIEventHandler::instance().addEvent([]() {
+		value.align();
+		value.draw();
+	});
 }
 
 uint32_t g_lastThing = 0;
@@ -108,14 +117,12 @@ void loop() {
 
 	if (millis() >= g_lastThing + 100) {
 		g_lastThing = millis();
-		char buf[6] = { };
-		uint32_t seconds = g_lastThing / 1000;
-		sprintf(buf, "%02lu:%02lu", seconds / 60, seconds % 60);
-		String str = String(buf);
-		UIEventHandler::instance().addEvent( [str]() {
-			Serial.println("Time: " + str);
-			text.getTextComponent().setDisplayString(str);
-			text.redraw();
+		UIEventHandler::instance().addEvent( []() {
+			char buf[6] = { };
+			uint32_t seconds = g_lastThing / 1000;
+			sprintf(buf, "%02lu.%02lu", seconds / 60, seconds % 60);
+			String str = String(buf);
+			value.updateValue(str);
 		});
 	}
 }

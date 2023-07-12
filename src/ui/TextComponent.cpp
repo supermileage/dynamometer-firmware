@@ -39,10 +39,18 @@ TextComponent& TextComponent::setFontSize(uint8_t w, uint8_t h) {
     return *this;
 }
 
+ui_util::Point TextComponent::computeDisplaySize() {
+    return ui_util::Point {
+        .x = ui_util::computeStringDimensions(_font, _nextString, _textSizeX, _textSizeY).x,
+        .y = ui_util::computeCharacterDimensions(_font, (uint8_t)'0', _textSizeX, _textSizeY).y
+    };
+}
+
 void TextComponent::draw(Adafruit_GFX& display) {
     if (_fontChanged || _nextString.length() != _displayString.length()) {
-        _textWidth = ui_util::computeStringDimensions(_font, _nextString, _textSizeX, _textSizeY).x;
-        _textHeight = ui_util::computeCharacterDimensions(_font, (uint8_t)'0', _textSizeX, _textSizeY).y;
+        ui_util::Point dimensions = computeDisplaySize();
+        _textWidth = dimensions.x;
+        _textHeight = dimensions.y;
     }
     // only call draw if something has changed
     if (_fontChanged || _stringChanged || _colourChanged) {

@@ -46,6 +46,11 @@ class TextComponent {
         TextComponent& setFontSize(uint8_t w, uint8_t h);
 
         /**
+         * @brief computes and returns Point with x, y representing width and height of display string
+        */
+        ui_util::Point computeDisplaySize();
+
+        /**
          * @brief draw -- only to be called from within VisualElement owner of this class
         */
         void draw(Adafruit_GFX& display);
