@@ -22,12 +22,9 @@
 
 #include "settings.h"
 
-#include "graphics/fonts.h"
-
 /* system resources */
 Adafruit_ILI9341 tft = Adafruit_ILI9341(&SPI, LCD_DC, LCD_CS, LCD_RST);
 XPT2046_Touchscreen ts(TOUCH_CS);
-Adafruit_GFX& display = tft;
 
 /* sensors */
 SensorOptical optical(pio0, 0);
@@ -52,9 +49,6 @@ ApplicationContext context(inputManager, tft, factory);
 uint c0_lastUpdateTime = 0;
 uint c1_lastUpdateTime = 0;
 int c0_lastCount = 0;
-
-/* sandbox */
-TextElement text(display);
 
 /* Core0 */
 void setup() {
@@ -81,43 +75,14 @@ void setup() {
 	inputManager.registerInput(ID_ROT_EN, &rot);
 	inputManager.begin();
 
-	delay(1000);
-
 	// application
 	ErrorUtil.init(ErrorLogger::LogAndPrint);
 	context.begin();
-
-	// sandbox
-	text.getTextComponent()
-		.setDisplayString("00:00")
-		.setFont(FREE_SANS_12PT7B)
-		.setFontSize(1,1)
-		.setFontColour(COLOUR_WHITE);
-	text.setWidth(220)
-		.setHeight(100)
-		.setPosition(ui_util::Point { .x = 50, .y = 70})
-		.setBackgroundColour(COLOUR_BLACK);
-	UIEventHandler::instance().addEvent([]() { text.draw(); });
 }
-
-uint32_t g_lastThing = 0;
 
 void loop() {
 	inputManager.handle();
 	context.handle();
-
-	if (millis() >= g_lastThing + 100) {
-		g_lastThing = millis();
-		char buf[6] = { };
-		uint32_t seconds = g_lastThing / 1000;
-		sprintf(buf, "%02lu:%02lu", seconds / 60, seconds % 60);
-		String str = String(buf);
-		UIEventHandler::instance().addEvent( [str]() {
-			Serial.println("Time: " + str);
-			text.getTextComponent().setDisplayString(str);
-			text.redraw();
-		});
-	}
 }
 
 /* Core1 */

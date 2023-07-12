@@ -46,9 +46,9 @@ void TextDialogView::init() {
     app_util::configureNavButtonContainer(_navButtonContainer.get());
     
     // order matters for alignment: align top-level container first, then down
-    _window->alignElements();
-    _textContainer->alignElements();
-    _navButtonContainer->alignElements();
+    _window->align();
+    _textContainer->align();
+    _navButtonContainer->align();
     
     // call to principal container draws all elements
     DEBUG_SERIAL_LN("Drawing window");
