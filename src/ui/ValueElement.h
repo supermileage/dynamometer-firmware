@@ -6,9 +6,17 @@
 
 class ValueElement : public Container {
     public:
-        
+        ValueElement(Adafruit_GFX& display) : Container(display) {
+
+        }
+
+        ValueElement& setLabel(String& label, Alignment alignment = Container::) {
+            
+            return *this;
+        }
     private:
         TextElement _valueText;
+        String (*_valueHandler())
 };
 
 #endif
