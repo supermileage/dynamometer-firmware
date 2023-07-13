@@ -25,10 +25,9 @@ Container& Container::addVisualElement(std::shared_ptr<VisualElement> element, A
 void Container::draw() {
     // draw background and border
     VisualElement::draw();
-    int i = 0;
+    
     for (auto pair : _children) {
         std::shared_ptr<VisualElement> element = pair.first;
-        ++i;
         element->draw();
     }
 }
