@@ -5,7 +5,7 @@ ui_util::Point ValueTextComponent::computeDisplaySize() {
     int16_t len = 0;
     for (int i = 0; i < _nextString.length(); i++) {
         char c = _nextString[i];
-        if (isalnum(c)) {
+        if (isdigit(c)) {
             len += dim.x;
         } else {
             len += ui_util::computeCharacterDimensions(_font, c, _textSizeX, _textSizeY).x;
@@ -61,7 +61,7 @@ void ValueTextComponent::_drawOptimized(Adafruit_GFX& display, uint16_t colour, 
             display.write(next);
         }
 
-        if (isalnum(next) || isalnum(cur)) {
+        if (isdigit(next) || isdigit(cur)) {
             x += _charWidth;
         } else {
             x += ui_util::computeCharacterDimensions(_font, next, _textSizeX, _textSizeY).x;
@@ -75,7 +75,7 @@ void ValueTextComponent::_redraw(Adafruit_GFX& display, uint16_t colour, int16_t
         display.setCursor(x, y);
         char c = _nextString[i];
         display.write(c);
-        if (isalnum(c)) {
+        if (isdigit(c)) {
             x += _charWidth;
         } else {
             x += ui_util::computeCharacterDimensions(_font, c, _textSizeX, _textSizeY).x;
