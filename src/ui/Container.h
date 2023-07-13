@@ -50,6 +50,11 @@ class Container : public RectangularElement {
         Container& setPadding(int16_t padding);
 
         /**
+         * @brief returns this container's padding property
+        */
+        int16_t getPadding();
+
+        /**
          * @brief add visual element child to container
          * @param element element to be added
          * @param alignment alignment value for element
@@ -71,12 +76,14 @@ class Container : public RectangularElement {
         /**
          * @brief align elements in this container according to their associated Alignment value
         */
-       void align();
+       virtual void align();
+
+    protected:
+        int16_t _padding = 0;
+        Orientation _orientation = Column;
 
     private:
         vector<std::pair<std::shared_ptr<VisualElement>, Alignment>> _children;
-        int16_t _padding = 0;
-        Orientation _orientation = Column;
         
         /**
          * @brief aligns elements oriented in row
