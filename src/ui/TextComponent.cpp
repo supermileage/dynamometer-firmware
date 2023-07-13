@@ -42,54 +42,37 @@ TextComponent& TextComponent::setFontSize(uint8_t w, uint8_t h) {
 ui_util::Point TextComponent::computeDisplaySize() {
     return ui_util::Point {
         .x = ui_util::computeStringDimensions(_font, _nextString, _textSizeX, _textSizeY).x,
-        .y = ui_util::computeCharacterDimensions(_font, (uint8_t)'0', _textSizeX, _textSizeY).y
+        .y = ui_util::computeCharacterDimensions(_font, DEFAULT_SIZE_CHAR, _textSizeX, _textSizeY).x
     };
 }
 
 void TextComponent::draw(Adafruit_GFX& display) {
-    if (_fontChanged || _nextString.length() != _displayString.length()) {
-        ui_util::Point dimensions = computeDisplaySize();
-        _textWidth = dimensions.x;
-        _textHeight = dimensions.y;
-    }
     // only call draw if something has changed
     if (_fontChanged || _stringChanged || _colourChanged) {
         _drawInternal(display, _fontColour);
+        _displayString = _nextString;
+        _stringChanged = false;
+        _fontChanged = false;
+        _colourChanged = false;
     }
 }
 
 void TextComponent::_drawInternal(Adafruit_GFX& display, uint16_t colour) {
-    display.setFont(_font);
-    display.setTextColor(colour, _owner->getBackgroundColour());
-    display.setTextSize(_textSizeX, _textSizeY);
-
+    if (_fontChanged) {
+        ui_util::Point dim = computeDisplaySize();
+        _stringWidth = dim.x;
+        _charHeight = dim.y;
+    }
     // horizontally center text in field
-    int16_t cursorX = _owner->getPosition().x + (_owner->getWidth() - _textWidth) / 2;
+    int16_t cursorX = _owner->getPosition().x + (_owner->getWidth() - _stringWidth) / 2;
     // vertically center text in field (cursor is bottom left of text region)
     int16_t height = _owner->getHeight();
-    int16_t cursorY = _owner->getPosition().y + height - _textSizeY - (height - _textHeight) / 2;
-    
-    if (!_fontChanged && !_colourChanged && _nextString.length() == _displayString.length()) {
-        _drawOptimized(display, cursorX, cursorY);
-    } else {
-        display.setCursor(cursorX, cursorY);
-        display.write(_nextString.c_str());
-    }
-    _displayString = _nextString;
-    _stringChanged = false;
-    _fontChanged = false;
-    _colourChanged = false;
+    int16_t cursorY = _owner->getPosition().y + height - (height - _charHeight) / 2;
+
+    display.setFont(_font);
+    display.setTextSize(_textSizeX, _textSizeY);
+    display.setCursor(cursorX, cursorY);
+    display.setTextColor(colour, _owner->getBackgroundColour());
+    display.write(_nextString.c_str());
 }
 
-void TextComponent::_drawOptimized(Adafruit_GFX& display, int16_t x, int16_t y) {
-    for (uint16_t i = 0; i < _displayString.length(); i++) {
-        char c = _displayString[i];
-        int16_t w = ui_util::computeCharacterDimensions(_font, c, _textSizeX, _textSizeY).x;
-        if (c != _nextString[i]) {
-            display.fillRect(x, y - (_textHeight - 1), w, _textHeight, _owner->getBackgroundColour());
-            display.setCursor(x, y);
-            display.write((uint8_t)_nextString[i]);
-        }
-        x += w;
-    }
-}

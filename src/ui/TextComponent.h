@@ -3,8 +3,9 @@
 
 #include "Arduino.h"
 #include "Adafruit_GFX.h"
-
 #include "VisualElement.h"
+
+#define DEFAULT_SIZE_CHAR '0'
 
 class TextComponent {
     public:
@@ -48,30 +49,29 @@ class TextComponent {
         /**
          * @brief computes and returns Point with x, y representing width and height of display string
         */
-        ui_util::Point computeDisplaySize();
+        virtual ui_util::Point computeDisplaySize();
 
         /**
          * @brief draw -- only to be called from within VisualElement owner of this class
         */
         void draw(Adafruit_GFX& display);
 
-    private:
+    protected:
         VisualElement* _owner;
         String _displayString = "";
         String _nextString = "";
         GFXfont const* _font = nullptr;
         uint16_t _fontColour = 0;
-        int16_t _textWidth = 0;
-        int16_t _textHeight = 0;
+        int16_t _stringWidth = 0;
+        int16_t _charWidth = 0;
+        int16_t _charHeight = 0;
         uint8_t _textSizeX = 1;
         uint8_t _textSizeY = 1;
         bool _stringChanged = true;
         bool _fontChanged = true;
         bool _colourChanged = true;
 
-        void _drawInternal(Adafruit_GFX& display, uint16_t colour);
-        void _drawOptimized(Adafruit_GFX& display, int16_t x, int16_t y);
-
+        virtual void _drawInternal(Adafruit_GFX& display, uint16_t colour);
 };
 
 #endif

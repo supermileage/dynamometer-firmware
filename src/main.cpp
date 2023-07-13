@@ -22,13 +22,9 @@
 
 #include "settings.h"
 
-#include "graphics/fonts.h"
-#include "ui/ValueElement.h"
-
 /* system resources */
 Adafruit_ILI9341 tft = Adafruit_ILI9341(&SPI, LCD_DC, LCD_CS, LCD_RST);
 XPT2046_Touchscreen ts(TOUCH_CS);
-Adafruit_GFX& display = tft;
 
 /* sensors */
 SensorOptical optical(pio0, 0);
@@ -53,9 +49,6 @@ ApplicationContext context(inputManager, tft, factory);
 uint c0_lastUpdateTime = 0;
 uint c1_lastUpdateTime = 0;
 int c0_lastCount = 0;
-
-/* sandbox */
-ValueElement value(display);
 
 /* Core0 */
 void setup() {
@@ -82,49 +75,14 @@ void setup() {
 	inputManager.registerInput(ID_ROT_EN, &rot);
 	inputManager.begin();
 
-	delay(1000);
-
 	// application
 	ErrorUtil.init(ErrorLogger::LogAndPrint);
 	context.begin();
-
-	String label = "cur: ";
-	String val = "00.00";
-	String units = "A";
-
-	// sandbox
-	value.configureLabel(label, TOM_THUMB, COLOUR_WHITE, 2, 2)
-		.configureValue(val, FREE_SERIF_BOLD_18PT7B, COLOUR_WHITE)
-		.configureUnits(units, FREE_SERIF_BOLD_12PT7B, COLOUR_WHITE)
-		.setOrientation(Container::Row)
-		.setWidth(180)
-		.setHeight(ui_util::computeCharacterDimensions(FREE_SERIF_BOLD_18PT7B, '0', 1, 1).y + 4)
-		.setPosition(ui_util::Point { .x = 50, .y = 40 })
-		.setBackgroundColour(COLOUR_BLACK)
-		.addBorder(COLOUR_LIGHTGREY);
-	
-	UIEventHandler::instance().addEvent([]() {
-		value.align();
-		value.draw();
-	});
 }
-
-uint32_t g_lastThing = 0;
 
 void loop() {
 	inputManager.handle();
 	context.handle();
-
-	if (millis() >= g_lastThing + 100) {
-		g_lastThing = millis();
-		UIEventHandler::instance().addEvent( []() {
-			char buf[6] = { };
-			uint32_t seconds = g_lastThing / 1000;
-			sprintf(buf, "%02lu.%02lu", seconds / 60, seconds % 60);
-			String str = String(buf);
-			value.updateValue(str);
-		});
-	}
 }
 
 /* Core1 */

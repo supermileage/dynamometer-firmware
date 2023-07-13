@@ -1,12 +1,14 @@
 #ifndef _TEXT_ELEMENT_H_
 #define _TEXT_ELEMENT_H_
 
+#include <memory>
+
 #include "RectangularElement.h"
-#include "TextComponent.h"
+#include "ValueTextComponent.h"
 
 class TextElement : public RectangularElement {
     public:
-        TextElement(Adafruit_GFX& display);
+        TextElement(Adafruit_GFX& display, bool numeric = false);
         ~TextElement();
         
         /**
@@ -22,6 +24,7 @@ class TextElement : public RectangularElement {
 
         /**
          * @brief returns text component owned by this text element
+         * @warning unsafe to save TextComponent as reference
         */
         TextComponent& getTextComponent();
 
@@ -31,8 +34,7 @@ class TextElement : public RectangularElement {
         TextElement& computeDimensions();
 
     private:
-        TextComponent _textComponent;
-
+        std::shared_ptr<TextComponent> _textComponent = nullptr;
 };
 
 #endif

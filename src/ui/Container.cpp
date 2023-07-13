@@ -12,6 +12,10 @@ Container& Container::setPadding(int16_t padding) {
     return *this;
 }
 
+int16_t Container::getPadding() {
+    return _padding;
+}
+
 Container& Container::addVisualElement(std::shared_ptr<VisualElement> element, Alignment align) {
     element->setParent(this);
     _children.push_back(std::make_pair(element, align));
@@ -21,9 +25,10 @@ Container& Container::addVisualElement(std::shared_ptr<VisualElement> element, A
 void Container::draw() {
     // draw background and border
     VisualElement::draw();
-    
+    int i = 0;
     for (auto pair : _children) {
         std::shared_ptr<VisualElement> element = pair.first;
+        ++i;
         element->draw();
     }
 }
@@ -118,12 +123,12 @@ int16_t Container::_getHorizontalOffset(std::pair<std::shared_ptr<VisualElement>
 int16_t Container::_getVerticalOffset(std::pair<std::shared_ptr<VisualElement>, Alignment> pair, int16_t height) {
     switch (pair.second & CONTAINER_VERTICAL_BITMASK) {
         case CONTAINER_ALIGNMENT_TOP:
-            return height - pair.first->getHeight() - _padding;
+            return _padding;
         case CONTAINER_ALIGNMENT_CENTRE:
             // center -- ignore padding
             return (height - pair.first->getHeight()) / 2;
         default:
             // CONTAINER_ALIGNMENT_BOTTOM
-            return _padding;
+            return height - pair.first->getHeight() - _padding;
     }
 }
