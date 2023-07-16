@@ -2,6 +2,7 @@
 #include "SPI.h"
 #include "Wire.h"
 #include "TFT_eSPI.h"
+#include "graphics/fonts.h"
 
 #include "Sensor/SensorOptical.h"
 #include "Sensor/SensorForce.h"
@@ -10,6 +11,7 @@
 #include "application/ControllerFactory.h"
 #include "graphics/colour.h"
 #include "ui/UIEventHandler.h"
+#include "ui/ValueElement.h"
 
 #include "System/HardwareDemuxer.h"
 #include "System/HardwareInputSerial.h"
@@ -50,6 +52,13 @@ int c0_lastCount = 0;
 
 /* example forward declarations */
 
+ValueElement value(tft);
+ValueElement value1(tft);
+ValueElement value2(tft);
+ValueElement value3(tft);
+ValueElement value4(tft);
+ValueElement value5(tft);
+
 #define DEG2RAD 0.0174532925
 
 void fillSegment(int x, int y, int start_angle, int sub_angle, int r, unsigned int colour);
@@ -86,28 +95,114 @@ void setup() {
 
 	// application
 	ErrorUtil.init(ErrorLogger::LogAndPrint);
-	context.begin();
+	// context.begin();
+
+	String label = "cur: ";
+	String val = "00:000";
+	String units = "A";
+
+	// sandbox
+	value.configureLabel(label, FREE_SERIF_9PT7B, COLOUR_WHITE)
+		.configureValue(val, FREE_SERIF_BOLD_12PT7B, COLOUR_WHITE)
+		.configureUnits(units, FREE_SERIF_9PT7B, COLOUR_WHITE)
+		.setOrientation(Container::Row)
+		.setPadding(4)
+		.setPosition(ui_util::Point { .x = 0, .y = 40 })
+		.setBackgroundColour(COLOUR_BLACK)
+		.addBorder(COLOUR_LIGHTGREY);
+	value1.configureLabel(label, FREE_SERIF_9PT7B, COLOUR_WHITE)
+		.configureValue(val, FREE_SERIF_BOLD_12PT7B, COLOUR_WHITE)
+		.configureUnits(units, FREE_SERIF_9PT7B, COLOUR_WHITE)
+		.setOrientation(Container::Row)
+		.setPadding(4)
+		.setPosition(ui_util::Point { .x = 0, .y = 100 })
+		.setBackgroundColour(COLOUR_BLACK)
+		.addBorder(COLOUR_LIGHTGREY);
+	value2.configureLabel(label, FREE_SERIF_9PT7B, COLOUR_WHITE)
+		.configureValue(val, FREE_SERIF_BOLD_12PT7B, COLOUR_WHITE)
+		.configureUnits(units, FREE_SERIF_9PT7B, COLOUR_WHITE)
+		.setOrientation(Container::Row)
+		.setPadding(4)
+		.setPosition(ui_util::Point { .x = 160, .y = 160 })
+		.setBackgroundColour(COLOUR_BLACK)
+		.addBorder(COLOUR_LIGHTGREY);
+	value3.configureLabel(label, FREE_SERIF_9PT7B, COLOUR_WHITE)
+		.configureValue(val, FREE_SERIF_BOLD_12PT7B, COLOUR_WHITE)
+		.configureUnits(units, FREE_SERIF_9PT7B, COLOUR_WHITE)
+		.setOrientation(Container::Row)
+		.setPadding(4)
+		.setPosition(ui_util::Point { .x = 160, .y = 40 })
+		.setBackgroundColour(COLOUR_BLACK)
+		.addBorder(COLOUR_LIGHTGREY);
+	value4.configureLabel(label, FREE_SERIF_9PT7B, COLOUR_WHITE)
+		.configureValue(val, FREE_SERIF_BOLD_12PT7B, COLOUR_WHITE)
+		.configureUnits(units, FREE_SERIF_9PT7B, COLOUR_WHITE)
+		.setOrientation(Container::Row)
+		.setPadding(4)
+		.setPosition(ui_util::Point { .x = 160, .y = 100 })
+		.setBackgroundColour(COLOUR_BLACK)
+		.addBorder(COLOUR_LIGHTGREY);
+	value5.configureLabel(label, FREE_SERIF_9PT7B, COLOUR_WHITE)
+		.configureValue(val, FREE_SERIF_BOLD_12PT7B, COLOUR_WHITE)
+		.configureUnits(units, FREE_SERIF_9PT7B, COLOUR_WHITE)
+		.setOrientation(Container::Row)
+		.setPadding(4)
+		.setPosition(ui_util::Point { .x = 0, .y = 160 })
+		.setBackgroundColour(COLOUR_BLACK)
+		.addBorder(COLOUR_LIGHTGREY);
+
+	UIEventHandler::instance().addEvent([]() {
+		value.align();
+		value1.align();
+		value2.align();
+		value3.align();
+		value4.align();
+		value5.align();
+		value.draw();
+		value1.draw();
+		value2.draw();
+		value3.draw();
+		value4.draw();
+		value5.draw();
+	});
 }
 
 uint32_t g_lastUpdate = 0;
+uint32_t g_lastThing = 0;
+
+uint32_t g_before = 0;
+uint32_t g_after = 0;
+uint32_t g_sum = 0;
+uint32_t g_count = 0;
 
 void loop() {
 	inputManager.handle();
-	context.handle();
+	// context.handle();
 
-	// // Draw 4 pie chart segments
-	// fillSegment(160, 120, 0, 60, 100, TFT_RED);
-	// fillSegment(160, 120, 60, 30, 100, TFT_GREEN);
-	// fillSegment(160, 120, 60 + 30, 120, 100, TFT_BLUE);
-	// fillSegment(160, 120, 60 + 30 + 120, 150, 100, TFT_YELLOW);
+	if (millis() >= g_lastThing + 29) {
+		g_lastThing = millis();
+		UIEventHandler::instance().addEvent( []() {
+			g_before = micros();
 
-	// delay(4000);
+			char buf[6] = { };
+			uint32_t seconds = g_lastThing * 3;
+			sprintf(buf, "%02lu:%03lu", seconds / 1000 % 100, seconds % 1000);
+			String str = String(buf);
+			value.updateValue(str);
+			value1.updateValue(str);
+			value2.updateValue(str);
+			value3.updateValue(str);
+			value4.updateValue(str);
+			value5.updateValue(str);
 
-	// // Erase old chart with 360 degree black plot
-	// fillSegment(160, 120, 0, 360, 100, TFT_BLACK);
+			g_after = micros();
+			g_sum += (g_after - g_before);
+			++g_count;
+		});
+	}
 
 	if (millis() > g_lastUpdate + 2000) {
-    	Serial.println("Core1 Heartbeat");
+    	DEBUG_SERIAL_LN("Core1 Heartbeat");
     	g_lastUpdate = millis();
   	}
 }
@@ -124,6 +219,9 @@ void loop1() {
 	if (millis() > c1_lastUpdateTime + 2000) {
 		DEBUG_SERIAL_LN("Core 2 Heartbeat");
 		c1_lastUpdateTime = millis();
+		Serial.println(String("average time per write: ") + String(g_sum / g_count) + String("us"));
+		g_count = 0;
+		g_sum = 0;
 	}
 }
 
