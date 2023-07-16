@@ -1,7 +1,7 @@
 #include "ValueElement.h"
 
 
-ValueElement::ValueElement(Adafruit_GFX& display) : Container(display) {
+ValueElement::ValueElement(TFT_eSPI& display) : Container(display) {
     _labelElement = std::make_shared<TextElement>(_display);
     _valueElement = std::make_shared<TextElement>(_display, true);
     _unitsElement = std::make_shared<TextElement>(_display);

@@ -3,7 +3,7 @@
 #define CONTAINER_HORIZONTAL_BITMASK    0xf
 #define CONTAINER_VERTICAL_BITMASK      0xf0
 
-Container::Container(Adafruit_GFX& display) : RectangularElement(display) { }
+Container::Container(TFT_eSPI& display) : RectangularElement(display) { }
 
 Container::~Container() { }
 

@@ -19,17 +19,17 @@ class ValueTextComponent : public TextComponent {
         /**
          * @brief overridden _drawInternal method checks whether or not to call _drawOptimized
         */
-        void _drawInternal(Adafruit_GFX& display, uint16_t colour) override;
+        void _drawInternal(TFT_eSPI& display, uint16_t colour) override;
 
         /**
          * @brief specialized draw method which only erases and redraws characters whose values have changed
         */
-        void _drawOptimized(Adafruit_GFX& display, uint16_t colour, int16_t x, int16_t y);
+        void _drawOptimized(TFT_eSPI& display, uint16_t colour, int16_t x, int16_t y);
 
         /**
          * @brief draws entire string display called on initial draw or after font / string length changed
         */
-        void _redraw(Adafruit_GFX& display, uint16_t colour, int16_t x, int16_t y);
+        void _redraw(TFT_eSPI& display, uint16_t colour, int16_t x, int16_t y);
 };
 
 #endif

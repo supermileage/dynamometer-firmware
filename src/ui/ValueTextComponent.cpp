@@ -15,7 +15,7 @@ ui_util::Point ValueTextComponent::computeDisplaySize() {
     return dim;
 }
 
-void ValueTextComponent::_drawInternal(Adafruit_GFX& display, uint16_t colour) {
+void ValueTextComponent::_drawInternal(TFT_eSPI& display, uint16_t colour) {
     if (_fontChanged || _nextString.length() != _displayString.length()) {
         _stringWidth = ui_util::computeStringDimensions(_font, _nextString, _textSizeX, _textSizeY).x;
 
@@ -32,8 +32,8 @@ void ValueTextComponent::_drawInternal(Adafruit_GFX& display, uint16_t colour) {
     int16_t height = _owner->getHeight();
     int16_t cursorY = _owner->getPosition().y + height - (height - _charHeight) / 2;
 
-    display.setFont(_font);
-    display.setTextSize(_textSizeX, _textSizeY);
+    display.setFreeFont(_font);
+    display.setTextSize(_textSizeX);
 
     if (!_fontChanged && !_colourChanged && _nextString.length() == _displayString.length()) {
         _drawOptimized(display, colour, cursorX, cursorY);
@@ -46,7 +46,7 @@ void ValueTextComponent::_drawInternal(Adafruit_GFX& display, uint16_t colour) {
     _colourChanged = false;
 }
 
-void ValueTextComponent::_drawOptimized(Adafruit_GFX& display, uint16_t colour, int16_t x, int16_t y) {
+void ValueTextComponent::_drawOptimized(TFT_eSPI& display, uint16_t colour, int16_t x, int16_t y) {
     for (uint16_t i = 0; i < _displayString.length(); i++) {
         char next = _nextString[i];
         char cur = _displayString[i];
@@ -69,7 +69,7 @@ void ValueTextComponent::_drawOptimized(Adafruit_GFX& display, uint16_t colour, 
     }
 }
 
-void ValueTextComponent::_redraw(Adafruit_GFX& display, uint16_t colour, int16_t x, int16_t y) {
+void ValueTextComponent::_redraw(TFT_eSPI& display, uint16_t colour, int16_t x, int16_t y) {
     display.setTextColor(colour, _owner->getBackgroundColour());
     for (int i = 0; i < _nextString.length(); i++) {
         display.setCursor(x, y);

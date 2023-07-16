@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 #include <functional>
-#include "Adafruit_GFX.h"
+#include "TFT_eSPI.h"
 
 namespace ui_util {
 

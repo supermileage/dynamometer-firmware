@@ -1,6 +1,6 @@
 #include "VisualElement.h"
 
-VisualElement::VisualElement(Adafruit_GFX& display) : _display(display) { }
+VisualElement::VisualElement(TFT_eSPI& display) : _display(display) { }
 
 VisualElement::~VisualElement() { }
 

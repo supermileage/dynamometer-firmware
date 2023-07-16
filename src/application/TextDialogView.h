@@ -1,12 +1,12 @@
 #ifndef _TEXT_DIALOG_VIEW_H_
 #define _TEXT_DIALOG_VIEW_H_
 
-#include "Adafruit_GFX.h"
+#include "TFT_eSPI.h"
 #include "ViewBase.h"
 
 class TextDialogView : public ViewBase {
     public:
-        TextDialogView(Adafruit_GFX& display);
+        TextDialogView(TFT_eSPI& display);
         ~TextDialogView();
         void init();
         void setTextDisplay(const String& str);

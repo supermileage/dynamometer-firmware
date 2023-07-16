@@ -1,6 +1,6 @@
 #include "UIButton.h"
 
-UIButton::UIButton(Adafruit_GFX& display) : UIElement(display) {
+UIButton::UIButton(TFT_eSPI& display) : UIElement(display) {
     _textComponent.setOwner(this);
 }
 
