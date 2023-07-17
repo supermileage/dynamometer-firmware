@@ -33,16 +33,15 @@ uint16_t TextComponent::getFontColour() {
 }
 
 TextComponent& TextComponent::setFontSize(uint8_t w, uint8_t h) {
-    _fontChanged = (_textSizeX != w) || (_textSizeY != h) || _fontChanged;
-    _textSizeX = w;
-    _textSizeY = h;
+    _fontChanged = (_textSize != w) || _fontChanged;
+    _textSize = w;
     return *this;
 }
 
 ui_util::Point TextComponent::computeDisplaySize() {
     return ui_util::Point {
-        .x = ui_util::computeStringDimensions(_font, _nextString, _textSizeX, _textSizeY).x,
-        .y = ui_util::computeCharacterDimensions(_font, DEFAULT_SIZE_CHAR, _textSizeX, _textSizeY).x
+        .x = ui_util::computeStringDimensions(_font, _nextString, _textSize).x,
+        .y = ui_util::computeCharacterDimensions(_font, DEFAULT_SIZE_CHAR, _textSize).x
     };
 }
 
@@ -70,7 +69,7 @@ void TextComponent::_drawInternal(TFT_eSPI& display, uint16_t colour) {
     int16_t cursorY = _owner->getPosition().y + height - (height - _charHeight) / 2;
 
     display.setFreeFont(_font);
-    display.setTextSize(_textSizeX);
+    display.setTextSize(_textSize);
     display.setCursor(cursorX, cursorY);
     display.setTextColor(colour, _owner->getBackgroundColour());
     for (char c : _nextString) {

@@ -65,8 +65,7 @@ class TextComponent {
         int16_t _stringWidth = 0;
         int16_t _charWidth = 0;
         int16_t _charHeight = 0;
-        uint8_t _textSizeX = 1;
-        uint8_t _textSizeY = 1;
+        uint8_t _textSize = 1;
         bool _stringChanged = true;
         bool _fontChanged = true;
         bool _colourChanged = true;

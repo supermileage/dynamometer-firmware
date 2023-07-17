@@ -60,27 +60,27 @@ namespace ui_util {
     /**
      * @brief computes the pixel width and height of single character for given font
     */
-    static inline Point computeCharacterDimensions(const GFXfont* font, uint8_t c, uint8_t sizeX, uint8_t sizeY) {
+    static inline Point computeCharacterDimensions(const GFXfont* font, uint8_t c, uint8_t size) {
         uint8_t first = (uint8_t)(font->first);
         if (c < first || c > (uint8_t)(font->last)) {
             return Point { 0, 0 };
         }
 
         GFXglyph *glyph =  font->glyph + (c - first);
-        int16_t w = glyph->xAdvance * (int16_t)sizeX;
-        int16_t h = glyph->height * (int16_t)sizeY;
+        int16_t w = glyph->xAdvance * (int16_t)size;
+        int16_t h = glyph->height * (int16_t)size;
         return Point { w, h };
     }
 
     /**
      * @brief computes the pixel width and height of string for given font
     */
-    static inline Point computeStringDimensions(const GFXfont* font, String str, uint8_t sizeX, uint8_t sizeY) {
+    static inline Point computeStringDimensions(const GFXfont* font, String str, uint8_t size) {
         int16_t width = 0;
         int16_t maxHeight = 0;
 
         for (unsigned int i = 0; i < str.length(); i++) {
-            Point cur = computeCharacterDimensions(font, (uint8_t)str[i], sizeX, sizeY);
+            Point cur = computeCharacterDimensions(font, (uint8_t)str[i], size);
             width += cur.x;
             if (cur.y > maxHeight) {
                 maxHeight = cur.y;
