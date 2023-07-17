@@ -23,6 +23,8 @@
 /* General */
 
 /* Screen */
+#define LCD_MOSI    19
+#define LCD_SCLK    18
 #define LCD_RST     20
 #define LCD_DC      21
 #define LCD_CS      17

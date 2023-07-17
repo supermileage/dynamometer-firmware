@@ -9,3 +9,6 @@
 [submodule "lib/XPT2046_Touch"]
 	path = lib/XPT2046_Touch
 	url = git@github.com:PaulStoffregen/XPT2046_Touchscreen.git
+[submodule "lib/TFT_eSPI"]
+	path = lib/TFT_eSPI
+	url = git@github.com:supermileage/TFT_eSPI.git
