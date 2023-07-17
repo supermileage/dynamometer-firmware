@@ -6,7 +6,7 @@
 #include <map>
 #include <memory>
 
-#include "Adafruit_GFX.h"
+#include "TFT_eSPI.h"
 #include "System/InputManager.h"
 #include "System/HardwareInput.h"
 #include "ui/UIElement.h"
@@ -24,7 +24,7 @@ using namespace application;
 */
 class ControllerBase : public std::enable_shared_from_this<ControllerBase> {
     public:
-        ControllerBase(ApplicationContext& context, Adafruit_GFX& display);
+        ControllerBase(ApplicationContext& context, TFT_eSPI& display);
         virtual ~ControllerBase();
 
         /**
@@ -50,7 +50,7 @@ class ControllerBase : public std::enable_shared_from_this<ControllerBase> {
 
     protected:
         ApplicationContext& _context;
-        Adafruit_GFX& _display;
+        TFT_eSPI& _display;
         StateInfo _info;
         uint8_t _inFocus = 0;
 

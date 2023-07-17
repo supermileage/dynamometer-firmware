@@ -5,7 +5,7 @@
 
 class RectangularElement : public VisualElement {
     public:
-        RectangularElement(Adafruit_GFX& display);
+        RectangularElement(TFT_eSPI& display);
         ~RectangularElement(); 
 
         /**

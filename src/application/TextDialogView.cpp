@@ -14,7 +14,7 @@
 #define TD_CHAR_WIDTH           15
 #define TD_CHAR_HEIGHT          25
 
-TextDialogView::TextDialogView(Adafruit_GFX& display) : ViewBase(display) {
+TextDialogView::TextDialogView(TFT_eSPI& display) : ViewBase(display) {
     _textContainer = std::make_shared<Container>(display);
     _textDisplay = std::make_shared<TextElement>(display);
 }

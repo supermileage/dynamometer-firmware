@@ -20,7 +20,7 @@ SensorOptical::SensorOptical(PIO pio, uint stateMachine, uint32_t readInterval) 
 SensorOptical::~SensorOptical() { }
 
 void SensorOptical::begin() {
-    pinMode(OPTICAL_SENSOR_PIN, INPUT);
+    // pinMode(OPTICAL_SENSOR_PIN, INPUT);
 	uint offset = pio_add_program(_pio, &pio_counter_program);
 	pio_counter_init(_pio, _stateMachine, offset, OPTICAL_SENSOR_PIN, PIO_CLOCK_DIV);
     _lastUpdateTime = micros();

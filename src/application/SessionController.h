@@ -16,7 +16,7 @@ using namespace application;
 */
 class SessionController : public ControllerBase {
     public:
-        SessionController(ApplicationContext& context, Adafruit_GFX& display, SensorOptical& optical, SensorForce& force);
+        SessionController(ApplicationContext& context, TFT_eSPI& display, SensorOptical& optical, SensorForce& force);
         ~SessionController();
 
     protected:

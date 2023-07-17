@@ -1,14 +1,14 @@
 #include "ValueElement.h"
 
 
-ValueElement::ValueElement(Adafruit_GFX& display) : Container(display) {
+ValueElement::ValueElement(TFT_eSPI& display) : Container(display) {
     _labelElement = std::make_shared<TextElement>(_display);
     _valueElement = std::make_shared<TextElement>(_display, true);
     _unitsElement = std::make_shared<TextElement>(_display);
 
-    Container::addVisualElement(_labelElement, Container::TopRight);
+    Container::addVisualElement(_labelElement, Container::TopMiddle);
     Container::addVisualElement(_valueElement, Container::CentreMiddle);
-    Container::addVisualElement(_unitsElement, Container::BottomLeft);
+    Container::addVisualElement(_unitsElement, Container::BottomMiddle);
 }
 
 ValueElement& ValueElement::configureLabel(String& label, GFXfont const* font, uint16_t colour, uint8_t w, uint8_t h) {

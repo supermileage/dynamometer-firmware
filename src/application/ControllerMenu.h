@@ -28,7 +28,7 @@ class ControllerMenu : public ControllerBase {
             StateInfo info;
         };
 
-        ControllerMenu(ApplicationContext& context, Adafruit_GFX& display);
+        ControllerMenu(ApplicationContext& context, TFT_eSPI& display);
         ~ControllerMenu();
 
         /**

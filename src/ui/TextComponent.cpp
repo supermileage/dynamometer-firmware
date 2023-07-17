@@ -46,7 +46,7 @@ ui_util::Point TextComponent::computeDisplaySize() {
     };
 }
 
-void TextComponent::draw(Adafruit_GFX& display) {
+void TextComponent::draw(TFT_eSPI& display) {
     // only call draw if something has changed
     if (_fontChanged || _stringChanged || _colourChanged) {
         _drawInternal(display, _fontColour);
@@ -57,7 +57,7 @@ void TextComponent::draw(Adafruit_GFX& display) {
     }
 }
 
-void TextComponent::_drawInternal(Adafruit_GFX& display, uint16_t colour) {
+void TextComponent::_drawInternal(TFT_eSPI& display, uint16_t colour) {
     if (_fontChanged) {
         ui_util::Point dim = computeDisplaySize();
         _stringWidth = dim.x;
@@ -69,10 +69,12 @@ void TextComponent::_drawInternal(Adafruit_GFX& display, uint16_t colour) {
     int16_t height = _owner->getHeight();
     int16_t cursorY = _owner->getPosition().y + height - (height - _charHeight) / 2;
 
-    display.setFont(_font);
-    display.setTextSize(_textSizeX, _textSizeY);
+    display.setFreeFont(_font);
+    display.setTextSize(_textSizeX);
     display.setCursor(cursorX, cursorY);
     display.setTextColor(colour, _owner->getBackgroundColour());
-    display.write(_nextString.c_str());
+    for (char c : _nextString) {
+        display.write(c);    
+    }
 }
 

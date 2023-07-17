@@ -2,7 +2,7 @@
 #define _TEXT_COMPONENT_H
 
 #include "Arduino.h"
-#include "Adafruit_GFX.h"
+#include "TFT_eSPI.h"
 #include "VisualElement.h"
 
 #define DEFAULT_SIZE_CHAR '0'
@@ -54,7 +54,7 @@ class TextComponent {
         /**
          * @brief draw -- only to be called from within VisualElement owner of this class
         */
-        void draw(Adafruit_GFX& display);
+        void draw(TFT_eSPI& display);
 
     protected:
         VisualElement* _owner;
@@ -71,7 +71,7 @@ class TextComponent {
         bool _fontChanged = true;
         bool _colourChanged = true;
 
-        virtual void _drawInternal(Adafruit_GFX& display, uint16_t colour);
+        virtual void _drawInternal(TFT_eSPI& display, uint16_t colour);
 };
 
 #endif
