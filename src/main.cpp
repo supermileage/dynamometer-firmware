@@ -50,7 +50,7 @@ uint c0_lastUpdateTime = 0;
 uint c1_lastUpdateTime = 0;
 int c0_lastCount = 0;
 
-/* example forward declarations */
+/* example forward declarations *//* example forward declarations */
 
 ValueElement value(tft);
 ValueElement value1(tft);
@@ -58,6 +58,10 @@ ValueElement value2(tft);
 ValueElement value3(tft);
 ValueElement value4(tft);
 ValueElement value5(tft);
+ValueElement value6(tft);
+ValueElement value7(tft);
+ValueElement value8(tft);
+ValueElement value9(tft);
 
 #define DEG2RAD 0.0174532925
 
@@ -78,9 +82,9 @@ void setup() {
 	optical.begin();
 	force.begin();
 
-	tft.init();
+	tft.begin();
 	tft.setRotation(3);
-	tft.fillScreen(TFT_BLACK);
+	tft.fillScreen(ILI9341_BLACK);
 
 	// ui inputs
 	demuxer.init();
@@ -97,60 +101,91 @@ void setup() {
 	ErrorUtil.init(ErrorLogger::LogAndPrint);
 	// context.begin();
 
-	String label = "cur: ";
-	String val = "00:000";
+	String label = "val:";
+	String val = "00.000";
 	String units = "A";
 
 	// sandbox
 	value.configureLabel(label, FREE_SERIF_9PT7B, COLOUR_WHITE)
-		.configureValue(val, FREE_SERIF_BOLD_12PT7B, COLOUR_WHITE)
-		.configureUnits(units, FREE_SERIF_9PT7B, COLOUR_WHITE)
+		.configureValue(val, FREE_SERIF_BOLD_18PT7B, COLOUR_WHITE)
+		// .configureUnits(units, FREE_SERIF_9PT7B, COLOUR_WHITE)
 		.setOrientation(Container::Row)
 		.setPadding(4)
-		.setPosition(ui_util::Point { .x = 0, .y = 40 })
+		.setPosition(ui_util::Point { .x = 0, .y = 20 })
 		.setBackgroundColour(COLOUR_BLACK)
 		.addBorder(COLOUR_LIGHTGREY);
 	value1.configureLabel(label, FREE_SERIF_9PT7B, COLOUR_WHITE)
-		.configureValue(val, FREE_SERIF_BOLD_12PT7B, COLOUR_WHITE)
-		.configureUnits(units, FREE_SERIF_9PT7B, COLOUR_WHITE)
+		.configureValue(val, FREE_SERIF_BOLD_18PT7B, COLOUR_WHITE)
+		// .configureUnits(units, FREE_SERIF_9PT7B, COLOUR_WHITE)
+		.setOrientation(Container::Row)
+		.setPadding(4)
+		.setPosition(ui_util::Point { .x = 0, .y = 60 })
+		.setBackgroundColour(COLOUR_BLACK)
+		.addBorder(COLOUR_LIGHTGREY);
+	value2.configureLabel(label, FREE_SERIF_9PT7B, COLOUR_WHITE)
+		.configureValue(val, FREE_SERIF_BOLD_18PT7B, COLOUR_WHITE)
+		// .configureUnits(units, FREE_SERIF_9PT7B, COLOUR_WHITE)
 		.setOrientation(Container::Row)
 		.setPadding(4)
 		.setPosition(ui_util::Point { .x = 0, .y = 100 })
 		.setBackgroundColour(COLOUR_BLACK)
 		.addBorder(COLOUR_LIGHTGREY);
-	value2.configureLabel(label, FREE_SERIF_9PT7B, COLOUR_WHITE)
-		.configureValue(val, FREE_SERIF_BOLD_12PT7B, COLOUR_WHITE)
-		.configureUnits(units, FREE_SERIF_9PT7B, COLOUR_WHITE)
-		.setOrientation(Container::Row)
-		.setPadding(4)
-		.setPosition(ui_util::Point { .x = 160, .y = 160 })
-		.setBackgroundColour(COLOUR_BLACK)
-		.addBorder(COLOUR_LIGHTGREY);
 	value3.configureLabel(label, FREE_SERIF_9PT7B, COLOUR_WHITE)
-		.configureValue(val, FREE_SERIF_BOLD_12PT7B, COLOUR_WHITE)
-		.configureUnits(units, FREE_SERIF_9PT7B, COLOUR_WHITE)
+		.configureValue(val, FREE_SERIF_BOLD_18PT7B, COLOUR_WHITE)
+		// .configureUnits(units, FREE_SERIF_9PT7B, COLOUR_WHITE)
 		.setOrientation(Container::Row)
 		.setPadding(4)
-		.setPosition(ui_util::Point { .x = 160, .y = 40 })
+		.setPosition(ui_util::Point { .x = 0, .y = 140 })
 		.setBackgroundColour(COLOUR_BLACK)
 		.addBorder(COLOUR_LIGHTGREY);
 	value4.configureLabel(label, FREE_SERIF_9PT7B, COLOUR_WHITE)
-		.configureValue(val, FREE_SERIF_BOLD_12PT7B, COLOUR_WHITE)
-		.configureUnits(units, FREE_SERIF_9PT7B, COLOUR_WHITE)
+		.configureValue(val, FREE_SERIF_BOLD_18PT7B, COLOUR_WHITE)
+		// .configureUnits(units, FREE_SERIF_9PT7B, COLOUR_WHITE)
+		.setOrientation(Container::Row)
+		.setPadding(4)
+		.setPosition(ui_util::Point { .x = 0, .y = 180 })
+		.setBackgroundColour(COLOUR_BLACK)
+		.addBorder(COLOUR_LIGHTGREY);
+	value5.configureLabel(label, FREE_SERIF_9PT7B, COLOUR_WHITE)
+		.configureValue(val, FREE_SERIF_BOLD_18PT7B, COLOUR_WHITE)
+		// .configureUnits(units, FREE_SERIF_9PT7B, COLOUR_WHITE)
+		.setOrientation(Container::Row)
+		.setPadding(4)
+		.setPosition(ui_util::Point { .x = 160, .y = 20 })
+		.setBackgroundColour(COLOUR_BLACK)
+		.addBorder(COLOUR_LIGHTGREY);
+	value6.configureLabel(label, FREE_SERIF_9PT7B, COLOUR_WHITE)
+		.configureValue(val, FREE_SERIF_BOLD_18PT7B, COLOUR_WHITE)
+		// .configureUnits(units, FREE_SERIF_9PT7B, COLOUR_WHITE)
+		.setOrientation(Container::Row)
+		.setPadding(4)
+		.setPosition(ui_util::Point { .x = 160, .y = 60 })
+		.setBackgroundColour(COLOUR_BLACK)
+		.addBorder(COLOUR_LIGHTGREY);
+	value7.configureLabel(label, FREE_SERIF_9PT7B, COLOUR_WHITE)
+		.configureValue(val, FREE_SERIF_BOLD_18PT7B, COLOUR_WHITE)
+		// .configureUnits(units, FREE_SERIF_9PT7B, COLOUR_WHITE)
 		.setOrientation(Container::Row)
 		.setPadding(4)
 		.setPosition(ui_util::Point { .x = 160, .y = 100 })
 		.setBackgroundColour(COLOUR_BLACK)
 		.addBorder(COLOUR_LIGHTGREY);
-	value5.configureLabel(label, FREE_SERIF_9PT7B, COLOUR_WHITE)
-		.configureValue(val, FREE_SERIF_BOLD_12PT7B, COLOUR_WHITE)
-		.configureUnits(units, FREE_SERIF_9PT7B, COLOUR_WHITE)
+	value8.configureLabel(label, FREE_SERIF_9PT7B, COLOUR_WHITE)
+		.configureValue(val, FREE_SERIF_BOLD_18PT7B, COLOUR_WHITE)
+		// .configureUnits(units, FREE_SERIF_9PT7B, COLOUR_WHITE)
 		.setOrientation(Container::Row)
 		.setPadding(4)
-		.setPosition(ui_util::Point { .x = 0, .y = 160 })
+		.setPosition(ui_util::Point { .x = 160, .y = 140 })
 		.setBackgroundColour(COLOUR_BLACK)
 		.addBorder(COLOUR_LIGHTGREY);
-
+	value9.configureLabel(label, FREE_SERIF_9PT7B, COLOUR_WHITE)
+		.configureValue(val, FREE_SERIF_BOLD_18PT7B, COLOUR_WHITE)
+		// .configureUnits(units, FREE_SERIF_9PT7B, COLOUR_WHITE)
+		.setOrientation(Container::Row)
+		.setPadding(4)
+		.setPosition(ui_util::Point { .x = 160, .y = 180 })
+		.setBackgroundColour(COLOUR_BLACK)
+		.addBorder(COLOUR_LIGHTGREY);
 	UIEventHandler::instance().addEvent([]() {
 		value.align();
 		value1.align();
@@ -158,12 +193,20 @@ void setup() {
 		value3.align();
 		value4.align();
 		value5.align();
+		value6.align();
+		value7.align();
+		value8.align();
+		value9.align();
 		value.draw();
 		value1.draw();
 		value2.draw();
 		value3.draw();
 		value4.draw();
 		value5.draw();
+		value6.draw();
+		value7.draw();
+		value8.draw();
+		value9.draw();
 	});
 }
 
@@ -179,14 +222,14 @@ void loop() {
 	inputManager.handle();
 	// context.handle();
 
-	if (millis() >= g_lastThing + 29) {
+	if (millis() >= g_lastThing + 19) {
 		g_lastThing = millis();
 		UIEventHandler::instance().addEvent( []() {
 			g_before = micros();
 
 			char buf[6] = { };
-			uint32_t seconds = g_lastThing * 3;
-			sprintf(buf, "%02lu:%03lu", seconds / 1000 % 100, seconds % 1000);
+			uint32_t seconds = g_lastThing;
+			sprintf(buf, "%02lu.%03lu", seconds / 1000 % 100, seconds % 1000);
 			String str = String(buf);
 			value.updateValue(str);
 			value1.updateValue(str);
@@ -194,6 +237,10 @@ void loop() {
 			value3.updateValue(str);
 			value4.updateValue(str);
 			value5.updateValue(str);
+			value6.updateValue(str);
+			value7.updateValue(str);
+			value8.updateValue(str);
+			value9.updateValue(str);
 
 			g_after = micros();
 			g_sum += (g_after - g_before);
