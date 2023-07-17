@@ -3,8 +3,9 @@
 
 #include "Arduino.h"
 #include "Adafruit_GFX.h"
+#include "VisualElement.h"
 
-#include "RectangularElement.h"
+#define DEFAULT_SIZE_CHAR '0'
 
 class TextComponent {
     public:
@@ -13,7 +14,7 @@ class TextComponent {
         /**
          * @brief sets visual element owner of this text component
         */
-        void setOwner(RectangularElement* owner);
+        void setOwner(VisualElement* owner);
 
         /**
          * @brief returns display string of this text component
@@ -46,29 +47,31 @@ class TextComponent {
         TextComponent& setFontSize(uint8_t w, uint8_t h);
 
         /**
+         * @brief computes and returns Point with x, y representing width and height of display string
+        */
+        virtual ui_util::Point computeDisplaySize();
+
+        /**
          * @brief draw -- only to be called from within VisualElement owner of this class
         */
         void draw(Adafruit_GFX& display);
 
-        /**
-         * @brief draw with colour -- only to be called from within VisualElement owner of this class
-        */
-        void draw(Adafruit_GFX& display, uint16_t colour);
-
-    private:
-        RectangularElement* _owner;
+    protected:
+        VisualElement* _owner;
         String _displayString = "";
+        String _nextString = "";
         GFXfont const* _font = nullptr;
         uint16_t _fontColour = 0;
-        int16_t _textWidth = 0;
-        int16_t _textHeight = 0;
+        int16_t _stringWidth = 0;
+        int16_t _charWidth = 0;
+        int16_t _charHeight = 0;
         uint8_t _textSizeX = 1;
         uint8_t _textSizeY = 1;
-        bool _textChanged = false;
-        bool _heightComputed = false;
+        bool _stringChanged = true;
+        bool _fontChanged = true;
+        bool _colourChanged = true;
 
-        void _drawInternal(Adafruit_GFX& display, uint16_t colour);
-
+        virtual void _drawInternal(Adafruit_GFX& display, uint16_t colour);
 };
 
 #endif

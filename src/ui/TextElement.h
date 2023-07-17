@@ -1,12 +1,14 @@
 #ifndef _TEXT_ELEMENT_H_
 #define _TEXT_ELEMENT_H_
 
-#include "VisualElement.h"
-#include "TextComponent.h"
+#include <memory>
+
+#include "RectangularElement.h"
+#include "ValueTextComponent.h"
 
 class TextElement : public RectangularElement {
     public:
-        TextElement(Adafruit_GFX& display);
+        TextElement(Adafruit_GFX& display, bool numeric = false);
         ~TextElement();
         
         /**
@@ -15,13 +17,24 @@ class TextElement : public RectangularElement {
         void draw() override;
 
         /**
+         * @brief redraw text to screen
+         * @note doesn't draw background or border to screen
+        */
+        void redraw();
+
+        /**
          * @brief returns text component owned by this text element
+         * @warning unsafe to save TextComponent as reference
         */
         TextComponent& getTextComponent();
 
-    private:
-        TextComponent _textComponent;
+        /**
+         * @brief computes own dimensions based on string and font
+        */
+        TextElement& computeDimensions();
 
+    private:
+        std::shared_ptr<TextComponent> _textComponent = nullptr;
 };
 
 #endif
