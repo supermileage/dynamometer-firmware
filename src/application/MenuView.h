@@ -11,7 +11,7 @@
 */
 class MenuView : public ViewBase {
     public:
-        MenuView(Adafruit_GFX& display);
+        MenuView(TFT_eSPI& display);
         ~MenuView();
 
         /**

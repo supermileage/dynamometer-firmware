@@ -5,7 +5,7 @@
 #include <utility>
 #include <memory>
 
-#include "Adafruit_GFX.h"
+#include "TFT_eSPI.h"
 #include "RectangularElement.h"
 
 #define CONTAINER_ALIGNMENT_RIGHT   0x1
@@ -40,7 +40,7 @@ class Container : public RectangularElement {
         /**
          * @brief initialize container class with background colour
         */
-        Container(Adafruit_GFX& display);
+        Container(TFT_eSPI& display);
 
         ~Container();
 

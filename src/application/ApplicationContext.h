@@ -4,7 +4,7 @@
 #include <stack>
 #include <memory>
 
-#include "Adafruit_GFX.h"
+#include "TFT_eSPI.h"
 #include "System/InputManager.h"
 
 #include "ControllerFactory.h"
@@ -26,7 +26,7 @@ using namespace application;
  */
 class ApplicationContext {
     public:
-        ApplicationContext(InputManager& manager, Adafruit_GFX& display, ControllerFactory& factory);
+        ApplicationContext(InputManager& manager, TFT_eSPI& display, ControllerFactory& factory);
         ~ApplicationContext();
 
         /**
@@ -70,7 +70,7 @@ class ApplicationContext {
     
     private:
         InputManager& _inputManager;
-        Adafruit_GFX& _display;
+        TFT_eSPI& _display;
         ControllerFactory& _factory;
         std::shared_ptr<ControllerBase> _controller = nullptr;
         StateInfo _currentStateInfo;

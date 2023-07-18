@@ -1,7 +1,7 @@
 #include "Arduino.h"
 #include "SPI.h"
 #include "Wire.h"
-#include "Adafruit_ILI9341.h"
+#include "TFT_eSPI.h"
 #include "XPT2046_Touchscreen.h"
 
 #include "Sensor/SensorOptical.h"
@@ -23,8 +23,7 @@
 #include "settings.h"
 
 /* system resources */
-Adafruit_ILI9341 tft = Adafruit_ILI9341(&SPI, LCD_DC, LCD_CS, LCD_RST);
-XPT2046_Touchscreen ts(TOUCH_CS);
+TFT_eSPI tft;
 
 /* sensors */
 SensorOptical optical(pio0, 0);
@@ -55,14 +54,14 @@ void setup() {
 	Serial.begin(115200);
 	SD.begin(SD_CS, SPI1);
 
+	// sensor
+	optical.begin();
+	force.begin();
+
 	// screen
 	tft.begin();
 	tft.setRotation(3);
 	tft.fillScreen(COLOUR_BLACK);
-
-	// sensor
-	optical.begin();
-	force.begin();
 
 	// ui inputs
 	demuxer.init();

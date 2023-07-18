@@ -8,7 +8,7 @@
 
 class TextElement : public RectangularElement {
     public:
-        TextElement(Adafruit_GFX& display, bool numeric = false);
+        TextElement(TFT_eSPI& display, bool numeric = false);
         ~TextElement();
         
         /**

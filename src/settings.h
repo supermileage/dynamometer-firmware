@@ -23,10 +23,12 @@
 /* General */
 
 /* Screen */
+#define LCD_MOSI    19
+#define LCD_SCLK    18
 #define LCD_RST     20
 #define LCD_DC      21
 #define LCD_CS      17
-#define TOUCH_CS    11
+// #define TOUCH_CS    11
 #define SD_CS       13
 
 /* Sensor */

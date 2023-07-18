@@ -5,7 +5,7 @@
 #include "graphics/fonts.h"
 #include "app_util.h"
 
-MenuView::MenuView(Adafruit_GFX& display) : ViewBase(display) {
+MenuView::MenuView(TFT_eSPI& display) : ViewBase(display) {
     _menuContainer = std::make_unique<Container>(_display);
 }
 

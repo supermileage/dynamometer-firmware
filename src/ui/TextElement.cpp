@@ -2,7 +2,7 @@
 
 #include "graphics/colour.h"
 
-TextElement::TextElement(Adafruit_GFX& display, bool numeric) : RectangularElement(display) {
+TextElement::TextElement(TFT_eSPI& display, bool numeric) : RectangularElement(display) {
     if (numeric) {
         _textComponent = std::make_shared<ValueTextComponent>();
     } else {

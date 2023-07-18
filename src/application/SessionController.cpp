@@ -5,7 +5,7 @@
 #define VALUE_IDS               CONFIG_ID_VALUE_IDS
 #define LOGGING_INTERVAL_ID     CONFIG_ID_LOGGING_INTERVAL
 
-SessionController::SessionController(ApplicationContext& context, Adafruit_GFX& display,
+SessionController::SessionController(ApplicationContext& context, TFT_eSPI& display,
     SensorOptical& optical, SensorForce& force) : ControllerBase(context, display),
         _optical(optical), _force(force) { }
 

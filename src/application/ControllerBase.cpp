@@ -1,6 +1,6 @@
 #include "ControllerBase.h"
 
-ControllerBase::ControllerBase(ApplicationContext& context, Adafruit_GFX& display) :
+ControllerBase::ControllerBase(ApplicationContext& context, TFT_eSPI& display) :
     _context(context), _display(display) { }
 
 ControllerBase::~ControllerBase() {

@@ -9,7 +9,7 @@
 
 class ViewBase {
     public:
-        ViewBase(Adafruit_GFX& display);
+        ViewBase(TFT_eSPI& display);
         virtual ~ViewBase();
 
         /**
@@ -33,7 +33,7 @@ class ViewBase {
         virtual void revert();
     
     protected:
-        Adafruit_GFX& _display;
+        TFT_eSPI& _display;
         std::unique_ptr<Container> _window;
         std::shared_ptr<TextElement> _header;
         std::shared_ptr<Container> _navButtonContainer;

@@ -10,7 +10,7 @@
 */
 class UIElement : public RectangularElement {
     public:
-        UIElement(Adafruit_GFX& display);
+        UIElement(TFT_eSPI& display);
         virtual ~UIElement() { }
         
         /**

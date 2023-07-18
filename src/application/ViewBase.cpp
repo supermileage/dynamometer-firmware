@@ -2,7 +2,7 @@
 #include "settings.h"
 #include "app_util.h"
 
-ViewBase::ViewBase(Adafruit_GFX& display) : _display(display) {
+ViewBase::ViewBase(TFT_eSPI& display) : _display(display) {
     _window = std::make_unique<Container>(_display);
     _header = std::make_shared<TextElement>(_display);
     _navButtonContainer = std::make_shared<Container>(_display);

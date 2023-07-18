@@ -2,7 +2,7 @@
 
 using namespace application;
 
-ControllerMenu::ControllerMenu(ApplicationContext& context, Adafruit_GFX& display) :
+ControllerMenu::ControllerMenu(ApplicationContext& context, TFT_eSPI& display) :
     ControllerBase(context, display) {
         _menu = std::make_shared<MenuView>(display);
 }

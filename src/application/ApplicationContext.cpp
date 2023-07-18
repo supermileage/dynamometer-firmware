@@ -1,6 +1,6 @@
 #include "ApplicationContext.h"
 
-ApplicationContext::ApplicationContext(InputManager& manager, Adafruit_GFX& display, ControllerFactory& factory) :
+ApplicationContext::ApplicationContext(InputManager& manager, TFT_eSPI& display, ControllerFactory& factory) :
     _inputManager(manager), _display(display), _factory(factory) { }
 
 ApplicationContext::~ApplicationContext() { }

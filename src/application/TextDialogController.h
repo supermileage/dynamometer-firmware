@@ -19,7 +19,7 @@ class TextDialogController : public ControllerBase {
         */
         static const std::unordered_map<char,char> SpecialCharacters;
 
-        TextDialogController(ApplicationContext& context, Adafruit_GFX& display);
+        TextDialogController(ApplicationContext& context, TFT_eSPI& display);
         ~TextDialogController();
 
         /**
