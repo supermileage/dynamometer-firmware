@@ -9,7 +9,7 @@
 
 class ControllerSandbox : public ControllerBase {
     public:
-        ControllerSandbox(ApplicationContext& context, Adafruit_GFX& display);
+        ControllerSandbox(ApplicationContext& context, TFT_eSPI& display);
         ~ControllerSandbox();
         void init(InputManager& manager) override;
 

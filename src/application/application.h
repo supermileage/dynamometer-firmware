@@ -24,6 +24,7 @@ namespace application {
         ManualControlMode,
         ManualControlSettings,
         TextDialog,
+        Sandbox
     };
 
     /**

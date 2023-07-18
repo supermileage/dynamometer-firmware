@@ -15,7 +15,7 @@
 #define SCREEN_CENTER_X (320 / 2)
 #define SCREEN_CENTER_Y (240 / 2)
 
-ControllerSandbox::ControllerSandbox(ApplicationContext& context, Adafruit_GFX& display) :
+ControllerSandbox::ControllerSandbox(ApplicationContext& context, TFT_eSPI& display) :
     ControllerBase(context, display) { }
 
 ControllerSandbox::~ControllerSandbox() { }

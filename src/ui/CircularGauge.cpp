@@ -1,7 +1,7 @@
 #include "CircularGauge.h"
 #include "settings.h"
 
-CircularGauge::CircularGauge(Adafruit_GFX& display, int32_t min, int32_t max) :
+CircularGauge::CircularGauge(TFT_eSPI& display, int32_t min, int32_t max) :
     CircularElement(display), _min(min), _max(max) { }
 
 CircularGauge::~CircularGauge() { }

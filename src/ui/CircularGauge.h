@@ -8,7 +8,7 @@ class CircularGauge : public CircularElement {
         /**
          * @brief contruct circular gauge object with display and min / max values
         */
-        CircularGauge(Adafruit_GFX& display, int32_t min, int32_t max);
+        CircularGauge(TFT_eSPI& display, int32_t min, int32_t max);
         ~CircularGauge();
 
         /**
