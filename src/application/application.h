@@ -12,14 +12,18 @@ namespace application {
     */
     enum ApplicationState {
         NullState = -1,
-        MainMenu = 0,
-        ManualControlMenu = 1,
-        CalibrationMenu = 2,
-        SettingsMenu = 3,
-        CalibrationMode = 4,
-        CalibrationSettings = 5,
-        TextDialog = 6,
-        Sandbox = 7
+        MainMenu,
+        GlobalSettingsMenu,
+        CalibrationMenu,
+        CalibrationMode,
+        CalibrationSettings,
+        AutoControlMenu,
+        AutoControlMode,
+        AutoControlSettings,
+        ManualControlMenu,
+        ManualControlMode,
+        ManualControlSettings,
+        TextDialog,
     };
 
     /**
@@ -67,11 +71,35 @@ namespace application {
 
     extern std::unordered_map<uint8_t, String> GlobalSettings;
 
-    /* config ids */
-    #define CONFIG_ID_EDIT_STRING_ID            0
-    #define CONFIG_ID_DEFAULT_OUTPUT_FILENAME   1
-    #define CONFIG_ID_DEFAULT_INPUT_FILENAME    2
-    #define CONFIG_ID_DIALOG_START_STRING       3
+    /* config string indices */
+    #define CONFIG_ID_NULL                          0
+    #define CONFIG_ID_EDIT_STRING_GLOBAL_ID         1
+    #define CONFIG_ID_OUTPUT_FILE_GLOBAL_ID         2
+    #define CONFIG_ID_INPUT_FILE_GLOBAL_ID          3
+    #define CONFIG_ID_VALUE_IDS                     4
+    #define CONFIG_ID_LOGGING_INTERVAL              5
+
+    /* path ids */
+    #define CONFIG_ID_DEFAULT_OUTPUT_FILENAME       6
+    #define CONFIG_ID_DEFAULT_INPUT_FILENAME        7
+    #define CONFIG_ID_CALIBRATION_OUTPUT_FILENAME   8
+    #define CONFIG_ID_CALIBRATION_INPUT_FILENAME    9
+    #define CONFIG_ID_AUTO_OUTPUT_FILENAME          10
+    #define CONFIG_ID_AUTO_INPUT_FILENAME           11
+    #define CONFIG_ID_MANUAL_OUTPUT_FILENAME        12
+
+    enum ValueId {
+        Force = 0,
+        AngularVelocity,
+        AngularAccel,
+        DynoRpm,
+        BpmVoltage,
+        BpmCurrent,
+        Time,
+        VescRpm,
+        VescDuty,
+        VescCurrent,
+    };
 }
 
 #endif

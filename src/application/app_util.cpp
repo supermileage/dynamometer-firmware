@@ -87,19 +87,83 @@ const String app_util::stateToString(ApplicationState state) {
     switch (state) {
         case MainMenu:
             return "Main Menu";
-        case ManualControlMenu:
-            return "Manual Control";
+        case GlobalSettingsMenu:
+            return "Global Settings";
         case CalibrationMenu:
-            return "Calibration";
-        case SettingsMenu:
-            return "Settings";
+            return "Calibration Menu";
         case CalibrationMode:
             return "Calibration Mode";
         case CalibrationSettings:
             return "Calibration Settings";
+        case AutoControlMenu:
+            return "Manual Control Menu";
+        case AutoControlMode:
+            return "Manual Control Mode";
+        case AutoControlSettings:
+            return "Manual Control Settings";
+        case ManualControlMenu:
+            return "Manual Control Menu";
+        case ManualControlMode:
+            return "Manual Control Mode";
+        case ManualControlSettings:
+            return "Manual Control Settings";
         case TextDialog:
             return "Text Dialog";
         default:
             return "Does not exist";
+    }
+}                 
+
+const String app_util::valueToHeader(application::ValueId id) {
+    switch (id) {
+        case Force:
+            return "force";
+        case AngularVelocity:
+            return "avel";
+        case AngularAccel:
+            return "accel";
+        case DynoRpm:
+            return "rpm";
+        case BpmVoltage:
+            return "bpm";
+        case BpmCurrent:
+            return "bpmcur";
+        case Time:
+            return "time";
+        case VescRpm:
+            return "vrpm";
+        case VescDuty:
+            return "vduty";
+        case VescCurrent:
+            return "vcur";
+        default:
+            return "undefined";
+    }
+}
+
+const String app_util::valueToUnit(application::ValueId id) {
+    switch (id) {
+        case Force:
+            return "lbs";
+        case AngularVelocity:
+            return "rad/s";
+        case AngularAccel:
+            return "rad/s2";
+        case DynoRpm:
+            return "rpm";
+        case BpmVoltage:
+            return "V";
+        case BpmCurrent:
+            return "A";
+        case Time:
+            return "";
+        case VescRpm:
+            return "rpm";
+        case VescDuty:
+            return "";
+        case VescCurrent:
+            return "A";
+        default:
+            return "undefined";
     }
 }

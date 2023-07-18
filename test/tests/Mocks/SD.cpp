@@ -33,7 +33,7 @@ File MockSDClass::open(const String& fileName, int mode) {
     if (mode == FILE_READ) {
         flag = O_RDONLY;
     } else if (mode == FILE_WRITE) {
-        flag = O_RDWR | O_CREAT;
+        flag = O_RDWR | O_CREAT | O_APPEND;
     }
 
     int fd;
@@ -65,8 +65,7 @@ int File::available() {
     }
     char c;
     _status = FctrlHelper::fileRead(_fd, &c, 1);
-    _nextChar = c;
-
+    _nextChar = (_status == EOF ? -1 : c);
     return (int)(_status > 0);
 }
 
@@ -95,6 +94,48 @@ void File::close() {
 
 size_t File::print(String buf) {
     return FctrlHelper::fileWrite(_fd, buf.c_str(), buf.length());
+}
+
+size_t File::position() {
+    return lseek(_fd, 0, SEEK_CUR);
+}
+
+void File::seek(uint32_t pos) {
+    lseek(_fd, pos, SEEK_SET);
+}
+
+int File::peek() {
+    if (_nextChar == NULL_CHAR) {
+        char c;
+        _status = FctrlHelper::fileRead(_fd, &c, 1);
+        _nextChar = c;
+    }
+    return (_status == EOF) ? -1 : _nextChar;
+}
+
+void File::flush() {
+    fsync(_fd);
+}
+
+size_t File::size() {
+    off_t temp = lseek(_fd, 0, SEEK_CUR);
+    off_t ret = lseek(_fd, 0, SEEK_END);
+    lseek(_fd, temp, SEEK_SET);
+    return ret;
+}
+
+String File::readStringUntil(char terminator) {
+    String line = "";
+    int status = ~EOF;
+    while (status != EOF) {
+        char c;
+        status = FctrlHelper::fileRead(_fd, &c, 1);
+        if (c == terminator) {
+            break;
+        }
+        line += c;
+    } 
+    return line;
 }
 
 File::operator bool() const {

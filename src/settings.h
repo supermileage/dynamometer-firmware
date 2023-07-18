@@ -4,7 +4,9 @@
 #include "Arduino.h"
 
 /* Debug Settings */
-#define DEBUG_SERIAL_EN 1
+#define DEBUG_SERIAL_EN     0
+#define DYNO_ASSERT_EN      1
+#define ERROR_LOGFILE_PATH  "error/logfile.txt"
 
 #if DEBUG_SERIAL_EN
 #define DEBUG_SERIAL_LN(x) Serial.println(x)
@@ -24,10 +26,12 @@
 #define LCD_RST     20
 #define LCD_DC      21
 #define LCD_CS      17
-#define TOUCH_CS    13
+#define TOUCH_CS    11
+#define SD_CS       13
 
 /* Sensor */
 #define OPTICAL_SENSOR_PIN  2
+#define FORCE_SENSOR_PIN    26
 
 /* Demux (Buttons) */
 #define BUTTON_DEBOUNCE_MILLIS      50
@@ -57,5 +61,8 @@
 #define ID_SELECT_BUTTON    4
 #define ID_BRAKE_BUTTON     5
 #define ID_BRAKE_POT        6
+
+/* SD Card */
+#define SD_CS           13
 
 #endif

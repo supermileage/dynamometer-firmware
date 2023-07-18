@@ -2,8 +2,6 @@
 #define _INPUT_MANAGER_H_
 
 #include <unordered_map>
-
-#include "Handleable.h"
 #include "HardwareInput.h"
 
 /**
@@ -11,7 +9,7 @@
  * 
  * @note sensor inputs are handled by sensor classes -- this class deals with assignable user inputs
 */
-class InputManager : public Handleable {
+class InputManager {
     public:
         InputManager();
         ~InputManager();
@@ -19,12 +17,12 @@ class InputManager : public Handleable {
         /**
          * @brief call initalize on all inputs
         */
-        void begin() override;
+        void begin();
 
         /**
          * @brief run all inputs
         */
-        void handle() override;
+        void handle();
 
         /**
          * @brief add input with id to id->input map

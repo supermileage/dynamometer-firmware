@@ -52,15 +52,13 @@ class UIEventHandler {
 
         /**
          * @brief clears all animations
-         * 
-         * @note this will not call delete on any of the animation ptrs: freeing data is the user's responsibility
+         * @note must be called after clearEventQueue if both event queue and animations are being cleared
         */
         void clearAnimations();
 
     private:
         static UIEventHandler* _instance;
         mutex_t _eventQueueMtx;
-        mutex_t _animationMutex;
         std::queue<std::function<void(void)>> _eventQueue;
         std::vector<std::shared_ptr<ui_util::Animation>> _animations;
 

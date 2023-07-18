@@ -9,8 +9,8 @@ UIEventHandler* UIEventHandler::_instance = nullptr;
 UIEventHandler::UIEventHandler() { }
 
 UIEventHandler::~UIEventHandler() {
-    clearAnimations();
     clearEventQueue();
+    clearAnimations();
 }
 
 UIEventHandler& UIEventHandler::instance() {
@@ -22,7 +22,6 @@ UIEventHandler& UIEventHandler::instance() {
 
 void UIEventHandler::init() {
     mutex_init(&_eventQueueMtx);
-    mutex_init(&_animationMutex);
 }
 
 void UIEventHandler::run() {
@@ -81,7 +80,5 @@ void UIEventHandler::clearEventQueue() {
 }
 
 void UIEventHandler::clearAnimations() {
-    mutex_enter_blocking(&_animationMutex);
-    _animations.clear();
-    mutex_exit(&_animationMutex);
+    _eventQueue.push([]() { _instance->_animations.clear(); });
 }

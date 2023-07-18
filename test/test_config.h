@@ -3,6 +3,5 @@
 
 #include "catch.hpp"
 #include "settings.h"
-#include "Sensor.h"
 
 #endif

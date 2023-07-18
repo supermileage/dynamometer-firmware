@@ -31,8 +31,10 @@ void ApplicationContext::handle() {
         }
     }
 
+    _controller->handle();
+    
     if (millis() >= last_ref_count + 1000) {
-        DEBUG_SERIAL_LN("Current controller ref count: " + String(_controller.use_count()));
+        // DEBUG_SERIAL_LN("Current controller ref count: " + String(_controller.use_count()));
         last_ref_count = millis();
     }
 }

@@ -5,23 +5,17 @@
 #include "TextDialogController.h"
 #include "ControllerSandbox.h"
 
-const std::vector<ControllerMenu::MenuButtonInfo> mainMenuConfig = {
-    { ControllerMenu::MenuButtonInfo {
-        .text = "Run Calibration",
-        .info = { .state = CalibrationMenu } } },
-    { ControllerMenu::MenuButtonInfo {
-        .text = "Manual Control",
-        .info = { .state = ManualControlMenu } } },
-    { ControllerMenu::MenuButtonInfo {
-            .text = "Text Dialog",
-            .info = { .state = TextDialog, .config = {
-                { CONFIG_ID_EDIT_STRING_ID, String(CONFIG_ID_DEFAULT_OUTPUT_FILENAME) }, } } } }
-};
+// menu configs
 
-const std::vector<ControllerMenu::MenuButtonInfo> calibrationMenuConfig = {
-    { ControllerMenu::MenuButtonInfo { .text = "Begin Calibration", .info { .state = CalibrationMode } } },
-    { ControllerMenu::MenuButtonInfo { .text = "Calibration Settings", .info { .state = CalibrationSettings } } },
-};
+typedef std::vector<ControllerMenu::MenuButtonInfo> NavMenuConfig;
+typedef ControllerMenu::MenuButtonInfo ButtonInfo;
+
+extern const NavMenuConfig MainMenuConfig;
+extern const NavMenuConfig CalibrationMenuConfig;
+extern const NavMenuConfig AutoControlMenuConfig;
+extern const NavMenuConfig ManualControlMenuConfig;
+
+// controller factory
 
 ControllerFactory::ControllerFactory(Adafruit_GFX& display, InputManager& manager) :
     _display(display), _inputManager(manager) { }
@@ -39,17 +33,40 @@ std::shared_ptr<ControllerBase> ControllerFactory::_createInternal(StateInfo& in
     switch (info.state) {
         case MainMenu:
             ret = std::make_shared<ControllerMenu>(*_context, _display);
-            static_cast<ControllerMenu*>(ret.get())->init(_inputManager, info, mainMenuConfig);
+            static_cast<ControllerMenu*>(ret.get())->init(_inputManager, info, MainMenuConfig);
             break;
-        case ManualControlMenu:
-            // TODO: add ManualControlMenu implementation
+        case GlobalSettingsMenu:
+            // TODO: add SettingsMenu implementation
             break;
         case CalibrationMenu:
             ret = std::make_shared<ControllerMenu>(*_context, _display);
-            static_cast<ControllerMenu*>(ret.get())->init(_inputManager, info, calibrationMenuConfig);
+            static_cast<ControllerMenu*>(ret.get())->init(_inputManager, info, CalibrationMenuConfig);
             break;
-        case SettingsMenu:
-            // TODO: add SettingsMenu implementation
+        case CalibrationMode:
+            // TODO: add calibration mode state
+            break;
+        case CalibrationSettings:
+            // TODO: add calibration settings state
+            break;
+        case AutoControlMenu:
+            ret = std::make_shared<ControllerMenu>(*_context, _display);
+            static_cast<ControllerMenu*>(ret.get())->init(_inputManager, info, AutoControlMenuConfig);
+            break;
+        case AutoControlMode:
+            // TODO: add auto control mode state
+            break;
+        case AutoControlSettings:
+            // TODO: add auto control settings state
+            break;
+        case ManualControlMenu:
+            ret = std::make_shared<ControllerMenu>(*_context, _display);
+            static_cast<ControllerMenu*>(ret.get())->init(_inputManager, info, ManualControlMenuConfig);
+            break;
+        case ManualControlMode:
+            // TODO: add manual control mode state
+            break;
+        case ManualControlSettings:
+            // TODO: add manual control settings state
             break;
         case TextDialog:
             ret = std::make_shared<TextDialogController>(*_context, _display);
@@ -64,3 +81,35 @@ std::shared_ptr<ControllerBase> ControllerFactory::_createInternal(StateInfo& in
     }
     return ret;
 }
+
+// menu configs
+
+const NavMenuConfig MainMenuConfig = {
+    { ButtonInfo {
+        .text = "Manual Control",
+        .info = { .state = ManualControlMenu } } },
+    { ButtonInfo {
+        .text = "Automated Control",
+        .info = { .state = AutoControlMenu } } },
+    { ButtonInfo {
+        .text = "Calibration",
+        .info = { .state = CalibrationMenu } } },
+    { ButtonInfo {
+        .text = "Settings",
+        .info = { .state = GlobalSettingsMenu } } }
+};
+
+const NavMenuConfig CalibrationMenuConfig = {
+    { ButtonInfo { .text = "Begin Calibration", .info { .state = CalibrationMode } } },
+    { ButtonInfo { .text = "Settings", .info { .state = CalibrationSettings } } }
+};
+
+const NavMenuConfig AutoControlMenuConfig = {
+    { ButtonInfo { .text = "Start Session", .info { .state = AutoControlMode } } },
+    { ButtonInfo { .text = "Settings", .info { .state = AutoControlSettings } } }
+};
+
+const NavMenuConfig ManualControlMenuConfig = {
+    { ButtonInfo { .text = "Start Session", .info { .state = ManualControlMode } } },
+    { ButtonInfo { .text = "Settings", .info { .state = ManualControlSettings } } }
+};

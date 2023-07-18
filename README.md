@@ -14,6 +14,9 @@ If you have already cloned the repo, then you can navigate to your local copy of
 git submodule init
 git submodule update
 ```
+
+**Note**: this project's submodules were cloned using ssh paths, so in order to clone the repo (and all its submodules) a user will first need to create an ssh key and add it to their github account: instructions on how to do this can be found [here](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account)
+
 ## Building the Project
 If you haven't already, install vscode and the platformIO extension for vscode (through the extension management tool).  Once these are installed, open the project folder.  PlatformIO will automatically start downloading and installing the packages and libraries needed to build this project.  This will take some time, maybe ~20 minutes.
 

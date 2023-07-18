@@ -4,11 +4,11 @@
 // div of 8.0 works fine, but will count 2x when pio runs any faster
 #define PIO_CLOCK_DIV 8.0f
 #define MEGA 1000000
-#define _PI 3.1415
+#define _PI 3.1415f
 
 #define NUM_APERTURES 64
-#define GEAR_RATIO 0.2 
-#define ROLLER_RADIUS 0.08276057 // metres
+#define GEAR_RATIO 0.2f
+#define ROLLER_RADIUS 0.08276057f // metres
 #define VELOCITY_FACTOR (GEAR_RATIO * ROLLER_RADIUS) // speed of vehicle [m/s] = velocity factor * angular velocity [rad/s]
 
 const uint16_t SensorOptical::NumApertures = NUM_APERTURES;
@@ -19,10 +19,6 @@ SensorOptical::SensorOptical(PIO pio, uint stateMachine, uint32_t readInterval) 
 
 SensorOptical::~SensorOptical() { }
 
-String SensorOptical::getHumanName() {
-    return "OpticalSensor";
-}
-
 void SensorOptical::begin() {
     pinMode(OPTICAL_SENSOR_PIN, INPUT);
 	uint offset = pio_add_program(_pio, &pio_counter_program);
@@ -32,13 +28,22 @@ void SensorOptical::begin() {
 
 void SensorOptical::handle() {
     uint32_t currentTime = micros();
-    if (currentTime >= _lastUpdateTime + _readInterval) {
-        // n is num apertures we've passed over since last velocity update
+    uint32_t deltaT;
+
+    if (currentTime < _lastUpdateTime) {
+        // overflow: compute interval with overflow
+        deltaT = UINT32_MAX - _lastUpdateTime + currentTime + 1;
+    } else {
+        // no overflow
+        deltaT = currentTime - _lastUpdateTime;
+    }
+
+    if (deltaT >= _readInterval) {
+         // n is num apertures we've passed over since last velocity update
         int32_t currentCount = pio_counter_get_count(_pio, _stateMachine);
         int32_t n = currentCount - _lastUpdateCount;
-        uint32_t deltaT = currentTime - _lastUpdateTime;
 
-        _angularVelocity = ((double)n / NUM_APERTURES) * 2 * _PI * (MEGA / (double)deltaT);
+        _angularVelocity = ((float)n / NUM_APERTURES) * 2 * _PI * (MEGA / (float)deltaT);
         _lastUpdateCount = currentCount;
         _lastUpdateTime = currentTime;
     }
@@ -59,10 +64,10 @@ uint32_t SensorOptical::getReadInterval() {
     return _readInterval;
 }
 
-double SensorOptical::getAngularVelocity() {
+float SensorOptical::getAngularVelocity() {
     return _angularVelocity;
 }
 
-double SensorOptical::getLinearVelocity() {
+float SensorOptical::getLinearVelocity() {
     return VELOCITY_FACTOR * _angularVelocity;
 }
