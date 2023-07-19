@@ -1,7 +1,7 @@
 #ifndef _VISUAL_ELEMENT_H_
 #define _VISUAL_ELEMENT_H_
 
-#include "Adafruit_GFX.h"
+#include "TFT_eSPI.h"
 #include "ui_util.h"
 
 using namespace ui_util;
@@ -11,7 +11,7 @@ using namespace ui_util;
 */
 class VisualElement {
     public:
-        VisualElement(Adafruit_GFX& display);
+        VisualElement(TFT_eSPI& display);
         virtual ~VisualElement();
 
         VisualElement& setParent(VisualElement* parent);
@@ -63,7 +63,7 @@ class VisualElement {
         virtual void clear() = 0;
 
     protected:
-        Adafruit_GFX& _display;
+        TFT_eSPI& _display;
         VisualElement* _parent = nullptr;
         Point _position = Point { 0, 0 };
         uint16_t _backgroundColour = 0;

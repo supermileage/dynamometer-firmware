@@ -16,7 +16,7 @@ extern const NavMenuConfig ManualControlMenuConfig;
 
 // controller factory
 
-ControllerFactory::ControllerFactory(Adafruit_GFX& display, InputManager& manager) :
+ControllerFactory::ControllerFactory(TFT_eSPI& display, InputManager& manager) :
     _display(display), _inputManager(manager) { }
 
 std::shared_ptr<ControllerBase> ControllerFactory::create(StateInfo& info) {

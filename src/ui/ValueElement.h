@@ -11,7 +11,7 @@
 */
 class ValueElement : public Container {
     public:
-        ValueElement(Adafruit_GFX& display);
+        ValueElement(TFT_eSPI& display);
 
         /**
          * @brief configures text for label

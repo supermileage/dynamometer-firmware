@@ -1,6 +1,6 @@
 #include "RectangularElement.h"
 
-RectangularElement::RectangularElement(Adafruit_GFX& display) :
+RectangularElement::RectangularElement(TFT_eSPI& display) :
     VisualElement(display) { }
 
 RectangularElement::~RectangularElement() { }

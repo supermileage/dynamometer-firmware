@@ -5,7 +5,7 @@
 
 class CircularElement : public VisualElement {
     public:
-        CircularElement(Adafruit_GFX& display);
+        CircularElement(TFT_eSPI& display);
         ~CircularElement();
         
         /**

@@ -1,6 +1,6 @@
 #include "CircularElement.h"
 
-CircularElement::CircularElement(Adafruit_GFX& display) :
+CircularElement::CircularElement(TFT_eSPI& display) :
     VisualElement(display) { }
 
 CircularElement::~CircularElement() { }

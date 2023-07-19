@@ -1,12 +1,3 @@
-[submodule "lib/Adafruit_ILI9341"]
-	path = lib/Adafruit_ILI9341
-	url = git@github.com:adafruit/Adafruit_ILI9341.git
-[submodule "lib/Adafruit_GFX"]
-	path = lib/Adafruit_GFX
-	url = git@github.com:adafruit/Adafruit-GFX-Library.git
-[submodule "lib/Adafruit_BusIO"]
-	path = lib/Adafruit_BusIO
-	url = git@github.com:adafruit/Adafruit_BusIO.git
 [submodule "test/lib/Catch2"]
 	path = test/lib/Catch2
 	url = git@github.com:catchorg/Catch2.git
@@ -18,3 +9,7 @@
 [submodule "lib/XPT2046_Touch"]
 	path = lib/XPT2046_Touch
 	url = git@github.com:PaulStoffregen/XPT2046_Touchscreen.git
+[submodule "lib/TFT_eSPI"]
+	path = lib/TFT_eSPI
+	url = git@github.com:supermileage/TFT_eSPI.git
+	branch = dyno-firmware

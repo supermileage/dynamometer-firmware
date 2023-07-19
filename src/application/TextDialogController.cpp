@@ -12,7 +12,7 @@ const std::unordered_map<char,char> TextDialogController::SpecialCharacters = {
     { '-', '.' },
 };
 
-TextDialogController::TextDialogController(ApplicationContext& context, Adafruit_GFX& display)
+TextDialogController::TextDialogController(ApplicationContext& context, TFT_eSPI& display)
     : ControllerBase(context, display) {
     _view = std::make_shared<TextDialogView>(_display);
 }

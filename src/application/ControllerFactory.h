@@ -4,7 +4,7 @@
 #include <memory>
 
 #include "System/InputManager.h"
-#include "Adafruit_GFX.h"
+#include "TFT_eSPI.h"
 #include "ApplicationContext.h"
 #include "ControllerBase.h"
 #include "application.h"
@@ -20,7 +20,7 @@ using namespace application;
 */
 class ControllerFactory {
     public:
-        ControllerFactory(Adafruit_GFX& display, InputManager& manager);
+        ControllerFactory(TFT_eSPI& display, InputManager& manager);
 
         /**
          * @brief create new controller base class for state info
@@ -31,7 +31,7 @@ class ControllerFactory {
         void setContext(ApplicationContext* context);
 
     private:
-        Adafruit_GFX& _display;
+        TFT_eSPI& _display;
         InputManager& _inputManager;
         ApplicationContext* _context;
 

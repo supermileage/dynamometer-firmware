@@ -1,12 +1,12 @@
 #ifndef _COLOUR_H_
 #define _COLOUR_H_
 
-#include "Adafruit_ILI9341.h"
+#include <TFT_Drivers/ILI9341_Defines.h>
 
 #define COLOUR_BLACK        ILI9341_BLACK       ///<   0,   0,   0
 #define COLOUR_NAVY         ILI9341_NAVY        ///<   0,   0, 123
 #define COLOUR_DARKGREEN    ILI9341_DARKGREEN   ///<   0, 125,   0
-#define COLOUR_DARKCYAN     ILI9341_DARKCYAN    ///<   0, 125, 123
+#define COLOUR_DARKCYAN     ILI9341_DARKCYAN    ///<   0, 125, 123z
 #define COLOUR_MAROON       ILI9341_MAROON      ///< 123,   0,   0
 #define COLOUR_PURPLE       ILI9341_PURPLE      ///< 123,   0, 123
 #define COLOUR_OLIVE        ILI9341_OLIVE       ///< 123, 125,   0

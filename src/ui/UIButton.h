@@ -1,13 +1,13 @@
 #ifndef _UI_BUTTON_H_
 #define _UI_BUTTON_H_
 
-#include "Adafruit_GFX.h"
+#include "TFT_eSPI.h"
 #include "UIElement.h"
 #include "TextComponent.h"
 
 class UIButton : public UIElement {
     public:
-        UIButton(Adafruit_GFX& display);
+        UIButton(TFT_eSPI& display);
         ~UIButton();
         
         /**
