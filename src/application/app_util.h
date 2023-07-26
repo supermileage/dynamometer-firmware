@@ -36,9 +36,9 @@ namespace app_util {
    const String valueToHeader(ValueId id);
 
     /**
-     * @brief get csv header name for value id
+     * @brief get default string for value
     */
-   const String valueToUnit(ValueId id);
+   const String valueToDefaultString(ValueId id);
 }
 
 #endif
