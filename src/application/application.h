@@ -89,6 +89,7 @@ namespace application {
     #define CONFIG_ID_MANUAL_OUTPUT_FILENAME        12
 
     enum ValueId {
+        Invalid = -1,
         Force = 0,
         AngularVelocity,
         AngularAccel,

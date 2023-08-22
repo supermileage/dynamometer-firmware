@@ -167,3 +167,29 @@ const String app_util::valueToUnit(application::ValueId id) {
             return "undefined";
     }
 }
+
+const ValueId app_util::headerToValue(const String& header) {
+    if (header.compareTo("force") == 0) {
+        return Force;
+    } else if (header.compareTo("avel") == 0) {
+        return AngularVelocity;
+    } else if (header.compareTo("accel") == 0) {
+        return AngularAccel;
+    } else if (header.compareTo("rpm") == 0) {
+        return DynoRpm;
+    } else if (header.compareTo("bpm") == 0) {
+        return BpmVoltage;
+    } else if (header.compareTo("bpmcur") == 0) {
+        return BpmCurrent;
+    } else if (header.compareTo("time") == 0) {
+        return Time;
+    } else if (header.compareTo("vrpm") == 0) {
+        return VescRpm;
+    } else if (header.compareTo("vduty") == 0) {
+        return VescDuty;
+    } else if (header.compareTo("vcur") == 0) {
+        return VescCurrent;
+    } else {
+        return Invalid;
+    }
+}
