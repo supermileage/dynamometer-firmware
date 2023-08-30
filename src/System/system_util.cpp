@@ -9,7 +9,7 @@ String system_util::uniquifyFilename(String filename) {
         String base = filename.substring(0, extensionIndex == -1 ? filename.length() : extensionIndex);
         String extension = extensionIndex == -1 ? "" : filename.substring(extensionIndex + 1);
         base.trim();
- 
+
         // find current file count (example: myFile(2).csv)
         int fileCountStart = base.lastIndexOf('(');
         int fileCountEnd = base.lastIndexOf(')');
