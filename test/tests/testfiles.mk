@@ -12,7 +12,7 @@ DATA_LOGGER := System/CsvFile.cpp System/system_util.cpp
 # All files to compile for tests
 TEST_DIRS := $(dir $(wildcard $(TEST_DIR)tests/*/))
 TEST_CPP_TEMP := $(patsubst $(TEST_DIR)%,%,$(foreach %,$(TEST_DIRS),$(wildcard $(%)*.cpp)))
-SRC_CPP_TEMP := $(SENSOR) $(DATA_LOGGER) $(SYSTEM_UTIL)
+SRC_CPP_TEMP := $(SENSOR) $(DATA_LOGGER)
 
 # ALL TEST FILES
 CPP_TO_OBJ := $(SRC_CPP_TEMP) $(TEST_CPP_TEMP) test.cpp
