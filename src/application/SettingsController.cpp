@@ -212,13 +212,13 @@ void SettingsController::_onButtonSelected(input_data_t d) {
 
 void SettingsController::_shiftFocus(int32_t offset) {
     auto button = _buttonCallbackPairs[_inFocus].first;
-    UIEventHandler::instance().addEvent( [button]() { cur->revert(); } );
+    UIEventHandler::instance().addEvent( [button]() { button->revert(); } );
 
     // compute index of new focussed element
-    _inFocus = static_cast<uint8_t>(_computeIndexOffset(_inFocus, offset, _buttonInfoPairs.size()));
+    _inFocus = static_cast<uint8_t>(_computeIndexOffset(_inFocus, offset, _buttonCallbackPairs.size()));
 
     // focus new element
     button = _buttonCallbackPairs[_inFocus].first;
-    UIEventHandler::instance().addEvent([button]() { cur->focus(); });
+    UIEventHandler::instance().addEvent([button]() { button->focus(); });
 }
 
