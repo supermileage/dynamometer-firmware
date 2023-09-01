@@ -83,6 +83,19 @@ void app_util::configureSelectButton(UIButton* button) {
     configureNavButton(button);
 }
 
+String app_util::packValueIdString(std::vector<ValueId>& ids) {
+    String ret = "";
+    if (ids.size() == 0) {
+        return ret;
+    }
+    ret += String(ids[0]);
+    for (int i = 1; i < ids.size(); i++) {
+        ret += ',';
+        ret += String(ids[i]);
+    }
+    return ret;
+}
+
 const String app_util::stateToString(ApplicationState state) {
     switch (state) {
         case MainMenu:

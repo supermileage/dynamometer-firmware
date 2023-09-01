@@ -7,6 +7,7 @@ class CalibrationView : public ViewBase {
     public:
         CalibrationView(TFT_eSPI& display);
         ~CalibrationView();
+        void updateVescRpm(String& rpm);
         
     private:
 

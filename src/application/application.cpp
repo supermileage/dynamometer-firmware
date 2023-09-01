@@ -13,6 +13,7 @@ std::unordered_map<uint8_t, String> application::GlobalSettings = {
     { CONFIG_ID_AUTO_OUTPUT_FILENAME, "auto/auto-out.csv" },
     { CONFIG_ID_AUTO_INPUT_FILENAME, "auto/auto-in.csv" },
     { CONFIG_ID_MANUAL_OUTPUT_FILENAME, "manual/manual-out.csv" },
+    { CONFIG_ID_LOGGING_INTERVAL, "50" },
 };
 
 #endif

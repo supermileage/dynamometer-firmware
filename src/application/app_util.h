@@ -25,6 +25,8 @@ namespace app_util {
     void configureBackButton(UIButton* button);
     void configureSelectButton(UIButton* button);
 
+    String packValueIdString(std::vector<ValueId>& ids);
+
     /**
      * @brief get string name for state
     */

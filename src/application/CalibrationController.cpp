@@ -33,9 +33,6 @@ void CalibrationController::init(InputManager& manager, StateInfo& info) {
     _view->setHeader("calibration mode");
 }
 
-uint32_t g_sum = 0;
-uint32_t g_count = 0;
-
 void CalibrationController::handle() {
     _optical.handle();
     _force.handle();
@@ -43,15 +40,15 @@ void CalibrationController::handle() {
     if (_calibrationEnabled) {
         // read and handle csv input data
         if (millis() >= _nextOutputTime) {
-            // TODO: update io with next inputCsv values
-            // write _nextBpmVoltage to bpm controller
+            // TODO
             // write _nextVescRpm to vesc controller
+            // write _nextBpmVoltage to bpm controller (might not be necessary)
             // END TODO
 
-            // set next values (including _nextOutputTime)
-            for (int i = 0 ; i < CAL_INPUT_NUM_COLUMNS; i++) {
+            // set next output time and values
+            for (auto& parser : _inputParsers) {
                 String entry = _inputCsv.readEntry();
-                _inputParsers[i](entry);
+                parser(entry);
                 // end automation if we've reached eof
                 _calibrationEnabled = (entry.compareTo("") != 0);
             }
@@ -64,7 +61,7 @@ void CalibrationController::handle() {
         }
     }
 
-    // UPDATE VIEW to display controller and sensor values
+    // TODO: udpate view to display controller and sensor values
 }
 
 void CalibrationController::_initializeInputCsv(String& filename) {
