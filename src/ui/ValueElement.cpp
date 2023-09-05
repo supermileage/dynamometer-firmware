@@ -2,6 +2,7 @@
 
 
 ValueElement::ValueElement(TFT_eSPI& display) : Container(display) {
+    _typeId |= TYPE_ID_VALUE_ELEMENT;
     _labelElement = std::make_shared<TextElement>(_display);
     _valueElement = std::make_shared<TextElement>(_display, true);
     _unitsElement = std::make_shared<TextElement>(_display);

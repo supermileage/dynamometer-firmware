@@ -3,6 +3,8 @@
 #include "graphics/colour.h"
 
 TextElement::TextElement(TFT_eSPI& display, bool numeric) : RectangularElement(display) {
+    _typeId |= TYPE_ID_TEXT_ELEMENT;
+
     if (numeric) {
         _textComponent = std::make_shared<ValueTextComponent>();
     } else {

@@ -1,6 +1,8 @@
 #include "UIElement.h"
 
-UIElement::UIElement(TFT_eSPI& display) : RectangularElement(display) { }
+UIElement::UIElement(TFT_eSPI& display) : RectangularElement(display) {
+    _typeId |= TYPE_ID_UI_ELEMENT;
+}
 
 void UIElement::focus() {
     _drawInternal(_focusColour);

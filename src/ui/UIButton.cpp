@@ -1,6 +1,7 @@
 #include "UIButton.h"
 
 UIButton::UIButton(TFT_eSPI& display) : UIElement(display) {
+    _typeId |= TYPE_ID_UI_BUTTON;
     _textComponent.setOwner(this);
 }
 

@@ -3,7 +3,9 @@
 #define CONTAINER_HORIZONTAL_BITMASK    0xf
 #define CONTAINER_VERTICAL_BITMASK      0xf0
 
-Container::Container(TFT_eSPI& display) : RectangularElement(display) { }
+Container::Container(TFT_eSPI& display) : RectangularElement(display) {
+    _typeId |= TYPE_ID_CONTAINER;
+}
 
 Container::~Container() { }
 
@@ -49,6 +51,11 @@ void Container::align() {
             break;
         default:
             break;
+    }
+    for (auto& pair : _children) {
+        if (pair.first->getTypeId() & TYPE_ID_CONTAINER) {
+            static_cast<Container*>(pair.first.get())->align();
+        }
     }
 }
 

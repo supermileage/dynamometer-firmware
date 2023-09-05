@@ -1,7 +1,9 @@
 #include "RectangularElement.h"
 
 RectangularElement::RectangularElement(TFT_eSPI& display) :
-    VisualElement(display) { }
+    VisualElement(display) {
+        _typeId |= TYPE_ID_RECTANGULAR_ELEMENT;
+}
 
 RectangularElement::~RectangularElement() { }
 

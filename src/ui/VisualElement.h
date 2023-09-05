@@ -17,6 +17,11 @@ class VisualElement {
         VisualElement& setParent(VisualElement* parent);
         
         /**
+         * @brief returns unique id for each UI type
+        */
+        uint16_t getTypeId();
+
+        /**
          * @brief get position (top left corner)
         */
         Point getPosition();
@@ -69,6 +74,7 @@ class VisualElement {
         uint16_t _backgroundColour = 0;
         uint16_t _borderColour = 0;
         int16_t _borderWidth = 0;
+        uint16_t _typeId = TYPE_ID_VISUAL_ELEMENT;
         bool _hasBorder = false;
 
         /**
