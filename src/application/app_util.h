@@ -25,6 +25,8 @@ namespace app_util {
     void configureBackButton(UIButton* button);
     void configureSelectButton(UIButton* button);
 
+    String packValueIdString(std::vector<ValueId>& ids);
+
     /**
      * @brief get string name for state
     */
@@ -33,12 +35,17 @@ namespace app_util {
     /**
      * @brief get csv header name for value id
     */
-   const String valueToHeader(ValueId id);
+    const String valueToHeader(ValueId id);
 
     /**
      * @brief get csv header name for value id
     */
-   const String valueToUnit(ValueId id);
+    const String valueToUnit(ValueId id);
+
+    /**
+     * @brief get value id for csv string header
+    */
+    const ValueId headerToValue(const String& header);
 }
 
 #endif

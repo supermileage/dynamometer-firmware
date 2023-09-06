@@ -3,6 +3,7 @@
 #include "ControllerFactory.h"
 #include "ControllerMenu.h"
 #include "TextDialogController.h"
+#include "SettingsController.h"
 
 // menu configs
 
@@ -45,7 +46,12 @@ std::shared_ptr<ControllerBase> ControllerFactory::_createInternal(StateInfo& in
             // TODO: add calibration mode state
             break;
         case CalibrationSettings:
-            // TODO: add calibration settings state
+            ret = std::make_shared<SettingsController>(*_context, _display);
+            info.config[CONFIG_ID_SETTINGS_MODE] = "calibration";
+            info.config[CONFIG_ID_OUTPUT_FILE_GLOBAL_ID] = String(CONFIG_ID_CALIBRATION_OUTPUT_FILENAME);
+            info.config[CONFIG_ID_INPUT_FILE_GLOBAL_ID] = String(CONFIG_ID_CALIBRATION_INPUT_FILENAME);
+            info.config[CONFIG_ID_LOGGING_INTERVAL] = 25;
+            static_cast<SettingsController*>(ret.get())->init(_inputManager, info);
             break;
         case AutoControlMenu:
             ret = std::make_shared<ControllerMenu>(*_context, _display);

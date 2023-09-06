@@ -121,12 +121,6 @@ std::function<String(void)> SessionController::_getValueLogger(ValueId id) {
         case VescRpm:
             // TODO: vesc rpm logger
             return []() { return "0.00"; };
-        case VescDuty:
-            // TODO: vesc duty logger
-            return []() { return "0.00"; };
-        case VescCurrent:
-            // TODO: vesc current logger
-            return []() { return "0.00"; };
         default:
             dyno_log_str("SessionController: no logging function for ValueId: " + String(id));
             return []() { return "undefined"; };

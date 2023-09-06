@@ -1,5 +1,5 @@
 #ifndef _STYLE_SETTINGS_H_
-#define _STYLE_SETTINGS_H_
+#define _STYLE_SM_H_
 
 #include "graphics/colour.h"
 #include "graphics/fonts.h"
@@ -29,7 +29,7 @@
 #define MC_WIDTH 290
 #define MC_HEIGHT 180
 #define MC_ORIENTATION Container::Column
-#define MC_COLOUR COLOUR_DARKGREY
+#define MC_COLOUR COLOUR_GREY
 #define MC_BORDER_COLOUR COLOUR_MAGENTA
 
 ///////////////////////////////////////////////////////////////
@@ -51,7 +51,7 @@
 ///////////////////////////////////////////////////////////////
 // Nav Button Container
 #define NC_WIDTH 260
-#define NC_HEIGHT 35
+#define NC_HEIGHT 30
 #define NC_ORIENTATION Container::Row
 #define NC_COLOUR COLOUR_NAVY
 #define NC_BORDER_COLOUR COLOUR_BLACK

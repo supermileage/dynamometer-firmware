@@ -88,7 +88,11 @@ namespace application {
     #define CONFIG_ID_AUTO_INPUT_FILENAME           11
     #define CONFIG_ID_MANUAL_OUTPUT_FILENAME        12
 
+    /* state data */
+    #define CONFIG_ID_SETTINGS_MODE                 13
+
     enum ValueId {
+        Invalid = -1,
         Force = 0,
         AngularVelocity,
         AngularAccel,
@@ -99,6 +103,7 @@ namespace application {
         VescRpm,
         VescDuty,
         VescCurrent,
+        NUM_VALUE_IDS, // count of value ids
     };
 }
 

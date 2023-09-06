@@ -6,6 +6,7 @@
 using namespace application;
 
 std::unordered_map<uint8_t, String> application::GlobalSettings = {
+    { CONFIG_ID_LOGGING_INTERVAL, "50" },
     { CONFIG_ID_DEFAULT_OUTPUT_FILENAME, "default-out.csv" },
     { CONFIG_ID_DEFAULT_INPUT_FILENAME, "default-in.csv" },
     { CONFIG_ID_CALIBRATION_OUTPUT_FILENAME, "calibration/calibration-out.csv" },

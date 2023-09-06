@@ -83,6 +83,19 @@ void app_util::configureSelectButton(UIButton* button) {
     configureNavButton(button);
 }
 
+String app_util::packValueIdString(std::vector<ValueId>& ids) {
+    String ret = "";
+    if (ids.size() == 0) {
+        return ret;
+    }
+    ret += String(ids[0]);
+    for (int i = 1; i < ids.size(); i++) {
+        ret += ',';
+        ret += String(ids[i]);
+    }
+    return ret;
+}
+
 const String app_util::stateToString(ApplicationState state) {
     switch (state) {
         case MainMenu:
@@ -165,5 +178,31 @@ const String app_util::valueToUnit(application::ValueId id) {
             return "A";
         default:
             return "undefined";
+    }
+}
+
+const ValueId app_util::headerToValue(const String& header) {
+    if (header.compareTo("force") == 0) {
+        return Force;
+    } else if (header.compareTo("avel") == 0) {
+        return AngularVelocity;
+    } else if (header.compareTo("accel") == 0) {
+        return AngularAccel;
+    } else if (header.compareTo("rpm") == 0) {
+        return DynoRpm;
+    } else if (header.compareTo("bpm") == 0) {
+        return BpmVoltage;
+    } else if (header.compareTo("bpmcur") == 0) {
+        return BpmCurrent;
+    } else if (header.compareTo("time") == 0) {
+        return Time;
+    } else if (header.compareTo("vrpm") == 0) {
+        return VescRpm;
+    } else if (header.compareTo("vduty") == 0) {
+        return VescDuty;
+    } else if (header.compareTo("vcur") == 0) {
+        return VescCurrent;
+    } else {
+        return Invalid;
     }
 }

@@ -11,7 +11,9 @@
 #define COLOUR_PURPLE       ILI9341_PURPLE      ///< 123,   0, 123
 #define COLOUR_OLIVE        ILI9341_OLIVE       ///< 123, 125,   0
 #define COLOUR_LIGHTGREY    ILI9341_LIGHTGREY   ///< 198, 195, 198
-#define COLOUR_DARKGREY     ILI9341_DARKGREY    ///< 123, 125, 123
+#define COLOUR_GREY         ILI9341_DARKGREY    ///< 123, 125, 123
+#define COLOUR_DARKGREY     0x39e6              ///<   7,  15,   6
+#define COLOUR_MIDGREY      0x7bae              ///<  15,  29,  14
 #define COLOUR_BLUE         ILI9341_BLUE        ///<   0,   0, 255
 #define COLOUR_GREEN        ILI9341_GREEN       ///<   0, 255,   0
 #define COLOUR_CYAN         ILI9341_CYAN        ///<   0, 255, 255

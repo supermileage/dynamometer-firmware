@@ -35,7 +35,7 @@ void TextDialogView::init() {
     _textDisplay->setWidth(TD_DISPLAY_WIDTH)
         .setHeight(TD_DISPLAY_HEIGHT)
         .addBorder(COLOUR_DARKCYAN)
-        .setBackgroundColour(COLOUR_DARKGREY);
+        .setBackgroundColour(COLOUR_GREY);
     _textContainer->setOrientation(Container::Row)
         .setWidth(TD_WIDTH)
         .setHeight(TD_HEIGHT);
@@ -72,7 +72,7 @@ void TextDialogView::_configureCharacterElement(std::shared_ptr<UIButton> elemen
         .setFont(FREE_MONO_BOLD_9PT7B)
         .setFontColour(MB_FONT_COLOUR);
     element->setFontFocusColour(MB_FONT_FOCUS_COLOUR)
-        .setFocusColour(COLOUR_DARKGREY)
+        .setFocusColour(COLOUR_GREY)
         .setWidth(TD_CHAR_WIDTH)
         .setHeight(TD_CHAR_HEIGHT)
         .setBackgroundColour(MB_COLOUR)
