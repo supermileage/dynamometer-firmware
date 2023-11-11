@@ -25,14 +25,24 @@ class HardwareRotaryEncoder : public HardwareInput {
         void run() override {
             PinStatus valA = digitalRead(_pinA);
             
-            if (valA != _lastA) {
+            if (valA != _lastA) { //When a change in a state of input A is detected (when a rotation in either direction is detected)
                 PinStatus valB = digitalRead(_pinB);    
                 
-                if (valA && valB) {
-                    ++_counter;
-                } else if (valA && !valB) {
-                    --_counter;
+                if (valA != valB){
+                    ++_counter; //when rotating counterclockwise
                 }
+                else if (valA == valB){
+                    --_counter; //when rotating clockwise
+                }
+
+                /* Original
+                if (valA && valB) {
+                    ++_counter; /ccw
+                
+                } else if (valA && !valB) {
+                    --_counter; /cw
+                }
+                */
                 _lastA = valA;
             }
 
