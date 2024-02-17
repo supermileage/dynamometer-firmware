@@ -3,6 +3,7 @@
 1. [Cloning the repo](#cloning-the-repo)
 2. [Building the Project](#building-the-project)
 3. [Unit Tests](#unit-tests)
+3. [Uploading firmware to the Pico](#uploading-firmware-to-the-pico)
 
 ## Cloning the repo
 
@@ -84,3 +85,12 @@ If you would like to run/manage this projects unit tests with the testmate test 
 This provides a useful interactive display for running tests and viewing test results.
 
 **Unfortunately it is not currently set up for use in windows.**
+
+## Uploading firmware to the Pico
+
+For windows users, follow the steps below to upload the firmware files on the pico.
+
+1. In visual studio code, click the `build` button at the bottom of the window (look for the checkmark button). Wait for the files to complete building.
+3. On the Raspberry Pico, find the `bootsel` button. Hold down this button, while connecting the USB cable into your computer. Once this is done, you should be able to open the files in the pico.
+2. Go to file explorer, and navigate to the directory of the project in file explorer. Then, navigate to `/dynamometer-firmware/.pio/build/firmware/`. This is where the build files are kept.
+4. Copy the `firmware.uf2` file from the build folder and paste it into the pico drive. You have successfully flashed the firmware onto the pico.
