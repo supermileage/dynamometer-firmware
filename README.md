@@ -1,5 +1,9 @@
 # dynamometer-firmware
 
+1. [Cloning the repo](#cloning-the-repo)
+2. [Building the Project](#building-the-project)
+3. [Unit Tests](#unit-tests)
+
 ## Cloning the repo
 
 This repository uses submodules, so to clone you must enter the command:
