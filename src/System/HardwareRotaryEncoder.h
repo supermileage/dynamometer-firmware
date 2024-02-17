@@ -35,14 +35,6 @@ class HardwareRotaryEncoder : public HardwareInput {
                     --_counter; //when rotating clockwise
                 }
 
-                /* Original
-                if (valA && valB) {
-                    ++_counter; /ccw
-                
-                } else if (valA && !valB) {
-                    --_counter; /cw
-                }
-                */
                 _lastA = valA;
             }
 
