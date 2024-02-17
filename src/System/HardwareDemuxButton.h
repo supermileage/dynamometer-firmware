@@ -8,6 +8,9 @@
 
 #define LED_NULL UINT8_MAX // LED_NULL is max unsigned 8-bit value
 
+/**
+ * @brief reads input from a button connected through the demux
+*/
 class HardwareDemuxButton : public HardwareInput {
     public:
         HardwareDemuxButton(HardwareDemuxer& demuxer, uint8_t selectId, pin_size_t ledPin, bool normalHigh);
@@ -24,6 +27,7 @@ class HardwareDemuxButton : public HardwareInput {
 		uint32_t _lastReadMillis = 0;
 		bool _normalHigh;
 
+		// reads demux output pin
 		inline PinStatus _read() {
 			PinStatus read = digitalRead(_demuxer.getOutputPin());
 			return static_cast<PinStatus>(_normalHigh ^ read);
