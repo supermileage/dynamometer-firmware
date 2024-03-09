@@ -23,17 +23,17 @@
 /* General */
 
 /* Screen */
-#define LCD_MOSI    19
-#define LCD_SCLK    18
-#define LCD_RST     20
-#define LCD_DC      21
-#define LCD_CS      17
-// #define TOUCH_CS    11
-#define SD_CS       13
+#define LCD_MOSI    12
+#define LCD_SCLK    13
+#define LCD_RST     6
+#define LCD_DC      7
+#define LCD_CS      5
+#define TOUCH_CS    14
+#define SD_CS       8
 
 /* Sensor */
-#define OPTICAL_SENSOR_PIN  2
-#define FORCE_SENSOR_PIN    26
+#define OPTICAL_SENSOR_PIN  4
+#define FORCE_SENSOR_PIN    28
 
 /* Demux (Buttons) */
 #define BUTTON_DEBOUNCE_MILLIS      50
@@ -46,14 +46,14 @@
 #define DEMUX_SELECT_ROT_EN_SW      0x3
 
 /* Led */
-#define LED_BACK    5
-#define LED_SELECT  6
-#define LED_BRAKE   7
+#define LED_BACK    22
+#define LED_SELECT  21
+#define LED_BRAKE   27
 
 /* Knobs */
-#define POT_IN      27  // ADC1
-#define ROT_EN_A    22
-#define ROT_EN_B    28
+#define POT_IN      26  // ADC0
+#define ROT_EN_A    19
+#define ROT_EN_B    20
 
 // Input IDs
 #define ID_SERIAL           0
@@ -65,6 +65,6 @@
 #define ID_BRAKE_POT        6
 
 /* SD Card */
-#define SD_CS           13
+#define SD_CS       8
 
 #endif
