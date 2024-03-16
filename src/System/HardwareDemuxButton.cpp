@@ -25,6 +25,8 @@ void HardwareDemuxButton::run() {
 		_lastReadMillis = millis();
 		_lastReadVal = readVal;
 
+		//Serial.println("Test");
+
 		if (_ledPin != LED_NULL) {
 			// Low = 0, High = 1 
 			digitalWrite(_ledPin, static_cast<PinStatus>(!readVal));

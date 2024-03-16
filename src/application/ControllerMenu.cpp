@@ -95,20 +95,24 @@ void ControllerMenu::_handleInputEncoderSelect(input_data_t d) {
 }
 
 void ControllerMenu::_handleInputBack(input_data_t d) {
-    // if (d) {
-    //     UIElement* cur = _buttonInfoPairs[_inFocus].first;
-    //     UIEventHandler::instance().addEvent([this,cur]() { cur->focus(); _menu->back(); });
-    // } else {
-    //     _navigateBack();
-    // }
+    
+    if (d) {
+         UIElement* cur = _buttonInfoPairs[_inFocus].first.get();
+
+         //UIElement* cur = _buttonInfoPairs[_inFocus].first;
+         UIEventHandler::instance().addEvent([this,cur]() { cur->focus(); _menu->back(); });
+    } else {
+        _navigateBack();
+    }
+    
 }
 
 void ControllerMenu::_handleInputSelect(input_data_t d) {
-    // if (d) {
-    //     _selectCurrent();
-    // } else {
-    //     _triggerStateChange();
-    // }
+    if (d) {
+         _selectCurrent();
+    } else {
+         _triggerStateChange();
+    }
 }
 
 void ControllerMenu::_navigateBack() {
