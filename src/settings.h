@@ -64,6 +64,9 @@
 #define ID_BRAKE_BUTTON     5
 #define ID_BRAKE_POT        6
 
+// BPM
+#define BPM_CTRL_OUT        3
+
 /* SD Card */
 #define SD_CS       8
 
