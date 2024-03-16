@@ -9,6 +9,7 @@
 #define NUM_APERTURES 64
 #define GEAR_RATIO 0.2f
 #define ROLLER_RADIUS 0.08276057f // metres
+#define INITIAL_ANGULAR_VELOCITY 0.0f
 #define VELOCITY_FACTOR (GEAR_RATIO * ROLLER_RADIUS) // speed of vehicle [m/s] = velocity factor * angular velocity [rad/s]
 
 const uint16_t SensorOptical::NumApertures = NUM_APERTURES;
@@ -24,6 +25,7 @@ void SensorOptical::begin() {
 	uint offset = pio_add_program(_pio, &pio_counter_program);
 	pio_counter_init(_pio, _stateMachine, offset, OPTICAL_SENSOR_PIN, PIO_CLOCK_DIV);
     _lastUpdateTime = micros();
+    _lastVelocity = INITIAL_ANGULAR_VELOCITY;
 }
 
 void SensorOptical::handle() {
@@ -44,8 +46,10 @@ void SensorOptical::handle() {
         int32_t n = currentCount - _lastUpdateCount;
 
         _angularVelocity = ((float)n / NUM_APERTURES) * 2 * _PI * (MEGA / (float)deltaT);
+        _angularAcceleration = (_angularVelocity - _lastVelocity) / (MEGA / (float)deltaT);
         _lastUpdateCount = currentCount;
         _lastUpdateTime = currentTime;
+        _lastVelocity = _angularVelocity;
     }
 
     #ifdef DEBUG_OPTICAL_ENABLED
@@ -66,6 +70,10 @@ uint32_t SensorOptical::getReadInterval() {
 
 float SensorOptical::getAngularVelocity() {
     return _angularVelocity;
+}
+
+float SensorOptical::getAngularAcceleration() {
+    return _angularAcceleration;
 }
 
 float SensorOptical::getLinearVelocity() {

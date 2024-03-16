@@ -18,6 +18,7 @@ class SensorOptical {
         void begin();
         void handle();
         float getAngularVelocity();
+        float getAngularAcceleration();
         float getLinearVelocity();
         void setReadInterval(uint32_t interval);
         uint32_t getReadInterval();
@@ -27,8 +28,10 @@ class SensorOptical {
         uint _stateMachine; 
         uint32_t _lastUpdateTime = 0;
         int32_t _lastUpdateCount = 0;
+        int32_t _lastVelocity = 0;
         uint32_t _readInterval = 0;
         float _angularVelocity = 0;
+        float _angularAcceleration = 0;
 
         #ifdef DEBUG_OPTICAL_ENABLED
         int32_t _lastDisplayCount = 0;

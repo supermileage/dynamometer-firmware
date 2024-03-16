@@ -88,7 +88,7 @@ const NavMenuConfig MainMenuConfig = {
         .text = "Automated Control",
         .info = { .state = AutoControlMenu } } },
     { ButtonInfo {
-        .text = "Calibration",
+        .text = "Calibration Yeet",
         .info = { .state = CalibrationMenu } } },
     { ButtonInfo {
         .text = "Settings",
