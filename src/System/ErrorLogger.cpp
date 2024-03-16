@@ -7,6 +7,8 @@ ErrorLogger* ErrorLogger::_instance = nullptr;
 ErrorLogger& ErrorUtil = ErrorLogger::instance();
 
 ErrorLogger& ErrorLogger::instance() {
+    // if instance of ErrorLogger does not exist yet, create one
+    // if it exists, return the existing instance
     if (!_instance) {
         _instance = new ErrorLogger();
     }
@@ -42,11 +44,14 @@ void ErrorLogger::errorAssert(const char* filename, int line, const char* func, 
     if (_behaviour == DoNothing) {
         return;
     }
-
+    
+    // create error message
     char* path = strstr(filename, "src/");
     int len = strlen(path) + 4 + strlen(func) + strlen(expression) + FORMATTED_MESSAGE_SIZE;
     char* buf = new char[len + 1] { 0 };
     sprintf(buf, "assert failed: ( %s )\n\t<%s,ln %d> in %s", expression, path, line, func);
+
+    // log error
     errorLog(buf);
     delete[] buf;
 }
