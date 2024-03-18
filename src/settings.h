@@ -28,7 +28,7 @@
 #define LCD_RST     6
 #define LCD_DC      7
 #define LCD_CS      5
-#define TOUCH_CS    14
+//#define TOUCH_CS    14
 #define SD_CS       8
 
 /* Sensor */
