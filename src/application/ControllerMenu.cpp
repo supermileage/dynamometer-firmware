@@ -96,12 +96,14 @@ void ControllerMenu::_handleInputEncoderSelect(input_data_t d) {
 
 void ControllerMenu::_handleInputBack(input_data_t d) {
     
+    Serial.print("Back ");
     if (d) {
-         UIElement* cur = _buttonInfoPairs[_inFocus].first.get();
+        //UIElement* cur = _buttonInfoPairs[_inFocus].first.get();
 
-         //UIElement* cur = _buttonInfoPairs[_inFocus].first;
-         UIEventHandler::instance().addEvent([this,cur]() { cur->focus(); _menu->back(); });
-    } else {
+        std::shared_ptr<UIElement> cur = _buttonInfoPairs[_inFocus].first;
+        UIEventHandler::instance().addEvent([this,cur]() { cur->focus(); _menu->back(); });
+    } 
+    else {
         _navigateBack();
     }
     
