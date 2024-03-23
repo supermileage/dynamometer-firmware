@@ -39,6 +39,7 @@ HardwareDemuxButton brakeButton(demuxer, DEMUX_SELECT_BRAKE, LED_BRAKE, false);
 HardwareDemuxButton encoderButton(demuxer, DEMUX_SELECT_ROT_EN_SW, LED_NULL, true);
 HardwarePotentiometer pot(POT_IN);
 HardwareRotaryEncoder rot(ROT_EN_A, ROT_EN_B);
+KillSwitch killswitch(BPM_KILLSWITCH);
 
 /* ui */
 ControllerFactory factory(tft, inputManager);
@@ -72,6 +73,7 @@ void setup() {
 	inputManager.registerInput(ID_ROT_EN_SW, &encoderButton);
 	inputManager.registerInput(ID_BRAKE_POT, &pot);
 	inputManager.registerInput(ID_ROT_EN, &rot);
+	inputManager.registerInput(ID_KILLSWITCH, &rot);
 	inputManager.begin();
 
 	// application

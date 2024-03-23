@@ -28,7 +28,7 @@
 #define LCD_RST     6
 #define LCD_DC      7
 #define LCD_CS      5
-// #define TOUCH_CS    14
+//#define TOUCH_CS    14
 #define SD_CS       8
 
 /* Sensor */
@@ -63,6 +63,11 @@
 #define ID_SELECT_BUTTON    4
 #define ID_BRAKE_BUTTON     5
 #define ID_BRAKE_POT        6
+#define ID_KILLSWITCH       7
+
+// BPM
+#define BPM_CTRL_OUT        3
+#define BPM_KILLSWITCH      2
 
 /* SD Card */
 #define SD_CS       8
