@@ -15,7 +15,7 @@ class InputManager {
         ~InputManager();
 
         /**
-         * @brief call initalize on all inputs
+         * @brief call initialize on all inputs
         */
         void begin();
 

@@ -28,7 +28,9 @@
 #define LCD_RST     6
 #define LCD_DC      7
 #define LCD_CS      5
-//#define TOUCH_CS    14
+
+//# define TOUCH_CS    14
+
 #define SD_CS       8
 
 /* Sensor */
@@ -37,9 +39,9 @@
 
 /* Demux (Buttons) */
 #define BUTTON_DEBOUNCE_MILLIS      50
-#define DEMUX_SELECT0               8
-#define DEMUX_SELECT1               9
-#define DEMUX_OUT                   10
+#define DEMUX_SELECT0               17
+#define DEMUX_SELECT1               16
+#define DEMUX_OUT                   18
 #define DEMUX_SELECT_SELECT         0x0
 #define DEMUX_SELECT_BACK           0x1
 #define DEMUX_SELECT_BRAKE          0x2

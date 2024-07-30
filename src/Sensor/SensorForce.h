@@ -8,18 +8,18 @@ class SensorForce {
         */
         ~SensorForce();
 
-        /*
-         * initialization method (called at startup)
+        /**
+         * @brief Initialization method (called at startup). Sets force sensor pin as input.
         */
         void begin();
 
-        /*
-         * handle method (called in loop)
+        /**
+         * @brief Handle method (called in loop). Reads and saves the force sensor value at a specified time interval.
         */
         void handle();
 
-        /*
-         * returns value representing current force on force sensor
+        /**
+         * @return Value representing current force on force sensor.
         */
         float getForce();
 
