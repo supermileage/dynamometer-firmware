@@ -17,12 +17,8 @@ void BpmControl::init(){
 
 void BpmControl::setControlSignal(int32_t controlSignal){ 
     if (_active == true){
-        if (controlSignal >= 0 && controlSignal <= 1023){
-            analogWrite(_pinNum, controlSignal);
-        }
-        else {
-            dyno_assert(controlSignal >= 0 && controlSignal <= 1023);
-        }
+        dyno_assert(controlSignal >= 0 && controlSignal <= 1023);
+        analogWrite(_pinNum, controlSignal);
     }
     else {
         analogWrite(_pinNum, 0);
