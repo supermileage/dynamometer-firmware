@@ -9,6 +9,10 @@ VisualElement& VisualElement::setParent(VisualElement* parent) {
     return *this;
 }
 
+uint16_t VisualElement::getTypeId() {
+    return _typeId;
+}
+
 Point VisualElement::getPosition() {
     return _position;
 }
