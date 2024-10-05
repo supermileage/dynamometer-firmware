@@ -8,13 +8,13 @@ SessionView::~SessionView() {
 
 }
 
-void SessionView::generateValueDisplay(std::vector<ValueId>& ids) {
-    for (ValueId id : ids) {
+void SessionView::generateValueDisplay(std::vector<::application::ValueId>& ids) {
+    for (application::ValueId id : ids) {
         
     }
 }
 
-void SessionView::updateValueElement(ValueId id, String& value) {
+void SessionView::updateValueElement(::application::ValueId id, String& value) {
 
 }
 

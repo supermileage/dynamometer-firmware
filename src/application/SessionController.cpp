@@ -46,7 +46,7 @@ void SessionController::_initializeOutput(StateInfo& info) {
     _initializeOutputCsv(_valueIds, _outputFilename);
 }
 
-String SessionController::_getHeaderFromIds(const std::vector<ValueId>& ids) {
+String SessionController::_getHeaderFromIds(const std::vector<application::ValueId>& ids) {
     String header = "";
     for (int i = 0; i < ids.size(); i++) {
         header += app_util::valueToHeader(ids[i]);
@@ -57,13 +57,13 @@ String SessionController::_getHeaderFromIds(const std::vector<ValueId>& ids) {
     return header;
 }
 
-void SessionController::_initializeValueLoggers(const std::vector<ValueId>& ids) {
-    for (ValueId id : ids) {
+void SessionController::_initializeValueLoggers(const std::vector<application::ValueId>& ids) {
+    for (application::ValueId id : ids) {
         _valueLoggers.push_back(_getValueLogger(id));
     }
 }
 
-void SessionController::_initializeOutputCsv(const std::vector<ValueId>& ids, String& filename) {
+void SessionController::_initializeOutputCsv(const std::vector<application::ValueId>& ids, String& filename) {
     if (_outputCsv.create(filename, ids.size())) {
         String header = _getHeaderFromIds(ids);
         _outputCsv.setHeader(header);
@@ -79,8 +79,8 @@ void SessionController::_closeOutputCsv() {
     _outputCsv.close();
 }
 
-std::vector<ValueId> SessionController::_parseValueIdStr(String& valueIds) {
-    std::vector<ValueId> vec;
+std::vector<application::ValueId> SessionController::_parseValueIdStr(String& valueIds) {
+    std::vector<application::ValueId> vec;
     int first = 0;
     int last = 1;
     while (last > 0) {
@@ -92,12 +92,12 @@ std::vector<ValueId> SessionController::_parseValueIdStr(String& valueIds) {
             valueId = valueIds.substring(first, first + last).toInt();
             first = first + last + 1;
         }
-        vec.push_back(static_cast<ValueId>(valueId));
+        vec.push_back(static_cast<application::ValueId>(valueId));
     }
     return vec;
 }
 
-std::function<String(void)> SessionController::_getValueLogger(ValueId id) {
+std::function<String(void)> SessionController::_getValueLogger(application::ValueId id) {
     switch (id) {
         case Force:
             return [this]() { return String(_force.getForce()); };

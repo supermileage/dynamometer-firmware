@@ -24,7 +24,7 @@ class SessionController : public ControllerBase {
         SensorForce& _force;
         uint32_t _loggingInterval;
         std::vector<std::function<String(void)>> _valueLoggers; // tandem with _valueIds
-        std::vector<ValueId> _valueIds;                         // tandem with _valueLoggers
+        std::vector<application::ValueId> _valueIds;                         // tandem with _valueLoggers
         String _outputFilename = "";
         bool _loggingEnabled;
 
@@ -38,17 +38,17 @@ class SessionController : public ControllerBase {
          * @brief initializes output csv file, generating header from value ids
          * @note modifies filename
         */
-        void _initializeOutputCsv(const std::vector<ValueId>& ids, String& filename);
+        void _initializeOutputCsv(const std::vector<application::ValueId>& ids, String& filename);
         void _closeOutputCsv();
         void _logValues();
 
     private:
         CsvFile _outputCsv;
 
-        std::vector<ValueId> _parseValueIdStr(String& valueIds);
-        String _getHeaderFromIds(const std::vector<ValueId>& ids);
-        void _initializeValueLoggers(const std::vector<ValueId>& ids);
-        std::function<String(void)> _getValueLogger(ValueId id);
+        std::vector<application::ValueId> _parseValueIdStr(String& valueIds);
+        String _getHeaderFromIds(const std::vector<application::ValueId>& ids);
+        void _initializeValueLoggers(const std::vector<application::ValueId>& ids);
+        std::function<String(void)> _getValueLogger(application::ValueId id);
 };
 
 #endif

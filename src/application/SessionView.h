@@ -15,14 +15,14 @@ class SessionView : public ViewBase {
     public:
         SessionView(TFT_eSPI& display);
         ~SessionView();
-        void generateValueDisplay(std::vector<ValueId>& ids);
-        void updateValueElement(ValueId id, String& value);
+        void generateValueDisplay(std::vector<application::ValueId>& ids);
+        void updateValueElement(application::ValueId id, String& value);
         void drawValues();
         void startRecording();
         void stopRecording();
     private:
         std::shared_ptr<Container> _valueContainer;
-        std::unordered_map<ValueId, ValueElement> _idToElement;
+        std::unordered_map<application::ValueId, ValueElement> _idToElement;
 };
 
 #endif

@@ -33,12 +33,17 @@ namespace app_util {
     /**
      * @brief get csv header name for value id
     */
-   const String valueToHeader(ValueId id);
+    const String valueToHeader(::application::ValueId id);
+
+    /**
+     * @brief get unit for value id
+    */
+    const String valueToUnit(::application::ValueId id);
 
     /**
      * @brief get default string for value
     */
-   const String valueToDefaultString(ValueId id);
+   const String valueToDefaultString(::application::ValueId id);
 }
 
 #endif
