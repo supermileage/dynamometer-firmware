@@ -1,7 +1,9 @@
 #include "CircularElement.h"
 
 CircularElement::CircularElement(TFT_eSPI& display) :
-    VisualElement(display) { }
+    VisualElement(display) {
+        _typeId |= TYPE_ID_CIRCULAR_ELEMENT;
+}
 
 CircularElement::~CircularElement() { }
 

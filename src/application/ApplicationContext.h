@@ -1,11 +1,11 @@
 #ifndef _APPLICATION_CONTEXT_H_
 #define _APPLICATION_CONTEXT_H_
 
-#include <stack>
 #include <memory>
 
 #include "TFT_eSPI.h"
 #include "System/InputManager.h"
+#include "System/system_util.h"
 
 #include "ControllerFactory.h"
 #include "ControllerBase.h"
@@ -18,8 +18,9 @@ class ControllerFactory;
 using namespace application;
 
 // application always starts from main menu
-#define APPLICATION_INITIAL_STATE       Sandbox
-#define APPLICATION_INITIAL_HEADER      "sandbox"
+#define APPLICATION_INITIAL_STATE       MainMenu
+#define APPLICATION_INITIAL_HEADER      "main menu"
+#define MAX_STACK_SIZE                  8
 
 /**
  * @brief maintains state and state transitions of application
@@ -75,7 +76,7 @@ class ApplicationContext {
         std::shared_ptr<ControllerBase> _controller = nullptr;
         StateInfo _currentStateInfo;
         StateInfo _nextStateInfo = StateInfo { .state = NullState, .inFocus = 0 };
-        std::stack<StateInfo> _previousStates;
+        system_util::FixedStack<StateInfo, MAX_STACK_SIZE> _previousStates;
         mutex_t _stateTransitionMutex;
         bool _stateTransitionFlag = false;
 
