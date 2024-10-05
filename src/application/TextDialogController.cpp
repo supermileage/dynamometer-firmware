@@ -154,11 +154,11 @@ void TextDialogController::_handleInputEncoderSelect(input_data_t d) {
 // note: currently commented out as hardware back button still hasn't been installed
 void TextDialogController::_handleInputBack(input_data_t d) {
     // TODO: back confirmation dialog
-    // if (d) {
-    //     if (!_rotarySwitchHeld && !_brakeButtonHeld) {
-    //         _navigateBack(d);
-    //     }
-    // }
+    if (d) {
+        if (!_rotarySwitchHeld && !_brakeButtonHeld) {
+             _navigateBack();
+        }
+    }
 }
 
 void TextDialogController::_handleInputSelect(input_data_t d) {
