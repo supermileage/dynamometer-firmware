@@ -13,69 +13,85 @@
 #define VELOCITY_FACTOR (GEAR_RATIO * ROLLER_RADIUS) // speed of vehicle [m/s] = velocity factor * angular velocity [rad/s]
 
 const uint16_t SensorOptical::NumApertures = NUM_APERTURES;
-const float SensorOptical::VelocityFactor = VELOCITY_FACTOR; 
+const float SensorOptical::VelocityFactor = VELOCITY_FACTOR;
 
-SensorOptical::SensorOptical(PIO pio, uint stateMachine, uint32_t readInterval) :
-    _pio(pio), _stateMachine(stateMachine), _readInterval(readInterval) { }
+SensorOptical::SensorOptical(PIO pio, uint stateMachine, uint32_t readInterval) : _pio(pio), _stateMachine(stateMachine), _readInterval(readInterval) {}
 
-SensorOptical::~SensorOptical() { }
+SensorOptical::~SensorOptical() {}
 
-void SensorOptical::begin() {
+void SensorOptical::begin()
+{
+    // sets optical sensor pin as input
     pinMode(OPTICAL_SENSOR_PIN, INPUT);
-	uint offset = pio_add_program(_pio, &pio_counter_program);
-	pio_counter_init(_pio, _stateMachine, offset, OPTICAL_SENSOR_PIN, PIO_CLOCK_DIV);
+
+    // initialize pio_counter program (pseudo-assembly code used to track number of aperture passes)
+    uint offset = pio_add_program(_pio, &pio_counter_program);
+    pio_counter_init(_pio, _stateMachine, offset, OPTICAL_SENSOR_PIN, PIO_CLOCK_DIV);
+
     _lastUpdateTime = micros();
     _lastVelocity = INITIAL_ANGULAR_VELOCITY;
 }
 
-void SensorOptical::handle() {
+void SensorOptical::handle()
+{
+
+    // calculate how much time has passed since the last update
     uint32_t currentTime = micros();
     uint32_t deltaT;
-
-    if (currentTime < _lastUpdateTime) {
+    if (currentTime < _lastUpdateTime)
+    {
         // overflow: compute interval with overflow
         deltaT = UINT32_MAX - _lastUpdateTime + currentTime + 1;
-    } else {
+    }
+    else
+    {
         // no overflow
         deltaT = currentTime - _lastUpdateTime;
     }
 
-    if (deltaT >= _readInterval) {
-         // n is num apertures we've passed over since last velocity update
+    // check if we need to update the velocity values
+    if (deltaT >= _readInterval)
+    {
+        // calculate angular velocity
         int32_t currentCount = pio_counter_get_count(_pio, _stateMachine);
-        int32_t n = currentCount - _lastUpdateCount;
+        int32_t n = currentCount - _lastUpdateCount; // n is num apertures we've passed over since last velocity update
 
         _angularVelocity = ((float)n / NUM_APERTURES) * 2 * _PI * (MEGA / (float)deltaT);
-        _angularAcceleration = (_angularVelocity - _lastVelocity) / (MEGA / (float)deltaT);
         _lastUpdateCount = currentCount;
         _lastUpdateTime = currentTime;
         _lastVelocity = _angularVelocity;
     }
 
-    #ifdef DEBUG_OPTICAL_ENABLED
-    if (pio_counter_get_count(_pio, _stateMachine) != _lastDisplayCount) {
+#ifdef DEBUG_OPTICAL_ENABLED
+    if (pio_counter_get_count(_pio, _stateMachine) != _lastDisplayCount)
+    {
         DEBUG_SERIAL_LN("pio_counter: " + String(pio_counter_get_count(_pio, _stateMachine)));
         _lastDisplayCount = pio_counter_get_count(_pio, _stateMachine);
     }
-    #endif
+#endif
 }
 
-void SensorOptical::setReadInterval(uint32_t interval) {
+void SensorOptical::setReadInterval(uint32_t interval)
+{
     _readInterval = interval;
 }
 
-uint32_t SensorOptical::getReadInterval() {
+uint32_t SensorOptical::getReadInterval()
+{
     return _readInterval;
 }
 
-float SensorOptical::getAngularVelocity() {
+float SensorOptical::getAngularVelocity()
+{
     return _angularVelocity;
 }
 
-float SensorOptical::getAngularAcceleration() {
+float SensorOptical::getAngularAcceleration()
+{
     return _angularAcceleration;
 }
 
-float SensorOptical::getLinearVelocity() {
+float SensorOptical::getLinearVelocity()
+{
     return VELOCITY_FACTOR * _angularVelocity;
 }

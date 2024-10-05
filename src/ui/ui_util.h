@@ -5,6 +5,15 @@
 #include <functional>
 #include "TFT_eSPI.h"
 
+#define TYPE_ID_VISUAL_ELEMENT       0x0
+#define TYPE_ID_UI_ELEMENT           0x1
+#define TYPE_ID_RECTANGULAR_ELEMENT  0x2
+#define TYPE_ID_CIRCULAR_ELEMENT     0x4
+#define TYPE_ID_CONTAINER            0x8
+#define TYPE_ID_TEXT_ELEMENT         0x10
+#define TYPE_ID_UI_BUTTON            0x20
+#define TYPE_ID_VALUE_ELEMENT        0x40
+
 namespace ui_util {
 
     /**
@@ -86,7 +95,6 @@ namespace ui_util {
                 maxHeight = cur.y;
             }
         }
-
         return Point { width, maxHeight };
     }
 }
