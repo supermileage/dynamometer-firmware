@@ -86,11 +86,6 @@ float SensorOptical::getAngularVelocity()
     return _angularVelocity;
 }
 
-float SensorOptical::getAngularAcceleration()
-{
-    return _angularAcceleration;
-}
-
 float SensorOptical::getLinearVelocity()
 {
     return VELOCITY_FACTOR * _angularVelocity;
