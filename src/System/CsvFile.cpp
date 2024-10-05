@@ -153,6 +153,7 @@ String CsvFile::getFileName() {
 }
 
 int CsvFile::_computeNumColumns() {
+    // determine how many columns are in the CSV file based on the header row
     if (!_curFile) {
         return 0;
     }
@@ -177,6 +178,7 @@ int CsvFile::_computeNumColumns() {
 }
 
 void CsvFile::_seekNextLine() {
+    // move file cursor to the next line
     if (!isalnum(_curFile.peek())) {
         while (_curFile.available()) {
             char c = (char)_curFile.read();
@@ -188,9 +190,11 @@ void CsvFile::_seekNextLine() {
 }
 
 bool CsvFile::_eofReached() {
+    // check if we have reached the end of file in our currently open file
     return _curFile.position() == _curFile.size();
 }
 
 bool CsvFile::_isValidEntry(char c) {
+    // check if a character is legal for CSV entries
     return isalnum(c) || c == '.' || c == '-';
 }

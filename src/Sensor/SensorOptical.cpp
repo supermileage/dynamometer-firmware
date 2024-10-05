@@ -20,16 +20,21 @@ SensorOptical::SensorOptical(PIO pio, uint stateMachine, uint32_t readInterval) 
 SensorOptical::~SensorOptical() { }
 
 void SensorOptical::begin() {
+    // sets optical sensor pin as input
     pinMode(OPTICAL_SENSOR_PIN, INPUT);
+
+    // initialize pio_counter program (pseudo-assembly code used to track number of aperture passes)
 	uint offset = pio_add_program(_pio, &pio_counter_program);
 	pio_counter_init(_pio, _stateMachine, offset, OPTICAL_SENSOR_PIN, PIO_CLOCK_DIV);
+    
     _lastUpdateTime = micros();
 }
 
 void SensorOptical::handle() {
+    
+    // calculate how much time has passed since the last update
     uint32_t currentTime = micros();
     uint32_t deltaT;
-
     if (currentTime < _lastUpdateTime) {
         // overflow: compute interval with overflow
         deltaT = UINT32_MAX - _lastUpdateTime + currentTime + 1;
@@ -38,12 +43,14 @@ void SensorOptical::handle() {
         deltaT = currentTime - _lastUpdateTime;
     }
 
+    // check if we need to update the velocity values
     if (deltaT >= _readInterval) {
-         // n is num apertures we've passed over since last velocity update
+        // calculate angular velocity
         int32_t currentCount = pio_counter_get_count(_pio, _stateMachine);
-        int32_t n = currentCount - _lastUpdateCount;
+        int32_t n = currentCount - _lastUpdateCount; // n is num apertures we've passed over since last velocity update
 
         _angularVelocity = ((float)n / NUM_APERTURES) * 2 * _PI * (MEGA / (float)deltaT);
+
         _lastUpdateCount = currentCount;
         _lastUpdateTime = currentTime;
     }
