@@ -4,6 +4,8 @@
 #include "TFT_eSPI.h"
 #include "XPT2046_Touchscreen.h"
 
+#include "System/BpmControl.h"
+
 #include "Sensor/SensorOptical.h"
 #include "Sensor/SensorForce.h"
 
@@ -26,6 +28,9 @@
 /* system resources */
 TFT_eSPI tft;
 
+/* BPM */
+BpmControl BPM(BPM_CTRL_OUT);
+
 /* sensors */
 SensorOptical optical(pio0, 0);
 SensorForce force;
@@ -40,7 +45,7 @@ HardwareDemuxButton brakeButton(demuxer, DEMUX_SELECT_BRAKE, LED_BRAKE, false);
 HardwareDemuxButton encoderButton(demuxer, DEMUX_SELECT_ROT_EN_SW, LED_NULL, true);
 HardwarePotentiometer pot(POT_IN);
 HardwareRotaryEncoder rot(ROT_EN_A, ROT_EN_B);
-KillSwitch killswitch(BPM_KILLSWITCH);
+KillSwitch killswitch(BPM, BPM_KILLSWITCH);
 
 /* ui */
 ControllerFactory factory(tft, inputManager);

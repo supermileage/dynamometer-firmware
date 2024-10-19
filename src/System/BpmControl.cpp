@@ -5,6 +5,8 @@ BpmControl::BpmControl (pin_size_t pinNum){
     _pinNum = pinNum;
 }
 
+BpmControl::~BpmControl(){}
+
 void BpmControl::init (){
     pinMode(_pinNum, OUTPUT);
     analogWriteRange(ANALOG_MAX);

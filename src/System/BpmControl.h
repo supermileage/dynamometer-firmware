@@ -12,6 +12,7 @@ class BpmControl {
         bool _active = false;
     public:
         BpmControl (pin_size_t pinNum);
+        ~BpmControl();
         void init ();
         void setControlSignal (int32_t signalStrength);
         void setActive (bool state);
