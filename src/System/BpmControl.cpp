@@ -1,10 +1,6 @@
 #include "HardwareInput.h"
 #include "BpmControl.h"
 
-#define ANALOG_MIN 0
-#define ANALOG_MAX 1023
-#define ANALOG_FREQ 20000
-
 BpmControl::BpmControl (pin_size_t pinNum){
     _pinNum = pinNum;
 }

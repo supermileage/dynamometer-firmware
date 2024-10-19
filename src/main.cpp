@@ -19,6 +19,7 @@
 #include "System/HardwareRotaryEncoder.h"
 #include "System/InputManager.h"
 #include "System/ErrorLogger.h"
+#include "System/KillSwitch.h"
 
 #include "settings.h"
 
@@ -73,7 +74,7 @@ void setup() {
 	inputManager.registerInput(ID_ROT_EN_SW, &encoderButton);
 	inputManager.registerInput(ID_BRAKE_POT, &pot);
 	inputManager.registerInput(ID_ROT_EN, &rot);
-	inputManager.registerInput(ID_KILLSWITCH, &rot);
+	inputManager.registerInput(ID_KILLSWITCH, &killswitch);
 	inputManager.begin();
 
 	// application

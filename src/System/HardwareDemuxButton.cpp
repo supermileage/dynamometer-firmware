@@ -30,7 +30,7 @@ void HardwareDemuxButton::run() {
 		_lastReadMillis = millis();
 		_lastReadVal = readVal;
 
-		Serial.print((int)(_selectId));
+		Serial.println((int)(_selectId));
 
 		if (_ledPin != LED_NULL) {
 			// Low = 0, High = 1 
