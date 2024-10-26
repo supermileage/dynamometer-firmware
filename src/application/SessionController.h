@@ -19,6 +19,11 @@ class SessionController : public ControllerBase {
         SessionController(ApplicationContext& context, TFT_eSPI& display, SensorOptical& optical, SensorForce& force);
         ~SessionController();
 
+        void init(InputManager& m) override {
+            ControllerBase::init(m);
+            // do some stuff
+        }
+
     protected:
         SensorOptical& _optical;
         SensorForce& _force;

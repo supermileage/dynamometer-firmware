@@ -11,6 +11,7 @@ SessionController::SessionController(ApplicationContext& context, TFT_eSPI& disp
 
 SessionController::~SessionController() { }
 
+
 void SessionController::_logValues() {
     for (std::function<String(void)> logger : _valueLoggers) {
         _outputCsv.addEntry(logger());
