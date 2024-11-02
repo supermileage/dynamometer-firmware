@@ -7,7 +7,9 @@
 #include "Sensor/SensorOptical.h"
 #include "Sensor/SensorForce.h"
 #include "System/CsvFile.h"
+#include "System/BpmControl.h"
 #include "ControllerBase.h"
+
 
 using namespace application;
 
@@ -16,7 +18,7 @@ using namespace application;
 */
 class SessionController : public ControllerBase {
     public:
-        SessionController(ApplicationContext& context, TFT_eSPI& display, SensorOptical& optical, SensorForce& force);
+        SessionController(ApplicationContext& context, TFT_eSPI& display, SensorForce& force, SensorOptical& optical, BpmControl& bpm) ;
         ~SessionController();
 
         void init(InputManager& m) override {
@@ -27,6 +29,8 @@ class SessionController : public ControllerBase {
     protected:
         SensorOptical& _optical;
         SensorForce& _force;
+        BpmControl& _bpm;
+        uint32_t _bpmDutyCycle;
         uint32_t _loggingInterval;
         std::vector<std::function<String(void)>> _valueLoggers; // tandem with _valueIds
         std::vector<ValueId> _valueIds;                         // tandem with _valueLoggers
@@ -54,6 +58,12 @@ class SessionController : public ControllerBase {
         String _getHeaderFromIds(const std::vector<ValueId>& ids);
         void _initializeValueLoggers(const std::vector<ValueId>& ids);
         std::function<String(void)> _getValueLogger(ValueId id);
+
+        void _navigateBack();
+
+        void _handleInputBack(input_data_t d) override;
+        
+        void _BPMControlSignal(BpmControl& bpm, InputManager& manager);
 };
 
 #endif

@@ -1,13 +1,14 @@
 #include "SessionController.h"
 #include "System/ErrorLogger.h"
+#include "settings.h"
 
 #define OUTPUT_FILENAME_ID      CONFIG_ID_OUTPUT_FILE_GLOBAL_ID
 #define VALUE_IDS               CONFIG_ID_VALUE_IDS
 #define LOGGING_INTERVAL_ID     CONFIG_ID_LOGGING_INTERVAL
 
-SessionController::SessionController(ApplicationContext& context, TFT_eSPI& display,
-    SensorOptical& optical, SensorForce& force) : ControllerBase(context, display),
-        _optical(optical), _force(force) { }
+
+SessionController::SessionController(ApplicationContext& context, TFT_eSPI& display, SensorForce& force, SensorOptical& optical, BpmControl& bpm) : 
+    ControllerBase(context, display), _force(force), _optical(optical), _bpm(bpm) { }
 
 SessionController::~SessionController() { }
 
@@ -132,4 +133,31 @@ std::function<String(void)> SessionController::_getValueLogger(ValueId id) {
             dyno_log_str("SessionController: no logging function for ValueId: " + String(id));
             return []() { return "undefined"; };
     }
+}
+
+
+void SessionController::_BPMControlSignal(BpmControl& bpm, InputManager& manager)
+{
+    if (!manager.read(DEMUX_SELECT_BRAKE))
+    {
+        _bpmDutyCycle = manager.read(POT_IN);
+        bpm.setControlSignal(_bpmDutyCycle);
+    }
+}
+
+void SessionController::_handleInputBack(input_data_t d) {
+    
+    if (!d) {
+        // once recording is developed, add here to stop it
+        _navigateBack();
+    }
+}
+
+void SessionController::_navigateBack() {
+    if (!_context.tryRevertState()) {
+        Serial.print("Unsuccessful Session Exit.");
+        return;
+    }
+        Serial.print("Successfully Exited Session");
+    
 }
