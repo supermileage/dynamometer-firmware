@@ -136,14 +136,23 @@ std::function<String(void)> SessionController::_getValueLogger(ValueId id) {
 }
 
 
+
 void SessionController::_handleInputBrakeButton(input_data_t d)
 {
     _bpm.setActive(!d);
 }
 
+void SessionController::_handleInputSelect(input_data_t d)
+{
+    _loggingEnabled = !_loggingEnabled;
+}
+
 void SessionController::_handleInputBrakePot(input_data_t d)
 {
     _bpm.setControlSignal(d);
+
+    if (_bpm.getStatus())
+        Serial.println(d);
 }
 
 void SessionController::_handleInputBack(input_data_t d) {

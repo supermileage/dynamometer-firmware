@@ -35,7 +35,7 @@ class SessionController : public ControllerBase {
         std::vector<std::function<String(void)>> _valueLoggers; // tandem with _valueIds
         std::vector<ValueId> _valueIds;                         // tandem with _valueLoggers
         String _outputFilename = "";
-        bool _loggingEnabled;
+        bool _loggingEnabled = false;
 
         /**
          * @brief initialize output logging -- logging interval, value loggers and output csv
@@ -61,6 +61,7 @@ class SessionController : public ControllerBase {
 
         void _navigateBack();
 
+        void _handleInputSelect(input_data_t d) override;
         void _handleInputBack(input_data_t d) override;
         void _handleInputBrakePot(input_data_t d) override;
         void _handleInputBrakeButton(input_data_t d) override;
