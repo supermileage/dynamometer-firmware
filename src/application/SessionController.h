@@ -7,7 +7,9 @@
 #include "Sensor/SensorOptical.h"
 #include "Sensor/SensorForce.h"
 #include "System/CsvFile.h"
+#include "System/BpmControl.h"
 #include "ControllerBase.h"
+
 
 using namespace application;
 
@@ -16,12 +18,19 @@ using namespace application;
 */
 class SessionController : public ControllerBase {
     public:
-        SessionController(ApplicationContext& context, TFT_eSPI& display, SensorOptical& optical, SensorForce& force);
+        SessionController(ApplicationContext& context, TFT_eSPI& display, SensorForce& force, SensorOptical& optical, BpmControl& bpm) ;
         ~SessionController();
+
+        void init(InputManager& m) override {
+            ControllerBase::init(m);
+            // do some stuff
+        }
 
     protected:
         SensorOptical& _optical;
         SensorForce& _force;
+        BpmControl& _bpm;
+        uint32_t _bpmDutyCycle;
         uint32_t _loggingInterval;
         std::vector<std::function<String(void)>> _valueLoggers; // tandem with _valueIds
         std::vector<application::ValueId> _valueIds;                         // tandem with _valueLoggers
@@ -45,10 +54,18 @@ class SessionController : public ControllerBase {
     private:
         CsvFile _outputCsv;
 
-        std::vector<application::ValueId> _parseValueIdStr(String& valueIds);
-        String _getHeaderFromIds(const std::vector<application::ValueId>& ids);
-        void _initializeValueLoggers(const std::vector<application::ValueId>& ids);
-        std::function<String(void)> _getValueLogger(application::ValueId id);
+        std::vector<ValueId> _parseValueIdStr(String& valueIds);
+        String _getHeaderFromIds(const std::vector<ValueId>& ids);
+        void _initializeValueLoggers(const std::vector<ValueId>& ids);
+        std::function<String(void)> _getValueLogger(ValueId id);
+
+        void _navigateBack();
+
+        void _handleInputBack(input_data_t d) override;
+        void _handleInputBrakePot(input_data_t d) override;
+        void _handleInputBrakeButton(input_data_t d) override;
+        
+
 };
 
 #endif

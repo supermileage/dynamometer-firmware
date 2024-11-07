@@ -6,11 +6,14 @@ class BpmControl {
     private:    
         int _pinNum;
         bool _active = false;
+        uint16_t _controlSignal = 0;
     public:
         BpmControl (pin_size_t pinNum);
         void init ();
         void setControlSignal (int32_t signalStrength);
+        int32_t getControlSignal(void);
         void setActive (bool state);
+        bool getStatus(void);
 };
 
 #endif

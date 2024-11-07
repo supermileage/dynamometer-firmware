@@ -3,6 +3,7 @@
 #include "ControllerFactory.h"
 #include "ControllerMenu.h"
 #include "TextDialogController.h"
+#include "SessionController.h"
 
 // menu configs
 
@@ -16,8 +17,8 @@ extern const NavMenuConfig ManualControlMenuConfig;
 
 // controller factory
 
-ControllerFactory::ControllerFactory(TFT_eSPI& display, InputManager& manager) :
-    _display(display), _inputManager(manager) { }
+ControllerFactory::ControllerFactory(TFT_eSPI& display, InputManager& manager, SensorForce& force, SensorOptical& optical, BpmControl& bpm) :
+    _display(display), _inputManager(manager), _force(force), _optical(optical), _bpm(bpm){ }
 
 std::shared_ptr<ControllerBase> ControllerFactory::create(StateInfo& info) {
     return _createInternal(info);
@@ -73,8 +74,8 @@ std::shared_ptr<ControllerBase> ControllerFactory::_createInternal(StateInfo& in
             break;
         case ManualControlMode:
             // TODO: add manual control mode state
-            ret = std::make_shared<ControllerMenu>(*_context, _display);
-            static_cast<ControllerMenu*>(ret.get())->init(_inputManager, info, ManualControlMenuConfig);
+            ret = std::make_shared<SessionController>(*_context, _display, _force, _optical, _bpm);
+            static_cast<SessionController*>(ret.get())->init(_inputManager);
             break;
         case ManualControlSettings:
             // TODO: add manual control settings state

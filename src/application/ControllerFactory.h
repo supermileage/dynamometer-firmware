@@ -8,6 +8,9 @@
 #include "ApplicationContext.h"
 #include "ControllerBase.h"
 #include "application.h"
+#include "Sensor/SensorForce.h"
+#include "Sensor/SensorOptical.h"
+#include "System/BpmControl.h"
 
 class ApplicationContext;
 class ControllerBase;
@@ -20,7 +23,7 @@ using namespace application;
 */
 class ControllerFactory {
     public:
-        ControllerFactory(TFT_eSPI& display, InputManager& manager);
+        ControllerFactory(TFT_eSPI& display, InputManager& manager, SensorForce& force, SensorOptical& optical, BpmControl& bpm);
 
         /**
          * @brief create new controller base class for state info
@@ -34,6 +37,9 @@ class ControllerFactory {
         TFT_eSPI& _display;
         InputManager& _inputManager;
         ApplicationContext* _context;
+        SensorForce& _force;
+        SensorOptical& _optical;
+        BpmControl& _bpm;
 
         /**
          * @brief constructs new controller class for state info

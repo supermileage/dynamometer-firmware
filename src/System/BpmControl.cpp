@@ -16,13 +16,18 @@ void BpmControl::init(){
 };
 
 void BpmControl::setControlSignal(int32_t controlSignal){ 
+    _controlSignal = controlSignal;
     if (_active == true){
-        dyno_assert(controlSignal >= 0 && controlSignal <= 1023);
-        analogWrite(_pinNum, controlSignal);
+        dyno_assert(_controlSignal >= 0 && _controlSignal <= 1023);
+        analogWrite(_pinNum, _controlSignal);
     }
     else {
         analogWrite(_pinNum, 0);
     }
+};
+
+int32_t BpmControl::getControlSignal(void){ 
+    return _controlSignal;
 };
 
 void BpmControl::setActive(bool active){
@@ -30,4 +35,8 @@ void BpmControl::setActive(bool active){
     if (active == false) {
         analogWrite(_pinNum, 0);
     }
+};
+
+bool BpmControl::getStatus(void){
+    return _active;
 };

@@ -19,6 +19,7 @@
 #include "System/HardwareRotaryEncoder.h"
 #include "System/InputManager.h"
 #include "System/ErrorLogger.h"
+#include "System/BpmControl.h"
 
 #include "settings.h"
 
@@ -28,6 +29,9 @@ TFT_eSPI tft;
 /* sensors */
 SensorOptical optical(pio0, 0);
 SensorForce force;
+
+/* bpm */
+BpmControl bpm(BPM_CTRL_OUT);
 
 /* io */
 InputManager inputManager;
@@ -41,7 +45,7 @@ HardwarePotentiometer pot(POT_IN);
 HardwareRotaryEncoder rot(ROT_EN_A, ROT_EN_B);
 
 /* ui */
-ControllerFactory factory(tft, inputManager);
+ControllerFactory factory(tft, inputManager, force, optical, bpm);
 ApplicationContext context(inputManager, tft, factory);
 
 /* global variables */
@@ -58,6 +62,9 @@ void setup() {
 	optical.begin();
 	force.begin();
 
+	// BPM
+	
+		
 	// screen
 	tft.begin();
 	tft.setRotation(3);
