@@ -1,6 +1,8 @@
 #include "SessionController.h"
 #include "System/ErrorLogger.h"
 #include "settings.h"
+#include "SessionView.h"
+#include <ui/UIEventHandler.h>
 
 #define OUTPUT_FILENAME_ID      CONFIG_ID_OUTPUT_FILE_GLOBAL_ID
 #define VALUE_IDS               CONFIG_ID_VALUE_IDS
@@ -8,10 +10,20 @@
 
 
 SessionController::SessionController(ApplicationContext& context, TFT_eSPI& display, SensorForce& force, SensorOptical& optical, BpmControl& bpm) : 
-    ControllerBase(context, display), _force(force), _optical(optical), _bpm(bpm) { }
+    ControllerBase(context, display), _force(force), _optical(optical), _bpm(bpm) {
+        _sessionDisplay = std::make_shared<SessionView>(display);
+     }
 
 SessionController::~SessionController() { }
 
+void SessionController::init(InputManager& m) {
+            ControllerBase::init(m);
+                auto self = shared_from_this();
+            UIEventHandler::instance().addEvent( [this, self]() {
+            _sessionDisplay->init();
+        });
+            // do some stuff
+    }
 
 void SessionController::_logValues() {
     for (std::function<String(void)> logger : _valueLoggers) {

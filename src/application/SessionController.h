@@ -2,6 +2,9 @@
 #define _SESSION_CONTROLLER_H_
 
 #include <functional>
+#include <memory>
+#include <vector>
+#include <utility>
 
 #include "application.h"
 #include "Sensor/SensorOptical.h"
@@ -9,6 +12,7 @@
 #include "System/CsvFile.h"
 #include "System/BpmControl.h"
 #include "ControllerBase.h"
+#include "SessionView.h"
 
 
 using namespace application;
@@ -21,10 +25,7 @@ class SessionController : public ControllerBase {
         SessionController(ApplicationContext& context, TFT_eSPI& display, SensorForce& force, SensorOptical& optical, BpmControl& bpm) ;
         ~SessionController();
 
-        void init(InputManager& m) override {
-            ControllerBase::init(m);
-            // do some stuff
-        }
+        void init(InputManager& m) override;
 
     protected:
         SensorOptical& _optical;
@@ -53,6 +54,8 @@ class SessionController : public ControllerBase {
 
     private:
         CsvFile _outputCsv;
+        std::shared_ptr<SessionView> _sessionDisplay;
+
 
         std::vector<ValueId> _parseValueIdStr(String& valueIds);
         String _getHeaderFromIds(const std::vector<ValueId>& ids);
