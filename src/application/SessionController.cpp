@@ -136,13 +136,14 @@ std::function<String(void)> SessionController::_getValueLogger(ValueId id) {
 }
 
 
-void SessionController::_BPMControlSignal(BpmControl& bpm, InputManager& manager)
+void SessionController::_handleInputBrakeButton(input_data_t d)
 {
-    if (!manager.read(DEMUX_SELECT_BRAKE))
-    {
-        _bpmDutyCycle = manager.read(POT_IN);
-        bpm.setControlSignal(_bpmDutyCycle);
-    }
+    _bpm.setActive(!d);
+}
+
+void SessionController::_handleInputBrakePot(input_data_t d)
+{
+    _bpm.setControlSignal(d);
 }
 
 void SessionController::_handleInputBack(input_data_t d) {

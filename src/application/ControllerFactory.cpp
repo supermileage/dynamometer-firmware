@@ -74,7 +74,7 @@ std::shared_ptr<ControllerBase> ControllerFactory::_createInternal(StateInfo& in
             break;
         case ManualControlMode:
             // TODO: add manual control mode state
-            ret = std::make_shared<SessionController>(*_context, _display, _optical, _force, _bpm);
+            ret = std::make_shared<SessionController>(*_context, _display, _force, _optical, _bpm);
             static_cast<SessionController*>(ret.get())->init(_inputManager);
             break;
         case ManualControlSettings:

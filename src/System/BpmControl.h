@@ -13,6 +13,7 @@ class BpmControl {
         void setControlSignal (int32_t signalStrength);
         int32_t getControlSignal(void);
         void setActive (bool state);
+        bool getStatus(void);
 };
 
 #endif

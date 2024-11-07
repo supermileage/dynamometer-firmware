@@ -36,3 +36,7 @@ void BpmControl::setActive(bool active){
         analogWrite(_pinNum, 0);
     }
 };
+
+bool BpmControl::getStatus(void){
+    return _active;
+};

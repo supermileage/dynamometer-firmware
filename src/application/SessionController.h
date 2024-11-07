@@ -62,8 +62,9 @@ class SessionController : public ControllerBase {
         void _navigateBack();
 
         void _handleInputBack(input_data_t d) override;
+        void _handleInputBrakePot(input_data_t d) override;
+        void _handleInputBrakeButton(input_data_t d) override;
         
-        void _BPMControlSignal(BpmControl& bpm, InputManager& manager);
 };
 
 #endif
