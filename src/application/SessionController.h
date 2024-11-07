@@ -33,7 +33,7 @@ class SessionController : public ControllerBase {
         uint32_t _bpmDutyCycle;
         uint32_t _loggingInterval;
         std::vector<std::function<String(void)>> _valueLoggers; // tandem with _valueIds
-        std::vector<ValueId> _valueIds;                         // tandem with _valueLoggers
+        std::vector<application::ValueId> _valueIds;                         // tandem with _valueLoggers
         String _outputFilename = "";
         bool _loggingEnabled;
 
@@ -47,7 +47,7 @@ class SessionController : public ControllerBase {
          * @brief initializes output csv file, generating header from value ids
          * @note modifies filename
         */
-        void _initializeOutputCsv(const std::vector<ValueId>& ids, String& filename);
+        void _initializeOutputCsv(const std::vector<application::ValueId>& ids, String& filename);
         void _closeOutputCsv();
         void _logValues();
 
@@ -65,6 +65,7 @@ class SessionController : public ControllerBase {
         void _handleInputBrakePot(input_data_t d) override;
         void _handleInputBrakeButton(input_data_t d) override;
         
+
 };
 
 #endif
