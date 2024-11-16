@@ -4,6 +4,7 @@
 #include "graphics/colour.h"
 #include "graphics/fonts.h"
 #include "app_util.h"
+#include "SessionController.h"
 
 using namespace application;
 
@@ -16,38 +17,42 @@ SessionView::~SessionView() {
 }
 
 // Following MenuView's example
-void SessionView::init(){
-    _window->addVisualElement(_header)
-        .addVisualElement(_sessionContainer);
+void SessionView::init(std::vector<::application::ValueId>& ids){
+    _window->addVisualElement(_header).addVisualElement(_sessionContainer);
+        //_sessionContainer->addVisualElement(_sessionElement); // freezes
+    /*
     _sessionContainer->addVisualElement(_navButtonContainer);
     _navButtonContainer->addVisualElement(_navButtonBack)
         .addVisualElement(_navButtonSelect);
-
+    
     app_util::configureSelectButton(_navButtonSelect.get());
     app_util::configureBackButton(_navButtonBack.get());
 
+    app_util::configureNavButtonContainer(_navButtonContainer.get());
+    */
+
     app_util::configureMainWindow(_window.get());
     app_util::configureMenuContainer(_sessionContainer.get());
-    app_util::configureNavButtonContainer(_navButtonContainer.get());
 
-    _window->align();
-
+    SessionView::generateValueDisplay(ids);
     // call to principal container draws all elements
-    DEBUG_SERIAL_LN("Drawing window");
+    _window->align();
     _window->draw();
 }
 
 void SessionView::generateValueDisplay(std::vector<::application::ValueId>& ids) {
     for (application::ValueId id : ids) {
-
+        
+        _idToElement.try_emplace(id,ValueElement(_display));
+        _sessionContainer->addVisualElement(std::make_shared<ValueElement>(_idToElement.at(id)), Container::CentreMiddle);
     }
 }
 
 void SessionView::updateValueElement(::application::ValueId id, String& value) {
-
+    _idToElement.at(id).updateValue(value);
 }
 
-// try valueElement.redraw();
+// try valueElement.redraw() (?)
 void SessionView::drawValues() {
     _window->draw();
 }

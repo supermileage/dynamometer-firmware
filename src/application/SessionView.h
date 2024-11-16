@@ -15,7 +15,7 @@ class SessionView : public ViewBase {
     public:
         SessionView(TFT_eSPI& display);
         ~SessionView();
-        void init();
+        void init(std::vector<::application::ValueId>& ids);
         void generateValueDisplay(std::vector<application::ValueId>& ids);
         void updateValueElement(application::ValueId id, String& value);
         void drawValues();
@@ -23,6 +23,7 @@ class SessionView : public ViewBase {
         void stopRecording();
     private:
         std::shared_ptr<Container> _sessionContainer;
+        std::shared_ptr<ValueElement> _sessionElement;
         std::unordered_map<application::ValueId, ValueElement> _idToElement;
 };
 
