@@ -2,6 +2,7 @@
 #include "System/ErrorLogger.h"
 #include "settings.h"
 #include "SessionView.h"
+#include "System/HardwareDemuxButton.h"
 #include <ui/UIEventHandler.h>
 
 #define OUTPUT_FILENAME_ID      CONFIG_ID_OUTPUT_FILE_GLOBAL_ID
@@ -9,8 +10,8 @@
 #define LOGGING_INTERVAL_ID     CONFIG_ID_LOGGING_INTERVAL
 
 
-SessionController::SessionController(ApplicationContext& context, TFT_eSPI& display, SensorForce& force, SensorOptical& optical, BpmControl& bpm) : 
-    ControllerBase(context, display), _force(force), _optical(optical), _bpm(bpm) {
+SessionController::SessionController(ApplicationContext& context, TFT_eSPI& display, SensorForce& force, SensorOptical& optical, BpmControl& bpm, HardwareDemuxButton& selectButton) : 
+    ControllerBase(context, display), _force(force), _optical(optical), _bpm(bpm), _selectButton(selectButton){
         _sessionDisplay = std::make_shared<SessionView>(display);
      }
 
@@ -20,15 +21,19 @@ void SessionController::init(InputManager& m) {
             ControllerBase::init(m);
                 auto self = shared_from_this();
             UIEventHandler::instance().addEvent( [this, self]() {
-            _sessionDisplay->init();
-        });
+                _sessionDisplay->init();
+            });
             // do some stuff
+            Serial.print("hi");
     }
 
 void SessionController::_logValues() {
-    for (std::function<String(void)> logger : _valueLoggers) {
-        _outputCsv.addEntry(logger());
-    }
+    if (_loggingEnabled)
+    {
+        for (std::function<String(void)> logger : _valueLoggers) {
+            _outputCsv.addEntry(logger());
+        }
+    }  
 }
 
 void SessionController::_initializeOutput(StateInfo& info) {
@@ -156,7 +161,12 @@ void SessionController::_handleInputBrakeButton(input_data_t d)
 
 void SessionController::_handleInputSelect(input_data_t d)
 {
-    _loggingEnabled = !_loggingEnabled;
+    
+    if (!d && _selectButton.getHeldStatus(0))
+    {
+        _loggingEnabled = !_loggingEnabled;
+        Serial.println("Logging_Enabled:" + String(_loggingEnabled));
+    }
 }
 
 void SessionController::_handleInputBrakePot(input_data_t d)
@@ -171,6 +181,7 @@ void SessionController::_handleInputBack(input_data_t d) {
     
     if (!d) {
         // once recording is developed, add here to stop it
+        _loggingEnabled = false;
         _navigateBack();
     }
 }
@@ -181,5 +192,20 @@ void SessionController::_navigateBack() {
         return;
     }
         Serial.print("Successfully Exited Session");
+
+        _closeOutputCsv();
+
+        auto self = shared_from_this();
+        UIEventHandler::instance().addEvent([this, self]() {
+            //_menu->back();
+            _context.setStateTransitionFlag();
+        });
     
 }
+/*
+void SessionController::handle() {
+    // did any of the UI values change?
+    auto self = shared_from_this();
+    UIEventHandler::instance().addEvent( [self]() { self->_sessionDisplay.draw(); } );
+}
+*/

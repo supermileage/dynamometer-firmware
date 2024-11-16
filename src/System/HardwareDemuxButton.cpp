@@ -30,15 +30,24 @@ void HardwareDemuxButton::run() {
 		_lastReadMillis = millis();
 		_lastReadVal = readVal;
 
-		Serial.print((int)(_selectId));
+		
 
 		if (_ledPin != LED_NULL) {
 			// Low = 0, High = 1 
 			digitalWrite(_ledPin, static_cast<PinStatus>(!readVal));
 		}
 	}
+	if (readVal == 0)
+	{
+		_heldStatus[_selectId] = true;
+	}
 }
 
 input_data_t HardwareDemuxButton::read() {
 	return static_cast<input_data_t>(_read());
+}
+
+bool HardwareDemuxButton::getHeldStatus(uint8_t selectPin)
+{
+	return _heldStatus[selectPin];
 }

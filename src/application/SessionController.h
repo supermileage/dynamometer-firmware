@@ -22,15 +22,17 @@ using namespace application;
 */
 class SessionController : public ControllerBase {
     public:
-        SessionController(ApplicationContext& context, TFT_eSPI& display, SensorForce& force, SensorOptical& optical, BpmControl& bpm) ;
+        SessionController(ApplicationContext& context, TFT_eSPI& display, SensorForce& force, SensorOptical& optical, BpmControl& bpm, HardwareDemuxButton& selectButton) ;
         ~SessionController();
 
         void init(InputManager& m) override;
+        //void handle(void) override;
 
     protected:
         SensorOptical& _optical;
         SensorForce& _force;
         BpmControl& _bpm;
+        HardwareDemuxButton& _selectButton;
         uint32_t _bpmDutyCycle;
         uint32_t _loggingInterval;
         std::vector<std::function<String(void)>> _valueLoggers; // tandem with _valueIds
@@ -68,6 +70,8 @@ class SessionController : public ControllerBase {
         void _handleInputBack(input_data_t d) override;
         void _handleInputBrakePot(input_data_t d) override;
         void _handleInputBrakeButton(input_data_t d) override;
+
+        
         
 
 };

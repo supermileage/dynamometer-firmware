@@ -45,7 +45,7 @@ HardwarePotentiometer pot(POT_IN);
 HardwareRotaryEncoder rot(ROT_EN_A, ROT_EN_B);
 
 /* ui */
-ControllerFactory factory(tft, inputManager, force, optical, bpm);
+ControllerFactory factory(tft, inputManager, force, optical, bpm, selectButton);
 ApplicationContext context(inputManager, tft, factory);
 
 /* global variables */

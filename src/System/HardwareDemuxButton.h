@@ -18,6 +18,7 @@ class HardwareDemuxButton : public HardwareInput {
 		void init() override;
 		void run() override;
 		input_data_t read() override;
+		bool getHeldStatus(uint8_t selectPins);
 
     private:
         HardwareDemuxer& _demuxer;
@@ -26,6 +27,7 @@ class HardwareDemuxButton : public HardwareInput {
 		PinStatus _lastReadVal;
 		uint32_t _lastReadMillis = 0;
 		bool _normalHigh;
+		bool _heldStatus[4] = {false, false, false, false}; // 4 for all 4 inputs
 
 		// reads demux output pin
 		inline PinStatus _read() {
