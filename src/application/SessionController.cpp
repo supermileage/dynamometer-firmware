@@ -22,6 +22,16 @@ void SessionController::init(InputManager &m)
     auto self = shared_from_this();
 
     tempIds.push_back(Force);
+    tempIds.push_back(AngularVelocity);
+    tempIds.push_back(AngularAccel);
+    tempIds.push_back(DynoRpm);
+    tempIds.push_back(BpmVoltage);
+    tempIds.push_back(BpmCurrent);
+    tempIds.push_back(Time);
+    tempIds.push_back(VescRpm);
+    tempIds.push_back(VescDuty);
+    tempIds.push_back(VescCurrent);
+    // 9 values max, see SessionView
 
     UIEventHandler::instance().addEvent([this, self]()                           {
         _sessionDisplay->init(tempIds);
@@ -29,7 +39,6 @@ void SessionController::init(InputManager &m)
     });
     // do some stuff
 
-    Serial.print("tempIds added Force\n");
 }
 
 void SessionController::_logValues()
