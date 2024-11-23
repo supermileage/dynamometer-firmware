@@ -4,6 +4,8 @@
 #include "TFT_eSPI.h"
 #include "XPT2046_Touchscreen.h"
 
+#include "System/BpmControl.h"
+
 #include "Sensor/SensorOptical.h"
 #include "Sensor/SensorForce.h"
 
@@ -19,12 +21,17 @@
 #include "System/HardwareRotaryEncoder.h"
 #include "System/InputManager.h"
 #include "System/ErrorLogger.h"
+#include "System/KillSwitch.h"
 #include "System/BpmControl.h"
+
 
 #include "settings.h"
 
 /* system resources */
 TFT_eSPI tft;
+
+/* BPM */
+BpmControl bpm(BPM_CTRL_OUT);
 
 /* sensors */
 SensorOptical optical(pio0, 0);
@@ -43,6 +50,7 @@ HardwareDemuxButton brakeButton(demuxer, DEMUX_SELECT_BRAKE, LED_BRAKE, false);
 HardwareDemuxButton encoderButton(demuxer, DEMUX_SELECT_ROT_EN_SW, LED_NULL, true);
 HardwarePotentiometer pot(POT_IN);
 HardwareRotaryEncoder rot(ROT_EN_A, ROT_EN_B);
+KillSwitch killswitch(bpm, BPM_KILLSWITCH);
 
 /* ui */
 ControllerFactory factory(tft, inputManager, force, optical, bpm, selectButton);
@@ -79,6 +87,7 @@ void setup() {
 	inputManager.registerInput(ID_ROT_EN_SW, &encoderButton);
 	inputManager.registerInput(ID_BRAKE_POT, &pot);
 	inputManager.registerInput(ID_ROT_EN, &rot);
+	inputManager.registerInput(ID_KILLSWITCH, &killswitch);
 	inputManager.begin();
 
 	// application

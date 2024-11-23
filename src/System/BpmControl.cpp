@@ -2,9 +2,6 @@
 #include "BpmControl.h"
 #include "ErrorLogger.h"
 
-#define ANALOG_MAX 1023
-#define ANALOG_FREQ 20000
-
 BpmControl::BpmControl(pin_size_t pinNum){
     _pinNum = pinNum;
 }
@@ -40,3 +37,4 @@ void BpmControl::setActive(bool active){
 bool BpmControl::getStatus(void){
     return _active;
 };
+
