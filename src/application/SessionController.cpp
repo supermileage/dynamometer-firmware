@@ -24,7 +24,6 @@ void SessionController::init(InputManager& m) {
                 _sessionDisplay->init();
             });
             // do some stuff
-            Serial.print("hi");
     }
 
 void SessionController::_logValues() {
@@ -165,7 +164,7 @@ void SessionController::_handleInputSelect(input_data_t d)
     if (!d && _selectButton.getHeldStatus(0))
     {
         _loggingEnabled = !_loggingEnabled;
-        Serial.println("Logging_Enabled:" + String(_loggingEnabled));
+        DEBUG_SERIAL_LN("Logging_Enabled:" + String(_loggingEnabled));
     }
 }
 
@@ -174,7 +173,7 @@ void SessionController::_handleInputBrakePot(input_data_t d)
     _bpm.setControlSignal(d);
 
     if (_bpm.getStatus())
-        Serial.println(d);
+        DEBUG_SERIAL_LN(d);
 }
 
 void SessionController::_handleInputBack(input_data_t d) {
@@ -188,10 +187,10 @@ void SessionController::_handleInputBack(input_data_t d) {
 
 void SessionController::_navigateBack() {
     if (!_context.tryRevertState()) {
-        Serial.print("Unsuccessful Session Exit.");
+        DEBUG_SERIAL_LN("Unsuccessful Session Exit.");
         return;
     }
-        Serial.print("Successfully Exited Session");
+        DEBUG_SERIAL_LN("Successfully Exited Session");
 
         _closeOutputCsv();
 

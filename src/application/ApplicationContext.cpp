@@ -76,11 +76,9 @@ bool ApplicationContext::tryUpdateAndReturn(StateInfo& info) {
 bool ApplicationContext::tryRevertState() {
     if (_nextStateInfo.state != NullState) {
         DEBUG_SERIAL_LN("Already in state transition -- Aborting");
-        Serial.println("Already in state transition -- Aborting");
         return false;
     } else if (_previousStates.empty()) {
         DEBUG_SERIAL_LN("No previous state to revert to");
-        Serial.println("No previous state to revert to");
         return false;
     }
 
