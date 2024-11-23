@@ -156,17 +156,15 @@ void SettingsController::_handleInputEncoderSelect(input_data_t d) {
 }
 
 void SettingsController::_handleInputBack(input_data_t d) {
-    // TODO: uncomment when back button is connected
-    // if (d) {   
-    //     if (!_context.tryRevertState()) {
-    //         return;
-    //     }
-
-    //     auto self = shared_from_this();
-    //     UIEventHandler::instance().addEvent([this, self]() {
-    //         _context.setStateTransitionFlag();
-    //     });
-    // }
+    if (d) {   
+        if (!_context.tryRevertState()) {
+            return;
+        }
+        auto self = shared_from_this();
+        UIEventHandler::instance().addEvent([this, self]() {
+            _context.setStateTransitionFlag();
+        });
+    }
 }
 
 void SettingsController::_handleInputSelect(input_data_t d) {

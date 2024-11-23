@@ -37,6 +37,8 @@ std::shared_ptr<ControllerBase> ControllerFactory::_createInternal(StateInfo& in
             break;
         case GlobalSettingsMenu:
             // TODO: add SettingsMenu implementation
+            ret = std::make_shared<ControllerMenu>(*_context, _display);
+            static_cast<ControllerMenu*>(ret.get())->init(_inputManager, info, MainMenuConfig);
             break;
         case CalibrationMenu:
             ret = std::make_shared<ControllerMenu>(*_context, _display);
@@ -44,6 +46,8 @@ std::shared_ptr<ControllerBase> ControllerFactory::_createInternal(StateInfo& in
             break;
         case CalibrationMode:
             // TODO: add calibration mode state
+            ret = std::make_shared<ControllerMenu>(*_context, _display);
+            static_cast<ControllerMenu*>(ret.get())->init(_inputManager, info, CalibrationMenuConfig);
             break;
         case CalibrationSettings:
             ret = std::make_shared<SettingsController>(*_context, _display);
@@ -59,9 +63,13 @@ std::shared_ptr<ControllerBase> ControllerFactory::_createInternal(StateInfo& in
             break;
         case AutoControlMode:
             // TODO: add auto control mode state
+            ret = std::make_shared<ControllerMenu>(*_context, _display);
+            static_cast<ControllerMenu*>(ret.get())->init(_inputManager, info, AutoControlMenuConfig);
             break;
         case AutoControlSettings:
             // TODO: add auto control settings state
+            ret = std::make_shared<ControllerMenu>(*_context, _display);
+            static_cast<ControllerMenu*>(ret.get())->init(_inputManager, info, AutoControlMenuConfig);
             break;
         case ManualControlMenu:
             ret = std::make_shared<ControllerMenu>(*_context, _display);
@@ -69,9 +77,13 @@ std::shared_ptr<ControllerBase> ControllerFactory::_createInternal(StateInfo& in
             break;
         case ManualControlMode:
             // TODO: add manual control mode state
+            ret = std::make_shared<ControllerMenu>(*_context, _display);
+            static_cast<ControllerMenu*>(ret.get())->init(_inputManager, info, ManualControlMenuConfig);
             break;
         case ManualControlSettings:
             // TODO: add manual control settings state
+            ret = std::make_shared<ControllerMenu>(*_context, _display);
+            static_cast<ControllerMenu*>(ret.get())->init(_inputManager, info, ManualControlMenuConfig);
             break;
         case TextDialog:
             ret = std::make_shared<TextDialogController>(*_context, _display);
