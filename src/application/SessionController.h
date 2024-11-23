@@ -26,6 +26,7 @@ class SessionController : public ControllerBase {
         ~SessionController();
 
         void init(InputManager& m) override;
+        void handle() override;
 
     protected:
         SensorOptical& _optical;
@@ -55,6 +56,8 @@ class SessionController : public ControllerBase {
     private:
         CsvFile _outputCsv;
         std::shared_ptr<SessionView> _sessionDisplay;
+         std::vector<::application::ValueId> tempIds;
+         uint32_t prev = 0;
 
 
         std::vector<ValueId> _parseValueIdStr(String& valueIds);
