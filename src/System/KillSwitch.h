@@ -6,7 +6,7 @@
 
 class KillSwitch: public HardwareInput {
     public:
-        KillSwitch(BpmControl& bpmControl, pin_size_t killSwitchPin, bool _sessionActive) : _bpmControl(bpmControl), _killSwitchPin(killSwitchPin), _sessionActive(sessionActive){}
+        KillSwitch(BpmControl& bpmControl, pin_size_t killSwitchPin) : _bpmControl(bpmControl), _killSwitchPin(killSwitchPin){}
         ~KillSwitch(){}
 
 		void init() override
@@ -16,15 +16,21 @@ class KillSwitch: public HardwareInput {
 
 		void run() override
     {
-      if (!digitalRead(_killSwitchPin) && _sessionActive) {
-        _bpmControl.setControlSignal(ANALOG_MAX);
-      }
+      if (!digitalRead(_killSwitchPin) && _bpmControl.getStatus()) 
+        _hasFault = true;
+      else
+        _hasFault = false;
     };
+
+    bool getFaultStatus()
+    {
+      return _hasFault;
+    }
 
     private:
 		  pin_size_t _killSwitchPin;
       BpmControl& _bpmControl;
-      bool _sessionActive;
+      bool _hasFault = false;
 };
 
 #endif
