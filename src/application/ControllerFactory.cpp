@@ -3,6 +3,9 @@
 #include "ControllerFactory.h"
 #include "ControllerMenu.h"
 #include "TextDialogController.h"
+#include "SessionController.h"
+
+
 
 // menu configs
 
@@ -16,8 +19,8 @@ extern const NavMenuConfig ManualControlMenuConfig;
 
 // controller factory
 
-ControllerFactory::ControllerFactory(TFT_eSPI& display, InputManager& manager) :
-    _display(display), _inputManager(manager) { }
+ControllerFactory::ControllerFactory(TFT_eSPI& display, InputManager& manager, SensorForce& force, SensorOptical& optical, BpmControl& bpm, HardwareDemuxButton& selectButton) :
+    _display(display), _inputManager(manager), _force(force), _optical(optical), _bpm(bpm), _selectButton(selectButton){ }
 
 std::shared_ptr<ControllerBase> ControllerFactory::create(StateInfo& info) {
     return _createInternal(info);
@@ -36,6 +39,8 @@ std::shared_ptr<ControllerBase> ControllerFactory::_createInternal(StateInfo& in
             break;
         case GlobalSettingsMenu:
             // TODO: add SettingsMenu implementation
+            ret = std::make_shared<ControllerMenu>(*_context, _display);
+            static_cast<ControllerMenu*>(ret.get())->init(_inputManager, info, MainMenuConfig);
             break;
         case CalibrationMenu:
             ret = std::make_shared<ControllerMenu>(*_context, _display);
@@ -43,9 +48,13 @@ std::shared_ptr<ControllerBase> ControllerFactory::_createInternal(StateInfo& in
             break;
         case CalibrationMode:
             // TODO: add calibration mode state
+            ret = std::make_shared<ControllerMenu>(*_context, _display);
+            static_cast<ControllerMenu*>(ret.get())->init(_inputManager, info, CalibrationMenuConfig);
             break;
         case CalibrationSettings:
             // TODO: add calibration settings state
+            ret = std::make_shared<ControllerMenu>(*_context, _display);
+            static_cast<ControllerMenu*>(ret.get())->init(_inputManager, info, CalibrationMenuConfig);
             break;
         case AutoControlMenu:
             ret = std::make_shared<ControllerMenu>(*_context, _display);
@@ -53,19 +62,28 @@ std::shared_ptr<ControllerBase> ControllerFactory::_createInternal(StateInfo& in
             break;
         case AutoControlMode:
             // TODO: add auto control mode state
+            ret = std::make_shared<ControllerMenu>(*_context, _display);
+            static_cast<ControllerMenu*>(ret.get())->init(_inputManager, info, AutoControlMenuConfig);
             break;
         case AutoControlSettings:
             // TODO: add auto control settings state
+            ret = std::make_shared<ControllerMenu>(*_context, _display);
+            static_cast<ControllerMenu*>(ret.get())->init(_inputManager, info, AutoControlMenuConfig);
             break;
         case ManualControlMenu:
             ret = std::make_shared<ControllerMenu>(*_context, _display);
             static_cast<ControllerMenu*>(ret.get())->init(_inputManager, info, ManualControlMenuConfig);
+
             break;
         case ManualControlMode:
             // TODO: add manual control mode state
+            ret = std::make_shared<SessionController>(*_context, _display, _force, _optical, _bpm, _selectButton);
+            static_cast<SessionController*>(ret.get())->init(_inputManager);
             break;
         case ManualControlSettings:
             // TODO: add manual control settings state
+            ret = std::make_shared<ControllerMenu>(*_context, _display);
+            static_cast<ControllerMenu*>(ret.get())->init(_inputManager, info, ManualControlMenuConfig);
             break;
         case TextDialog:
             ret = std::make_shared<TextDialogController>(*_context, _display);

@@ -55,7 +55,7 @@ class HardwareRotaryEncoder : public HardwareInput {
         pin_size_t _pinB;
         PinStatus _lastA;
         input_data_t _counter = 0;
-        uint32_t _doubleCounter = 0;
+        int32_t _doubleCounter = 0;
         input_data_t _lastUpdateCount = 0;
         uint32_t _lastUpdateMillis = 0;
 };

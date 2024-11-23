@@ -96,7 +96,7 @@ void ControllerMenu::_handleInputEncoderSelect(input_data_t d) {
 
 void ControllerMenu::_handleInputBack(input_data_t d) {
     
-    Serial.print("Back ");
+    //Serial.print("Back ");
     if (d) {
         //UIElement* cur = _buttonInfoPairs[_inFocus].first.get();
 

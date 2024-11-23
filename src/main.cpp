@@ -22,6 +22,8 @@
 #include "System/InputManager.h"
 #include "System/ErrorLogger.h"
 #include "System/KillSwitch.h"
+#include "System/BpmControl.h"
+
 
 #include "settings.h"
 
@@ -34,6 +36,9 @@ BpmControl bpm(BPM_CTRL_OUT);
 /* sensors */
 SensorOptical optical(pio0, 0);
 SensorForce force;
+
+/* bpm */
+BpmControl bpm(BPM_CTRL_OUT);
 
 /* io */
 InputManager inputManager;
@@ -48,7 +53,7 @@ HardwareRotaryEncoder rot(ROT_EN_A, ROT_EN_B);
 KillSwitch killswitch(bpm, BPM_KILLSWITCH);
 
 /* ui */
-ControllerFactory factory(tft, inputManager);
+ControllerFactory factory(tft, inputManager, force, optical, bpm, selectButton);
 ApplicationContext context(inputManager, tft, factory);
 
 /* global variables */
@@ -65,6 +70,9 @@ void setup() {
 	optical.begin();
 	force.begin();
 
+	// BPM
+	
+		
 	// screen
 	tft.begin();
 	tft.setRotation(3);

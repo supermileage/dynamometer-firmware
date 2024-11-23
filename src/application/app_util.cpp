@@ -167,3 +167,30 @@ const String app_util::valueToUnit(application::ValueId id) {
             return "undefined";
     }
 }
+
+const String valueToDefaultString(ValueId id) {
+    switch (id) {
+        case Force:
+            return "00.00";
+        case AngularVelocity:
+            return "00.00";
+        case AngularAccel:
+            return "00.00";
+        case DynoRpm:
+            return "0000";
+        case BpmVoltage:
+            return "00.00";
+        case BpmCurrent:
+            return "00.00";
+        case Time:
+            return "00:00";
+        case VescRpm:
+            return "0000";
+        case VescDuty:
+            return "00.00";
+        case VescCurrent:
+            return "00.00";
+        default:
+            return "undefined";
+    }
+}

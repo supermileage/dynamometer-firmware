@@ -1,20 +1,38 @@
 #include "SessionController.h"
 #include "System/ErrorLogger.h"
+#include "settings.h"
+#include "SessionView.h"
+#include "System/HardwareDemuxButton.h"
+#include <ui/UIEventHandler.h>
 
 #define OUTPUT_FILENAME_ID      CONFIG_ID_OUTPUT_FILE_GLOBAL_ID
 #define VALUE_IDS               CONFIG_ID_VALUE_IDS
 #define LOGGING_INTERVAL_ID     CONFIG_ID_LOGGING_INTERVAL
 
-SessionController::SessionController(ApplicationContext& context, TFT_eSPI& display,
-    SensorOptical& optical, SensorForce& force) : ControllerBase(context, display),
-        _optical(optical), _force(force) { }
+
+SessionController::SessionController(ApplicationContext& context, TFT_eSPI& display, SensorForce& force, SensorOptical& optical, BpmControl& bpm, HardwareDemuxButton& selectButton) : 
+    ControllerBase(context, display), _force(force), _optical(optical), _bpm(bpm), _selectButton(selectButton){
+        _sessionDisplay = std::make_shared<SessionView>(display);
+     }
 
 SessionController::~SessionController() { }
 
-void SessionController::_logValues() {
-    for (std::function<String(void)> logger : _valueLoggers) {
-        _outputCsv.addEntry(logger());
+void SessionController::init(InputManager& m) {
+            ControllerBase::init(m);
+                auto self = shared_from_this();
+            UIEventHandler::instance().addEvent( [this, self]() {
+                _sessionDisplay->init();
+            });
+            // do some stuff
     }
+
+void SessionController::_logValues() {
+    if (_loggingEnabled)
+    {
+        for (std::function<String(void)> logger : _valueLoggers) {
+            _outputCsv.addEntry(logger());
+        }
+    }  
 }
 
 void SessionController::_initializeOutput(StateInfo& info) {
@@ -46,7 +64,7 @@ void SessionController::_initializeOutput(StateInfo& info) {
     _initializeOutputCsv(_valueIds, _outputFilename);
 }
 
-String SessionController::_getHeaderFromIds(const std::vector<ValueId>& ids) {
+String SessionController::_getHeaderFromIds(const std::vector<application::ValueId>& ids) {
     String header = "";
     for (int i = 0; i < ids.size(); i++) {
         header += app_util::valueToHeader(ids[i]);
@@ -57,13 +75,13 @@ String SessionController::_getHeaderFromIds(const std::vector<ValueId>& ids) {
     return header;
 }
 
-void SessionController::_initializeValueLoggers(const std::vector<ValueId>& ids) {
-    for (ValueId id : ids) {
+void SessionController::_initializeValueLoggers(const std::vector<application::ValueId>& ids) {
+    for (application::ValueId id : ids) {
         _valueLoggers.push_back(_getValueLogger(id));
     }
 }
 
-void SessionController::_initializeOutputCsv(const std::vector<ValueId>& ids, String& filename) {
+void SessionController::_initializeOutputCsv(const std::vector<application::ValueId>& ids, String& filename) {
     if (_outputCsv.create(filename, ids.size())) {
         String header = _getHeaderFromIds(ids);
         _outputCsv.setHeader(header);
@@ -79,8 +97,8 @@ void SessionController::_closeOutputCsv() {
     _outputCsv.close();
 }
 
-std::vector<ValueId> SessionController::_parseValueIdStr(String& valueIds) {
-    std::vector<ValueId> vec;
+std::vector<application::ValueId> SessionController::_parseValueIdStr(String& valueIds) {
+    std::vector<application::ValueId> vec;
     int first = 0;
     int last = 1;
     while (last > 0) {
@@ -92,12 +110,12 @@ std::vector<ValueId> SessionController::_parseValueIdStr(String& valueIds) {
             valueId = valueIds.substring(first, first + last).toInt();
             first = first + last + 1;
         }
-        vec.push_back(static_cast<ValueId>(valueId));
+        vec.push_back(static_cast<application::ValueId>(valueId));
     }
     return vec;
 }
 
-std::function<String(void)> SessionController::_getValueLogger(ValueId id) {
+std::function<String(void)> SessionController::_getValueLogger(application::ValueId id) {
     switch (id) {
         case Force:
             return [this]() { return String(_force.getForce()); };
@@ -132,3 +150,61 @@ std::function<String(void)> SessionController::_getValueLogger(ValueId id) {
             return []() { return "undefined"; };
     }
 }
+
+
+
+void SessionController::_handleInputBrakeButton(input_data_t d)
+{
+    _bpm.setActive(!d);
+}
+
+void SessionController::_handleInputSelect(input_data_t d)
+{
+    
+    if (!d && _selectButton.getHeldStatus(0))
+    {
+        _loggingEnabled = !_loggingEnabled;
+        DEBUG_SERIAL_LN("Logging_Enabled:" + String(_loggingEnabled));
+    }
+}
+
+void SessionController::_handleInputBrakePot(input_data_t d)
+{
+    _bpm.setControlSignal(d);
+
+    if (_bpm.getStatus())
+        DEBUG_SERIAL_LN(d);
+}
+
+void SessionController::_handleInputBack(input_data_t d) {
+    
+    if (!d) {
+        // once recording is developed, add here to stop it
+        _loggingEnabled = false;
+        _navigateBack();
+    }
+}
+
+void SessionController::_navigateBack() {
+    if (!_context.tryRevertState()) {
+        DEBUG_SERIAL_LN("Unsuccessful Session Exit.");
+        return;
+    }
+        DEBUG_SERIAL_LN("Successfully Exited Session");
+
+        _closeOutputCsv();
+
+        auto self = shared_from_this();
+        UIEventHandler::instance().addEvent([this, self]() {
+            //_menu->back();
+            _context.setStateTransitionFlag();
+        });
+    
+}
+/*
+void SessionController::handle() {
+    // did any of the UI values change?
+    auto self = shared_from_this();
+    UIEventHandler::instance().addEvent( [self]() { self->_sessionDisplay.draw(); } );
+}
+*/

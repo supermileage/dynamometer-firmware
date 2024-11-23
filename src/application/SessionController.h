@@ -2,12 +2,18 @@
 #define _SESSION_CONTROLLER_H_
 
 #include <functional>
+#include <memory>
+#include <vector>
+#include <utility>
 
 #include "application.h"
 #include "Sensor/SensorOptical.h"
 #include "Sensor/SensorForce.h"
 #include "System/CsvFile.h"
+#include "System/BpmControl.h"
 #include "ControllerBase.h"
+#include "SessionView.h"
+
 
 using namespace application;
 
@@ -16,17 +22,23 @@ using namespace application;
 */
 class SessionController : public ControllerBase {
     public:
-        SessionController(ApplicationContext& context, TFT_eSPI& display, SensorOptical& optical, SensorForce& force);
+        SessionController(ApplicationContext& context, TFT_eSPI& display, SensorForce& force, SensorOptical& optical, BpmControl& bpm, HardwareDemuxButton& selectButton) ;
         ~SessionController();
+
+        void init(InputManager& m) override;
+        //void handle(void) override;
 
     protected:
         SensorOptical& _optical;
         SensorForce& _force;
+        BpmControl& _bpm;
+        HardwareDemuxButton& _selectButton;
+        uint32_t _bpmDutyCycle;
         uint32_t _loggingInterval;
         std::vector<std::function<String(void)>> _valueLoggers; // tandem with _valueIds
-        std::vector<ValueId> _valueIds;                         // tandem with _valueLoggers
+        std::vector<application::ValueId> _valueIds;                         // tandem with _valueLoggers
         String _outputFilename = "";
-        bool _loggingEnabled;
+        bool _loggingEnabled = false;
 
         /**
          * @brief initialize output logging -- logging interval, value loggers and output csv
@@ -38,17 +50,30 @@ class SessionController : public ControllerBase {
          * @brief initializes output csv file, generating header from value ids
          * @note modifies filename
         */
-        void _initializeOutputCsv(const std::vector<ValueId>& ids, String& filename);
+        void _initializeOutputCsv(const std::vector<application::ValueId>& ids, String& filename);
         void _closeOutputCsv();
         void _logValues();
 
     private:
         CsvFile _outputCsv;
+        std::shared_ptr<SessionView> _sessionDisplay;
+
 
         std::vector<ValueId> _parseValueIdStr(String& valueIds);
         String _getHeaderFromIds(const std::vector<ValueId>& ids);
         void _initializeValueLoggers(const std::vector<ValueId>& ids);
         std::function<String(void)> _getValueLogger(ValueId id);
+
+        void _navigateBack();
+
+        void _handleInputSelect(input_data_t d) override;
+        void _handleInputBack(input_data_t d) override;
+        void _handleInputBrakePot(input_data_t d) override;
+        void _handleInputBrakeButton(input_data_t d) override;
+
+        
+        
+
 };
 
 #endif

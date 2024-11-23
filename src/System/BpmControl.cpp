@@ -37,3 +37,4 @@ void BpmControl::setActive(bool active){
 bool BpmControl::getStatus(void){
     return _active;
 };
+
