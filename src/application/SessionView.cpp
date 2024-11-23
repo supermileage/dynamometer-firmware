@@ -52,6 +52,7 @@ void SessionView::updateValueElement(::application::ValueId id, String& value) {
     _idToElement.at(id).updateValue(value);
 }
 
+
 // try valueElement.redraw() (?)
 void SessionView::drawValues() {
     _window->draw();

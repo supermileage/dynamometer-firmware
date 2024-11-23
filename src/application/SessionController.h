@@ -57,6 +57,7 @@ class SessionController : public ControllerBase {
         CsvFile _outputCsv;
         std::shared_ptr<SessionView> _sessionDisplay;
          std::vector<::application::ValueId> tempIds;
+         uint32_t prev = 0;
 
 
         std::vector<ValueId> _parseValueIdStr(String& valueIds);

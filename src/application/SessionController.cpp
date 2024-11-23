@@ -23,9 +23,10 @@ void SessionController::init(InputManager &m)
 
     tempIds.push_back(Force);
 
-    // UIEventHandler::instance().addEvent([this, self]()                           {
-    //         _sessionDisplay->init(tempIds);
-    //         _sessionDisplay->drawValues(); });
+    UIEventHandler::instance().addEvent([this, self]()                           {
+        _sessionDisplay->init(tempIds);
+        _sessionDisplay->drawValues();
+    });
     // do some stuff
 
     Serial.print("tempIds added Force\n");
@@ -211,26 +212,31 @@ void SessionController::_handleInputBack(input_data_t d)
 
 void SessionController::_navigateBack()
 {
-    if (!_context.tryRevertState())
-    {
-        Serial.print("Unsuccessful Session Exit.");
+    if (!_context.tryRevertState()) {
         return;
     }
-    Serial.print("Successfully Exited Session");
+    auto self = shared_from_this();
+    UIEventHandler::instance().addEvent([this, self]() {
+        _context.setStateTransitionFlag();
+    });
 }
 
 void SessionController::handle()
 {
     // did any of the UI values change?
-    Serial.print("SessionController::handle()\n");
-    for (application::ValueId id : tempIds)
-    {
-        // Retrieve the string
-        std::function<String(void)> valueLogger = SessionController::_getValueLogger(id);
-        String result = valueLogger();
+    uint32_t millis_current = millis();
 
-        _sessionDisplay->updateValueElement(id, result);
-        _sessionDisplay->drawValues();
-        Serial.print("SessionController::handle() loop\n");
+    if (millis_current > prev + 25) {
+        prev = millis_current;
+        for (application::ValueId id : tempIds) {
+            // Retrieve the string
+            std::function<String(void)> valueLogger = SessionController::_getValueLogger(id);
+            String result = valueLogger();
+            auto self = shared_from_this();
+            UIEventHandler::instance().addEvent([this,self,id,result] {
+                String str = result;
+                _sessionDisplay->updateValueElement(id, str);
+            });
+        }
     }
 }
