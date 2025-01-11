@@ -42,13 +42,13 @@ void SessionView::init(std::vector<::application::ValueId>& ids){
 
 void SessionView::generateValueDisplay(std::vector<::application::ValueId>& ids) {
     String test = "";
-    const GFXfont* testFont = FREE_MONO_9PT7B;
+    const GFXfont* testFont = FREE_MONO_BOLD_9PT7B;
      String testVal = "";
 
     for (application::ValueId id : ids) {
         _idToElement.try_emplace(id,std::make_shared<ValueElement>(_display));
         _idToElement.at(id)->configureLabel(test,testFont,COLOUR_BLUE,1,1);
-        _idToElement.at(id)->configureValue(testVal,testFont,COLOUR_RED,1,1);
+        _idToElement.at(id)->configureValue(testVal,testFont,COLOUR_BLACK,1,1);
 
         _sessionContainer->addVisualElement(_idToElement.at(id), Container::TopMiddle);
     }
