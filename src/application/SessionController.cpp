@@ -10,8 +10,8 @@
 #define LOGGING_INTERVAL_ID     CONFIG_ID_LOGGING_INTERVAL
 
 
-SessionController::SessionController(ApplicationContext& context, TFT_eSPI& display, SensorForce& force, SensorOptical& optical, BpmControl& bpm, HardwareDemuxButton& selectButton) : 
-    ControllerBase(context, display), _force(force), _optical(optical), _bpm(bpm), _selectButton(selectButton){
+SessionController::SessionController(ApplicationContext& context, TFT_eSPI& display, SensorForce& force, SensorOptical& optical, BpmControl& bpm, KillSwitch& killswitch, HardwareDemuxButton& selectButton) : 
+    ControllerBase(context, display), _force(force), _optical(optical), _bpm(bpm), _killswitch(killswitch), _selectButton(selectButton){
         _sessionDisplay = std::make_shared<SessionView>(display);
      }
 
@@ -170,7 +170,10 @@ void SessionController::_handleInputSelect(input_data_t d)
 
 void SessionController::_handleInputBrakePot(input_data_t d)
 {
-    _bpm.setControlSignal(d);
+    if (_killswitch.getFaultStatus())
+        _bpm.setControlSignal(ANALOG_MAX);
+    else
+        _bpm.setControlSignal(d);
 
     if (_bpm.getStatus())
         DEBUG_SERIAL_LN(d);

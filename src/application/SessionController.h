@@ -13,6 +13,7 @@
 #include "System/BpmControl.h"
 #include "ControllerBase.h"
 #include "SessionView.h"
+#include "System/KillSwitch.h"
 
 
 using namespace application;
@@ -22,7 +23,7 @@ using namespace application;
 */
 class SessionController : public ControllerBase {
     public:
-        SessionController(ApplicationContext& context, TFT_eSPI& display, SensorForce& force, SensorOptical& optical, BpmControl& bpm, HardwareDemuxButton& selectButton) ;
+        SessionController(ApplicationContext& context, TFT_eSPI& display, SensorForce& force, SensorOptical& optical, BpmControl& bpm, KillSwitch& killswitch, HardwareDemuxButton& selectButton) ;
         ~SessionController();
 
         void init(InputManager& m) override;
@@ -32,6 +33,7 @@ class SessionController : public ControllerBase {
         SensorOptical& _optical;
         SensorForce& _force;
         BpmControl& _bpm;
+        KillSwitch& _killswitch;
         HardwareDemuxButton& _selectButton;
         uint32_t _bpmDutyCycle;
         uint32_t _loggingInterval;

@@ -12,6 +12,7 @@
 #include "Sensor/SensorOptical.h"
 #include "System/BpmControl.h"
 #include "System/HardwareDemuxButton.h"
+#include "System/KillSwitch.h"
 
 class ApplicationContext;
 class ControllerBase;
@@ -24,7 +25,7 @@ using namespace application;
 */
 class ControllerFactory {
     public:
-        ControllerFactory(TFT_eSPI& display, InputManager& manager, SensorForce& force, SensorOptical& optical, BpmControl& bpm, HardwareDemuxButton& selectButton) ;
+        ControllerFactory(TFT_eSPI& display, InputManager& manager, SensorForce& force, SensorOptical& optical, BpmControl& bpm, KillSwitch &killswitch, HardwareDemuxButton& selectButton) ;
 
         /**
          * @brief create new controller base class for state info
@@ -41,6 +42,7 @@ class ControllerFactory {
         SensorForce& _force;
         SensorOptical& _optical;
         BpmControl& _bpm;
+        KillSwitch& _killswitch;
         HardwareDemuxButton& _selectButton;
 
         /**

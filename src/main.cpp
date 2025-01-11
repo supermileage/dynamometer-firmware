@@ -37,9 +37,6 @@ BpmControl bpm(BPM_CTRL_OUT);
 SensorOptical optical(pio0, 0);
 SensorForce force;
 
-/* bpm */
-BpmControl bpm(BPM_CTRL_OUT);
-
 /* io */
 InputManager inputManager;
 HardwareInputSerial inputSerial;
@@ -53,7 +50,7 @@ HardwareRotaryEncoder rot(ROT_EN_A, ROT_EN_B);
 KillSwitch killswitch(bpm, BPM_KILLSWITCH);
 
 /* ui */
-ControllerFactory factory(tft, inputManager, force, optical, bpm, selectButton);
+ControllerFactory factory(tft, inputManager, force, optical, bpm, killswitch, selectButton);
 ApplicationContext context(inputManager, tft, factory);
 
 /* global variables */

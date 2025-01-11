@@ -19,8 +19,8 @@ extern const NavMenuConfig ManualControlMenuConfig;
 
 // controller factory
 
-ControllerFactory::ControllerFactory(TFT_eSPI& display, InputManager& manager, SensorForce& force, SensorOptical& optical, BpmControl& bpm, HardwareDemuxButton& selectButton) :
-    _display(display), _inputManager(manager), _force(force), _optical(optical), _bpm(bpm), _selectButton(selectButton){ }
+ControllerFactory::ControllerFactory(TFT_eSPI& display, InputManager& manager, SensorForce& force, SensorOptical& optical, BpmControl& bpm, KillSwitch& killswitch, HardwareDemuxButton& selectButton) :
+    _display(display), _inputManager(manager), _force(force), _optical(optical), _bpm(bpm), _killswitch(killswitch), _selectButton(selectButton){ }
 
 std::shared_ptr<ControllerBase> ControllerFactory::create(StateInfo& info) {
     return _createInternal(info);
@@ -77,7 +77,7 @@ std::shared_ptr<ControllerBase> ControllerFactory::_createInternal(StateInfo& in
             break;
         case ManualControlMode:
             // TODO: add manual control mode state
-            ret = std::make_shared<SessionController>(*_context, _display, _force, _optical, _bpm, _selectButton);
+            ret = std::make_shared<SessionController>(*_context, _display, _force, _optical, _bpm, _killswitch, _selectButton);
             static_cast<SessionController*>(ret.get())->init(_inputManager);
             break;
         case ManualControlSettings:
