@@ -41,53 +41,21 @@ void SessionView::init(std::vector<::application::ValueId>& ids){
 }
 
 void SessionView::generateValueDisplay(std::vector<::application::ValueId>& ids) {
-    int enumIterator = 0;
-    for (application::ValueId id : ids) {
-        //std::shared_ptr<ValueElement> valueElementPtr = std::make_shared<ValueElement>(_idToElement.at(id)); //warning: hangs
-        _idToElement.try_emplace(id,ValueElement(_display));
-        _sessionContainer->addVisualElement(std::make_shared<ValueElement>(_idToElement.at(id)), Container::CentreMiddle);
-    //    std::make_shared<ValueElement>(_idToElement.at(id))->configureLabel("Force",FREE_MONO_12PT7B,COLOUR_BLACK,__SIZE_WIDTH__);
+    String test = "";
+    const GFXfont* testFont = FREE_MONO_9PT7B;
+     String testVal = "";
 
-    //     switch(enumIterator){
-    //         case 0:
-    //         _sessionContainer->addVisualElement(std::make_shared<ValueElement>(_idToElement.at(id)), Container::CentreMiddle);
-    //         //std::make_shared<ValueElement>(_idToElement.at(id))->Container::setPadding(10);
-    //         //_sessionContainer->Container::setPadding(10);
-    //         break;
-    //         case 1:
-    //         _sessionContainer->addVisualElement(std::make_shared<ValueElement>(_idToElement.at(id)), Container::TopRight);
-    //         break;
-    //         case 2:
-    //         _sessionContainer->addVisualElement(std::make_shared<ValueElement>(_idToElement.at(id)), Container::TopRight);
-    //         break;
-    //         case 3:
-    //         _sessionContainer->addVisualElement(std::make_shared<ValueElement>(_idToElement.at(id)), Container::CentreLeft);
-    //         break;
-    //         case 4:
-    //         _sessionContainer->addVisualElement(std::make_shared<ValueElement>(_idToElement.at(id)), Container::CentreMiddle);
-    //         break;
-    //         case 5:
-    //         _sessionContainer->addVisualElement(std::make_shared<ValueElement>(_idToElement.at(id)), Container::CentreRight);
-    //         break;
-    //         case 6:
-    //         _sessionContainer->addVisualElement(std::make_shared<ValueElement>(_idToElement.at(id)), Container::BottomLeft);
-    //         break;
-    //         case 7:
-    //         _sessionContainer->addVisualElement(std::make_shared<ValueElement>(_idToElement.at(id)), Container::BottomMiddle);
-    //         break;
-    //         case 8:
-    //         _sessionContainer->addVisualElement(std::make_shared<ValueElement>(_idToElement.at(id)), Container::BottomRight);
-    //         break;
-    //         default:
-    //         DEBUG_SERIAL_LN("Too many values to add.");
-    //         break;
-    //     }
-    //     enumIterator++;
+    for (application::ValueId id : ids) {
+        _idToElement.try_emplace(id,std::make_shared<ValueElement>(_display));
+        _idToElement.at(id)->configureLabel(test,testFont,COLOUR_BLUE,1,1);
+        _idToElement.at(id)->configureValue(testVal,testFont,COLOUR_RED,1,1);
+
+        _sessionContainer->addVisualElement(_idToElement.at(id), Container::TopMiddle);
     }
 }
 
 void SessionView::updateValueElement(::application::ValueId id, String& value) {
-    _idToElement.at(id).updateValue(value);
+    _idToElement.at(id)->updateValue(value);
 }
 
 

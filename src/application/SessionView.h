@@ -1,5 +1,6 @@
 #ifndef _SESSION_VIEW_H_
 #define _SESSION_VIEW_H_
+// #define VALUES_PER_COL 5
 
 #include <memory>
 #include <vector>
@@ -24,7 +25,7 @@ class SessionView : public ViewBase {
     private:
         std::shared_ptr<Container> _sessionContainer;
         std::shared_ptr<ValueElement> _sessionElement;
-        std::unordered_map<application::ValueId, ValueElement> _idToElement;
+        std::unordered_map<application::ValueId, std::shared_ptr<ValueElement>> _idToElement;
 };
 
 #endif

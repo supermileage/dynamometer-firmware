@@ -31,7 +31,6 @@ void SessionController::init(InputManager &m)
     tempIds.push_back(VescRpm);
     tempIds.push_back(VescDuty);
     tempIds.push_back(VescCurrent);
-    // 9 values max, see SessionView
 
     UIEventHandler::instance().addEvent([this, self]()                           {
         _sessionDisplay->init(tempIds);
