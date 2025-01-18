@@ -24,7 +24,7 @@ class SensorForce {
         float getForce();
 
     private:
-        float _force;
+        float _force = 0;
         uint32_t _lastReadTime = 0;
 };
 

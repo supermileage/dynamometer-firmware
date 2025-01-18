@@ -90,6 +90,8 @@ void loop() {
 	
 	inputManager.handle();
 	context.handle();
+	force.handle();
+	optical.handle();
 }
 
 /* Core1 */

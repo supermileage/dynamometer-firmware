@@ -21,10 +21,14 @@ void SensorForce::handle() {
         int int_force = analogRead(FORCE_SENSOR_PIN);
         _force = ((float)(int_force < MIN_READ_VALUE ?
             0 : int_force - MIN_READ_VALUE) / (MAX_READ_VALUE - MIN_READ_VALUE)) * 25;
+        //_force = 25;
+
     }
 }
 
 float SensorForce::getForce() {
+    //Serial.print("Force: ");
+    //Serial.println(_force);
     return _force;
 }
 

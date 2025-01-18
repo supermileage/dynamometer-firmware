@@ -50,6 +50,9 @@ void SensorOptical::handle() {
         int32_t n = currentCount - _lastUpdateCount; // n is num apertures we've passed over since last velocity update
 
         _angularVelocity = ((float)n / NUM_APERTURES) * 2 * _PI * (MEGA / (float)deltaT);
+        //_angularVelocity = 50;
+        //Serial.print(_angularVelocity);
+
 
         _lastUpdateCount = currentCount;
         _lastUpdateTime = currentTime;
@@ -72,6 +75,8 @@ uint32_t SensorOptical::getReadInterval() {
 }
 
 float SensorOptical::getAngularVelocity() {
+    //Serial.print("Angular Velocity: ");
+    //Serial.println(_angularVelocity);
     return _angularVelocity;
 }
 

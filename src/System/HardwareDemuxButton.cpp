@@ -19,7 +19,7 @@ void HardwareDemuxButton::init() {
 void HardwareDemuxButton::run() {
 	// sets the select pins on the demux to read this button
 	_demuxer.setSelect(_selectId);
-	delay(1);
+	delayMicroseconds(1);
 
 	PinStatus readVal = _read();
 	

@@ -205,6 +205,8 @@ void SessionController::_handleInputBrakeButton(input_data_t d)
 
 void SessionController::_handleInputBrakePot(input_data_t d)
 {
+    //Serial.print("POT: ");
+    //Serial.println(d);
     _bpm.setControlSignal(d);
 }
 
@@ -247,4 +249,7 @@ void SessionController::handle()
             });
         }
     }
+
+    //_force.handle();
+	//_optical.handle();
 }
